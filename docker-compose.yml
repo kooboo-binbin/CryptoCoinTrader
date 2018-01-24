@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  cryptocointrader:
+    image: cryptocointrader
+    build:
+      context: .
+      dockerfile: Web/Dockerfile
