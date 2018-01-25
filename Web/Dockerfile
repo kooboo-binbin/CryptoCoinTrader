@@ -5,7 +5,7 @@ EXPOSE 80
 FROM microsoft/aspnetcore-build:2.0 AS build
 WORKDIR /src
 COPY *.sln ./
-COPY Web/CryptoCoinTrader.csproj Web/
+COPY Web/Web.csproj Web/
 RUN dotnet restore
 COPY . .
 WORKDIR /src/Web
@@ -17,4 +17,4 @@ RUN dotnet publish -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "CryptoCoinTrader.dll"]
+ENTRYPOINT ["dotnet", "Web.dll"]

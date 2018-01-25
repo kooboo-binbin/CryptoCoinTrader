@@ -3,9 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryptoCoinTrader", "Web\CryptoCoinTrader.csproj", "{4ED68570-E1C5-4A01-85A8-90CE6929B3CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "Web\Web.csproj", "{4ED68570-E1C5-4A01-85A8-90CE6929B3CD}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F88FACFF-5FEE-44FE-8021-4F50C9E57245}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "..\Core\Core.csproj", "{E373ED65-BF23-49E1-9201-AF8D3B397BB8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XUnitTest", "XUnitTest\XUnitTest.csproj", "{B4F02EA5-8CCA-4980-ADB0-8CDFA0A189C4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Manifest", "Manifest\Manifest.csproj", "{C805FDB1-8B93-4C7C-B591-2F4C053AC74B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradeConsole", "TradeConsole\TradeConsole.csproj", "{72E5C578-9B43-4A14-A464-8307101E1A07}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParties", "ThirdParties", "{14EB8A67-F3BF-4E55-B06E-DA64B919F60C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PusherClient", "ThirdParties\PusherClient\PusherClient.csproj", "{C54F8148-418F-49A7-8590-5285336BD9C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +33,32 @@ Global
 		{F88FACFF-5FEE-44FE-8021-4F50C9E57245}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F88FACFF-5FEE-44FE-8021-4F50C9E57245}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F88FACFF-5FEE-44FE-8021-4F50C9E57245}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E373ED65-BF23-49E1-9201-AF8D3B397BB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E373ED65-BF23-49E1-9201-AF8D3B397BB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E373ED65-BF23-49E1-9201-AF8D3B397BB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E373ED65-BF23-49E1-9201-AF8D3B397BB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4F02EA5-8CCA-4980-ADB0-8CDFA0A189C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4F02EA5-8CCA-4980-ADB0-8CDFA0A189C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4F02EA5-8CCA-4980-ADB0-8CDFA0A189C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4F02EA5-8CCA-4980-ADB0-8CDFA0A189C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C805FDB1-8B93-4C7C-B591-2F4C053AC74B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C805FDB1-8B93-4C7C-B591-2F4C053AC74B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C805FDB1-8B93-4C7C-B591-2F4C053AC74B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C805FDB1-8B93-4C7C-B591-2F4C053AC74B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72E5C578-9B43-4A14-A464-8307101E1A07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72E5C578-9B43-4A14-A464-8307101E1A07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72E5C578-9B43-4A14-A464-8307101E1A07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72E5C578-9B43-4A14-A464-8307101E1A07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C54F8148-418F-49A7-8590-5285336BD9C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C54F8148-418F-49A7-8590-5285336BD9C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C54F8148-418F-49A7-8590-5285336BD9C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C54F8148-418F-49A7-8590-5285336BD9C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C54F8148-418F-49A7-8590-5285336BD9C5} = {14EB8A67-F3BF-4E55-B06E-DA64B919F60C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0A3612EA-D02C-4A3E-9055-9FF7520F2F47}

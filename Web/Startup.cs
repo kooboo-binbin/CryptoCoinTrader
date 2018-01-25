@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CryptoCoinTrader.Core.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -28,6 +30,11 @@ namespace CryptoCoinTrader
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<CoinContext>(options =>
+            {
+                options.UseSqlite("Data Source=cointrader.db");
+                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
             // Add framework services.
             services.AddMvc();
         }
@@ -49,7 +56,8 @@ namespace CryptoCoinTrader
                     });
                 }
                 catch (Exception ex)
-                {//the image does not have node js
+                {
+                    //the image does not installed node js
                 }
             }
             else
