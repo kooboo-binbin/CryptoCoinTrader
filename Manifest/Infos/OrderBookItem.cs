@@ -6,16 +6,16 @@ namespace CryptoCoinTrader.Manifest.Infos
 {
     public class OrderBookItem
     {
-        public string Original { get; set; }
+        // public string Original { get; set; }
 
         /// <summary>
         /// For Crypto coin normally
         /// </summary>
-        public decimal Volume1 { get; set; }
+        public decimal Volume { get; set; }
 
         /// <summary>
         /// For USD, Eur normally
         /// </summary>
-        public decimal Volume2 { get; set; }
+        public decimal Price { get; set; }
     }
 }
