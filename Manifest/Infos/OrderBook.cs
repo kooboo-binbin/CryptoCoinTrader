@@ -28,8 +28,13 @@ namespace CryptoCoinTrader.Manifest.Infos
 
         public override string ToString()
         {
+            return ToString(30);
+        }
+
+        public string ToString(int amount)
+        {
             var sb = new StringBuilder();
-            for (int i = 0; i < 30 & i < Bids.Count & i < Asks.Count; i++)
+            for (int i = 0; i < amount & i < Bids.Count & i < Asks.Count; i++)
             {
                 sb.AppendLine($"{i} \t {Bids[i].Volume:f4} \t {Bids[i].Price:f2} \t\t {Asks[i].Volume:f4} \t {Asks[i].Price:f2}");
             }
