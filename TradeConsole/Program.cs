@@ -13,26 +13,19 @@ namespace TradeConsole
     class Program
     {
         static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
-
-
+        { 
             var client = new BitStampDataClient();
             client.Register(new List<CurrencyPair>() { CurrencyPair.BtcEur });
             client.TickerChanged += Client_TradeChanged;
             client.OrderBookChanged += Client_OrderBookChanged;
             client.Start();
 
-
-
-
-
-
             var client2 = new GdaxDataClient();
             client2.OrderBookChanged += Client_OrderBookChanged;
             client2.Register(new List<CurrencyPair>() { CurrencyPair.BtcEur });
             client2.Start();
 
+            Console.Clear();
             var task = Task.Run(() =>
             {
                 while (true)
@@ -48,8 +41,10 @@ namespace TradeConsole
 
                     if (book1.Bids.Count > 0 && book2.Asks.Count > 0)
                     {
-                        var spread = book2.Bids[0].Price - book1.Asks[0].Price;
-                        Console.WriteLine($"Spread gdx.bid1 {book2.Bids[0].Price:f2} - bitstmap.ask1 {book1.Asks[0].Price:f2} = {spread:f2}");
+                        var bid0 = book2.Bids[0];
+                        var ask0 = book1.Asks[0];
+                        var spread = bid0.Price - ask0.Price;
+                        Console.WriteLine($"Spread gdx.bid1 {bid0.Price:f2} - bitstmap.ask1 {ask0.Price:f2} = {spread:f2} volume:{Math.Min(bid0.Volume, ask0.Volume)}");
                         if (spread > 3)
                         {
                             arbitarayAmount++;
