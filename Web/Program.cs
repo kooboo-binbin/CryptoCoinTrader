@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using CryptoCoinTrader.Core.Data;
+using System.Globalization;
 
 namespace CryptoCoinTrader
 {
@@ -14,6 +15,9 @@ namespace CryptoCoinTrader
     {
         public static void Main(string[] args)
         {
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-us");
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-us");
+
             var host = BuildWebHost(args);
             using (var scope = host.Services.CreateScope())
             {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CryptoCoinTrader.Core.Data;
 using CryptoCoinTrader.Core.Data.Entities;
+using CryptoCoinTrader.Core.Exchanges.Gdax.Infos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CryptoCoinTrader.Web.Controllers
@@ -21,7 +22,7 @@ namespace CryptoCoinTrader.Web.Controllers
             var kk = _context.Arbitrages.ToList();
             var temp = new Arbitrage();
             temp.Id = Guid.NewGuid();
-            
+
             _context.Add(temp);
             _context.SaveChanges();
             return View();

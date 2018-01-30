@@ -4,12 +4,10 @@ using System.Text;
 
 namespace CryptoCoinTrader.Manifest.Enums
 {
-    /// <summary>
-    /// Buy or sell
-    /// </summary>
-    public enum TradeType
+    public enum OrderStatus
     {
-        Buy = 0,
-        Sell = 1,
+        Open = 0,
+        Pending = 1,
+        Active = 2,
     }
 }

@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using CryptoCoinTrader.Core.Exchanges;
 using CryptoCoinTrader.Core.Exchanges.BitStamp;
 using CryptoCoinTrader.Core.Exchanges.Gdax;
 using CryptoCoinTrader.Manifest.Enums;
 using CryptoCoinTrader.Manifest.Infos;
+using RestSharp;
+using CryptoCoinTrader.Core.Exchanges.Gdax.Infos;
 
 namespace TradeConsole
 {
     class Program
     {
         static void Main(string[] args)
-        { 
+        {
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-us");
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-us");
+
             var client = new BitStampDataClient();
             client.Register(new List<CurrencyPair>() { CurrencyPair.BtcEur });
             client.TickerChanged += Client_TradeChanged;
@@ -24,7 +31,16 @@ namespace TradeConsole
             client2.OrderBookChanged += Client_OrderBookChanged;
             client2.Register(new List<CurrencyPair>() { CurrencyPair.BtcEur });
             client2.Start();
+            WatchSpread(client, client2);
 
+
+            Console.ReadLine();
+        }
+
+
+
+        private static void WatchSpread(BitStampDataClient client, GdaxDataClient client2)
+        {
             Console.Clear();
             var task = Task.Run(() =>
             {
@@ -59,9 +75,8 @@ namespace TradeConsole
                     Thread.Sleep(300);
                 }
             });
-
-            Console.ReadLine();
         }
+
         private static int arbitarayAmount = 0;
 
         private static void Client_OrderBookChanged(CurrencyPair arg1, OrderBook orderbook)
