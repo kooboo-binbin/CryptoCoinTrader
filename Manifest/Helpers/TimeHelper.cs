@@ -26,5 +26,8 @@ namespace CryptoCoinTrader.Manifest.Helpers
         {
             return (DateTime.UtcNow - baseDateTime).TotalSeconds;
         }
+
+        
+
     }
 }
