@@ -11,15 +11,25 @@ using CryptoCoinTrader.Manifest.Enums;
 using CryptoCoinTrader.Manifest.Infos;
 using RestSharp;
 using CryptoCoinTrader.Core.Exchanges.Gdax.Infos;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.FileExtensions;
+using System.IO;
+using CryptoCoinTrader.Core;
 
 namespace TradeConsole
 {
     class Program
     {
+        public static IConfigurationRoot Configuration { get; private set; }
+        public static AppSettings AppSettings { get; private set; }
+
         static void Main(string[] args)
         {
-            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-us");
-            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-us");
+            SetCulture();
+            SetConfiguration();
+
+            var appConfig = new AppSettings();
+            Configuration.GetSection("App").Bind(appConfig);
 
             var client = new BitStampDataClient();
             client.Register(new List<CurrencyPair>() { CurrencyPair.BtcEur });
@@ -37,7 +47,17 @@ namespace TradeConsole
             Console.ReadLine();
         }
 
+        private static void SetCulture()
+        {
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-us");
+            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-us");
+        }
 
+        private static void SetConfiguration()
+        {
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
+            Configuration = builder.Build();
+        }
 
         private static void WatchSpread(BitStampDataClient client, GdaxDataClient client2)
         {

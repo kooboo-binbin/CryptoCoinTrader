@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CryptoCoinTrader.Manifest.Trades
 {
-    public class Order
+    public class OrderRequest
     {
         public string ClientOrderId { get; set; }
         public OrderType OrderType { get; set; }
