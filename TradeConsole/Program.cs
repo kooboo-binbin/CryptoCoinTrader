@@ -54,6 +54,10 @@ namespace TradeConsole
             serviceCollection.AddSingleton<ISelfInspectionService, SelfInspectionService>();
             serviceCollection.AddSingleton<IBitstampConfig, BitstampConfigFile>();
             serviceCollection.AddSingleton<IGdaxConfig, GdaxConfigFile>();
+            serviceCollection.AddSingleton<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
+            serviceCollection.AddSingleton<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
+            serviceCollection.AddSingleton<IBitstampDataClient, BitstampDataClient>();
+            serviceCollection.AddSingleton<IGdaxDataClient, GdaxDataClient>();
             serviceCollection.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();
             serviceCollection.AddSingleton<IGdaxTradeClient, GdaxTradeClient>();
 

@@ -21,6 +21,7 @@ namespace CryptoCoinTrader.Manifest.Trades
         /// <summary>
         /// GDax size
         /// Desired amount of crypto coin to buy or sell
+        /// minmum size for ltc of gdax is 0.1m 
         /// </summary>
         public decimal Volume { get; set; }
 

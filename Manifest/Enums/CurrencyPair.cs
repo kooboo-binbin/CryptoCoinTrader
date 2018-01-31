@@ -8,7 +8,10 @@ namespace CryptoCoinTrader.Manifest.Enums
     {
         BtcEur = 0,
         LtcEur = 1,
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
         BtcUsd = 10,
     }
 }

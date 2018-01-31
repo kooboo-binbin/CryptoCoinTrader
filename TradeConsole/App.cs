@@ -22,16 +22,23 @@ namespace TradeConsole
         private readonly ISelfInspectionService _selfInspectionService;
         private readonly IBitstampTradeClient _bitstampTradeClient;
         private readonly IGdaxTradeClient _gdaxTradeClient;
+        private readonly IBitstampDataClient _bitstampDataClient;
+        private readonly IGdaxDataClient _gdaxDataClient;
 
         public App(ILogger<App> logger,
             ISelfInspectionService selfInspectionService,
             IBitstampTradeClient bitStampTradeClient,
-            IGdaxTradeClient gdaxTradeClient)
+            IGdaxTradeClient gdaxTradeClient,
+            IBitstampDataClient bitstampDataClient,
+            IGdaxDataClient gdaxDataClient)
         {
             _logger = logger;
             _selfInspectionService = selfInspectionService;
             _bitstampTradeClient = bitStampTradeClient;
             _gdaxTradeClient = gdaxTradeClient;
+
+            _bitstampDataClient = bitstampDataClient;
+            _gdaxDataClient = gdaxDataClient;
         }
 
         public void Run()
@@ -46,35 +53,39 @@ namespace TradeConsole
             }
 
 
-            _gdaxTradeClient.GetAccounts();
+            var currency1 = CurrencyPair.LtcEur;
+            _bitstampDataClient.Register(new List<CurrencyPair>() { currency1 });
+            _bitstampDataClient.Start();
 
+            _gdaxDataClient.Register(new List<CurrencyPair>() { currency1 });
+            _gdaxDataClient.Start();
 
-            var client = new BitstampDataClient();
-            client.Register(new List<CurrencyPair>() { CurrencyPair.BtcEur });
-            client.TickerChanged += Client_TradeChanged;
-            client.OrderBookChanged += Client_OrderBookChanged;
-            client.Start();
-
-            var client2 = new GdaxDataClient();
-            client2.OrderBookChanged += Client_OrderBookChanged;
-            client2.Register(new List<CurrencyPair>() { CurrencyPair.BtcEur });
-            client2.Start();
-
-            WatchSpread(client, client2);
+            WatchSpread(_bitstampDataClient, _gdaxDataClient, currency1);
 
             Console.ReadLine();
         }
 
+        private void TestBuyGdax()
+        {
+            var reqeust = new OrderRequest() { };
+            reqeust.ClientOrderId = Guid.NewGuid().ToString();
+            reqeust.CurrencyPair = CurrencyPair.LtcEur;
+            reqeust.OrderType = OrderType.Limit;
+            reqeust.Price = 1m;
+            reqeust.TradeType = TradeType.Buy;
+            reqeust.Volume = 0.1m;
+            _gdaxTradeClient.MakeANewOrder(reqeust);
+        }
 
-        private static void WatchSpread(BitstampDataClient client, GdaxDataClient client2)
+        private static void WatchSpread(IBitstampDataClient client, IGdaxDataClient client2, CurrencyPair pair)
         {
             Console.Clear();
             var task = Task.Run(() =>
             {
                 while (true)
                 {
-                    var book1 = client.GetOrderBook(CurrencyPair.BtcEur);
-                    var book2 = client2.GetOrderBook(CurrencyPair.BtcEur);
+                    var book1 = client.GetOrderBook(CurrencyPair.LtcEur);
+                    var book2 = client2.GetOrderBook(CurrencyPair.LtcEur);
                     Console.SetCursorPosition(0, 2);
                     Console.WriteLine("------------Bid----BitStamp--------btceur-------------Ask--------------");
                     Console.WriteLine(book1.ToString(3));
@@ -106,17 +117,6 @@ namespace TradeConsole
 
         private static int arbitarayAmount = 0;
 
-        private static void Client_OrderBookChanged(CurrencyPair arg1, OrderBook orderbook)
-        {
 
-            //Console.SetCursorPosition(0, 2);
-
-            // Console.WriteLine(orderbook);
-        }
-
-        private static void Client_TradeChanged(CurrencyPair obj, Ticker ticker)
-        {
-            Console.WriteLine(ticker);
-        }
     }
 }
