@@ -61,11 +61,35 @@ namespace XUnitTest {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [
+        ///    {
+        ///        &quot;id&quot;: &quot;71452118-efc7-4cc4-8780-a5e22d4baa53&quot;,
+        ///        &quot;currency&quot;: &quot;BTC&quot;,
+        ///        &quot;balance&quot;: &quot;0.0000000000000000&quot;,
+        ///        &quot;available&quot;: &quot;0.0000000000000000&quot;,
+        ///        &quot;hold&quot;: &quot;0.0000000000000000&quot;,
+        ///        &quot;profile_id&quot;: &quot;75da88c5-05bf-4f54-bc85-5c775bd68254&quot;
+        ///    },
+        ///    {
+        ///        &quot;id&quot;: &quot;e316cb9a-0808-4fd7-8914-97829c1925de&quot;,
+        ///        &quot;currency&quot;: &quot;USD&quot;,
+        ///        &quot;balance&quot;: &quot;80.2301373066930000&quot;,
+        ///        &quot;available&quot;: &quot;79.2266348066930000&quot;,
+        ///        &quot;hold&quot;: &quot;1.0035025000000000&quot;,
+        ///        [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AccountsJson {
+            get {
+                return ResourceManager.GetString("AccountsJson", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;Key&quot;:&quot;key&quot;,&quot;Secret&quot;:&quot;secret&quot;,&quot;passphrase&quot;:&quot;passphrase&quot;}.
         /// </summary>
-        internal static string Json {
+        internal static string ConfigJson {
             get {
-                return ResourceManager.GetString("Json", resourceCulture);
+                return ResourceManager.GetString("ConfigJson", resourceCulture);
             }
         }
     }

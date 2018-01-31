@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using CryptoCoinTrader.Core.Services;
 using CryptoCoinTrader.Core.Exchanges.BitStamp.Configs;
+using CryptoCoinTrader.Core.Exchanges.Gdax.Configs;
 
 namespace TradeConsole
 {
@@ -52,6 +53,7 @@ namespace TradeConsole
             serviceCollection.AddSingleton(appSettings);
             serviceCollection.AddSingleton<ISelfInspectionService, SelfInspectionService>();
             serviceCollection.AddSingleton<IBitStampConfig, BitStampConfig>();
+            serviceCollection.AddSingleton<IGdaxConfig, GdaxConfig>();
             serviceCollection.AddOptions();
             serviceCollection.AddTransient<App>();
 

@@ -2,6 +2,7 @@
 using CryptoCoinTrader.Core.Exchanges.BitStamp;
 using CryptoCoinTrader.Core.Exchanges.BitStamp.Configs;
 using CryptoCoinTrader.Core.Exchanges.Gdax;
+using CryptoCoinTrader.Core.Exchanges.Gdax.Configs;
 using CryptoCoinTrader.Core.Services;
 using CryptoCoinTrader.Manifest.Enums;
 using CryptoCoinTrader.Manifest.Infos;
@@ -19,13 +20,16 @@ namespace TradeConsole
         private readonly ILogger<App> _logger;
         private readonly ISelfInspectionService _selfInspectionService;
         private readonly IBitStampConfig _bitStampConfig;
+        private readonly IGdaxConfig _gdaxConfig;
         public App(ILogger<App> logger,
             ISelfInspectionService selfInspectionService,
-            IBitStampConfig bitStampConfig)
+            IBitStampConfig bitStampConfig,
+            IGdaxConfig gdaxConfig)
         {
             _logger = logger;
             _selfInspectionService = selfInspectionService;
             _bitStampConfig = bitStampConfig;
+            _gdaxConfig = gdaxConfig;
         }
 
         public void Run()
@@ -39,9 +43,14 @@ namespace TradeConsole
                 return;
             }
 
-            var bitstampTradeClient = new BitStampTradeClient();
-            bitstampTradeClient.Config(_bitStampConfig.GetJson());
-            bitstampTradeClient.GetBlance();
+            //var bitstampTradeClient = new BitStampTradeClient();
+            //bitstampTradeClient.Config(_bitStampConfig.GetJson());
+            //bitstampTradeClient.GetBlance();
+
+            var gdaxClient = new GdaxTradeClient();
+            gdaxClient.Config(_gdaxConfig.GetJson());
+            gdaxClient.GetAccounts();
+
 
             var client = new BitStampDataClient();
             client.Register(new List<CurrencyPair>() { CurrencyPair.BtcEur });
