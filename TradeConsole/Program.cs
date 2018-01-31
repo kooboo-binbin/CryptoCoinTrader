@@ -15,9 +15,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.FileExtensions;
 using System.IO;
 using CryptoCoinTrader.Core;
-using CryptoCoinTrader.Core.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using CryptoCoinTrader.Core.Services;
+using CryptoCoinTrader.Core.Exchanges.BitStamp.Configs;
 
 namespace TradeConsole
 {
@@ -46,15 +47,15 @@ namespace TradeConsole
 
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddSingleton(new LoggerFactory().AddConsole());
-            //serviceCollection.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
             serviceCollection.AddLogging();
             serviceCollection.AddSingleton(configuration);
             serviceCollection.AddSingleton(appSettings);
+            serviceCollection.AddSingleton<ISelfInspectionService, SelfInspectionService>();
+            serviceCollection.AddSingleton<IBitStampConfig, BitStampConfig>();
             serviceCollection.AddOptions();
             serviceCollection.AddTransient<App>();
+
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            //var logFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-            //logFactory.AddConsole();
             return serviceProvider;
         }
 

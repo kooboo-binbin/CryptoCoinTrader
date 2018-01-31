@@ -1,7 +1,8 @@
 ﻿using CryptoCoinTrader.Core;
 using CryptoCoinTrader.Core.Exchanges.BitStamp;
+using CryptoCoinTrader.Core.Exchanges.BitStamp.Configs;
 using CryptoCoinTrader.Core.Exchanges.Gdax;
-using CryptoCoinTrader.Core.Helpers;
+using CryptoCoinTrader.Core.Services;
 using CryptoCoinTrader.Manifest.Enums;
 using CryptoCoinTrader.Manifest.Infos;
 using Microsoft.Extensions.Logging;
@@ -16,24 +17,32 @@ namespace TradeConsole
     public class App
     {
         private readonly ILogger<App> _logger;
-        private readonly AppSettings _appSettings;
-        public App(ILogger<App> logger, AppSettings appSettings)
+        private readonly ISelfInspectionService _selfInspectionService;
+        private readonly IBitStampConfig _bitStampConfig;
+        public App(ILogger<App> logger,
+            ISelfInspectionService selfInspectionService,
+            IBitStampConfig bitStampConfig)
         {
             _logger = logger;
-            _appSettings = appSettings;
+            _selfInspectionService = selfInspectionService;
+            _bitStampConfig = bitStampConfig;
         }
 
         public void Run()
         {
-            _logger.LogInformation("test");
-
-            if (!IPHelper.Check(_appSettings.WorkingIps))
+            var inspectionResult = _selfInspectionService.Inspect();
+            if (!inspectionResult.IsSuccessful)
             {
-                Console.WriteLine("IP is incorrect. please use vpn or change the working ips in appsetings.json");
+                Console.WriteLine(inspectionResult.Message);
                 Console.WriteLine("Press any key to quit");
                 Console.ReadKey();
                 return;
             }
+
+            var bitstampTradeClient = new BitStampTradeClient();
+            bitstampTradeClient.Config(_bitStampConfig.GetJson());
+            bitstampTradeClient.GetBlance();
+
             var client = new BitStampDataClient();
             client.Register(new List<CurrencyPair>() { CurrencyPair.BtcEur });
             client.TickerChanged += Client_TradeChanged;
