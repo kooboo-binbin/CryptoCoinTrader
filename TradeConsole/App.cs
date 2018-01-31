@@ -1,11 +1,12 @@
 ﻿using CryptoCoinTrader.Core;
-using CryptoCoinTrader.Core.Exchanges.BitStamp;
-using CryptoCoinTrader.Core.Exchanges.BitStamp.Configs;
+using CryptoCoinTrader.Core.Exchanges.Bitstamp;
+using CryptoCoinTrader.Core.Exchanges.Bitstamp.Configs;
 using CryptoCoinTrader.Core.Exchanges.Gdax;
 using CryptoCoinTrader.Core.Exchanges.Gdax.Configs;
 using CryptoCoinTrader.Core.Services;
 using CryptoCoinTrader.Manifest.Enums;
 using CryptoCoinTrader.Manifest.Infos;
+using CryptoCoinTrader.Manifest.Trades;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -19,17 +20,18 @@ namespace TradeConsole
     {
         private readonly ILogger<App> _logger;
         private readonly ISelfInspectionService _selfInspectionService;
-        private readonly IBitStampConfig _bitStampConfig;
-        private readonly IGdaxConfig _gdaxConfig;
+        private readonly IBitstampTradeClient _bitstampTradeClient;
+        private readonly IGdaxTradeClient _gdaxTradeClient;
+
         public App(ILogger<App> logger,
             ISelfInspectionService selfInspectionService,
-            IBitStampConfig bitStampConfig,
-            IGdaxConfig gdaxConfig)
+            IBitstampTradeClient bitStampTradeClient,
+            IGdaxTradeClient gdaxTradeClient)
         {
             _logger = logger;
             _selfInspectionService = selfInspectionService;
-            _bitStampConfig = bitStampConfig;
-            _gdaxConfig = gdaxConfig;
+            _bitstampTradeClient = bitStampTradeClient;
+            _gdaxTradeClient = gdaxTradeClient;
         }
 
         public void Run()
@@ -43,16 +45,11 @@ namespace TradeConsole
                 return;
             }
 
-            //var bitstampTradeClient = new BitStampTradeClient();
-            //bitstampTradeClient.Config(_bitStampConfig.GetJson());
-            //bitstampTradeClient.GetBlance();
 
-            var gdaxClient = new GdaxTradeClient();
-            gdaxClient.Config(_gdaxConfig.GetJson());
-            gdaxClient.GetAccounts();
+            _gdaxTradeClient.GetAccounts();
 
 
-            var client = new BitStampDataClient();
+            var client = new BitstampDataClient();
             client.Register(new List<CurrencyPair>() { CurrencyPair.BtcEur });
             client.TickerChanged += Client_TradeChanged;
             client.OrderBookChanged += Client_OrderBookChanged;
@@ -69,7 +66,7 @@ namespace TradeConsole
         }
 
 
-        private static void WatchSpread(BitStampDataClient client, GdaxDataClient client2)
+        private static void WatchSpread(BitstampDataClient client, GdaxDataClient client2)
         {
             Console.Clear();
             var task = Task.Run(() =>
