@@ -125,24 +125,73 @@ namespace TradeConsole
             {
                 while (true)
                 {
-                    var top = i * 10;
+                    var top = i * 5;
                     var book1 = _exchangeDataService.GetOrderBook(observation.Exchange1Name, observation.CurrencyPair);
                     var book2 = _exchangeDataService.GetOrderBook(observation.Exchange2Name, observation.CurrencyPair);
-                    Write(top, observation.ToConsole());
-
+                    Write(top + 0, observation.ToConsole());
 
                     if (book1.Bids.Count > 0 && book2.Asks.Count > 0)
                     {
                         var ask1_0 = book1.Asks[0];
                         var bid2_0 = book2.Bids[0];
                         var spread = bid2_0.Price - ask1_0.Price;
-                        var spreadMessage = $"Spread {observation.Exchange2Name}.bid1 {bid2_0.Price:f2} - {observation.Exchange1Name}.ask1 {ask1_0.Price:f2} = {spread:f2} volume:{Math.Min(bid2_0.Volume, ask1_0.Volume)}";
+                        var spreadVolume = Math.Min(bid2_0.Volume, ask1_0.Volume);
+                        var spreadMessage = $"Spread {observation.Exchange2Name}.bid1 {bid2_0.Price:f2} - {observation.Exchange1Name}.ask1 {ask1_0.Price:f2} = {spread:f2} volume:{spreadVolume}";
                         Write(top + 1, spreadMessage);
-                        Console.WriteLine();
+
+                        var canArbitrage = CanArbitrage(observation, ask1_0, spread);
+                        var lastArbitrage = CheckLastArbitrage();
+                        if (canArbitrage & lastArbitrage)
+                        {
+                            var volume = Math.Min(observation.PerVolume, observation.AvaialbeVolume);
+                            volume = Math.Min(volume, spreadVolume);
+                            _observationService.SubtractAvailabeVolume(observation.Id, volume);
+                            Write(top + 2, "Do a fake arbitrage");//Todo:
+                        }
+                        LastArbitrageMessage(top + 3, canArbitrage, lastArbitrage);
                     }
                     Thread.Sleep(200);
                 }
             });
+        }
+
+        private bool CheckLastArbitrage()
+        {
+            return true;
+            //Todo:
+        }
+
+        private bool CanArbitrage(Observation observation, OrderBookItem ask1_0, decimal spread)
+        {
+            var canArbitrage = false;
+            if (observation.SpreadType == SpreadType.Percentage)
+            {
+                if ((spread / ask1_0.Price) > observation.SpreadPercentage)
+                {
+                    canArbitrage = true;
+                }
+            }
+            else
+            {
+                if (spread > observation.SpreadValue)
+                {
+                    canArbitrage = true;
+                }
+            }
+
+            return canArbitrage;
+        }
+
+        private void LastArbitrageMessage(int top, bool canArbitrage, bool lastArbitrage)
+        {
+            if (canArbitrage & !lastArbitrage)
+            {
+                Write(top, "Last arbitrage is not finished.");
+            }
+            else
+            {
+                Write(top, "                                                                                    ");
+            }
         }
 
         private object _consoleLock = new object();
