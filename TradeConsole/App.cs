@@ -4,6 +4,7 @@ using CryptoCoinTrader.Core.Exchanges.Bitstamp.Configs;
 using CryptoCoinTrader.Core.Exchanges.Gdax;
 using CryptoCoinTrader.Core.Exchanges.Gdax.Configs;
 using CryptoCoinTrader.Core.Services;
+using CryptoCoinTrader.Core.Services.Exchanges;
 using CryptoCoinTrader.Manifest.Enums;
 using CryptoCoinTrader.Manifest.Infos;
 using CryptoCoinTrader.Manifest.Trades;
@@ -24,13 +25,15 @@ namespace TradeConsole
         private readonly IGdaxTradeClient _gdaxTradeClient;
         private readonly IBitstampDataClient _bitstampDataClient;
         private readonly IGdaxDataClient _gdaxDataClient;
+        private readonly IExchangeDataService _exchangeDataService;
 
         public App(ILogger<App> logger,
             ISelfInspectionService selfInspectionService,
             IBitstampTradeClient bitStampTradeClient,
             IGdaxTradeClient gdaxTradeClient,
             IBitstampDataClient bitstampDataClient,
-            IGdaxDataClient gdaxDataClient)
+            IGdaxDataClient gdaxDataClient,
+            IExchangeDataService exchangeDataService)
         {
             _logger = logger;
             _selfInspectionService = selfInspectionService;
@@ -39,10 +42,12 @@ namespace TradeConsole
 
             _bitstampDataClient = bitstampDataClient;
             _gdaxDataClient = gdaxDataClient;
+            _exchangeDataService = exchangeDataService;
         }
 
         public void Run()
         {
+            Console.Clear();
             var inspectionResult = _selfInspectionService.Inspect();
             if (!inspectionResult.IsSuccessful)
             {
@@ -51,18 +56,22 @@ namespace TradeConsole
                 Console.ReadKey();
                 return;
             }
-
-            TestBuyBistamp();
-
-            var currency1 = CurrencyPair.BtcUsd;
+              
+            
+            var currency1 = CurrencyPair.BtcEur;
             _bitstampDataClient.Register(new List<CurrencyPair>() { currency1 });
             _bitstampDataClient.Start();
 
             _gdaxDataClient.Register(new List<CurrencyPair>() { currency1 });
             _gdaxDataClient.Start();
 
+
+
             WatchSpread(_bitstampDataClient, _gdaxDataClient, currency1);
 
+            var kk = _exchangeDataService.GetOrderBook("Bitstamp", currency1);
+            Console.WriteLine();
+            Console.WriteLine("Do you want to start the arbitrage");
             Console.ReadLine();
         }
 
@@ -93,7 +102,7 @@ namespace TradeConsole
 
         private static void WatchSpread(IBitstampDataClient client, IGdaxDataClient client2, CurrencyPair currencyPair)
         {
-            Console.Clear();
+
             var task = Task.Run(() =>
             {
                 while (true)

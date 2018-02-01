@@ -2,7 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CryptoCoinTrader.Core;
 using CryptoCoinTrader.Core.Data;
+using CryptoCoinTrader.Core.Exchanges.Bitstamp;
+using CryptoCoinTrader.Core.Exchanges.Bitstamp.Configs;
+using CryptoCoinTrader.Core.Exchanges.Gdax;
+using CryptoCoinTrader.Core.Exchanges.Gdax.Configs;
+using CryptoCoinTrader.Core.Services;
+using CryptoCoinTrader.Core.Services.Exchanges;
+using Karambolo.Extensions.Logging.File;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
@@ -35,6 +43,27 @@ namespace CryptoCoinTrader
                 options.UseSqlite("Data Source=cointrader.db");
                 //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            var appSettings = new AppSettings();
+            Configuration.GetSection("app").Bind(appSettings);
+            var context = new FileLoggerContext(AppContext.BaseDirectory, "coin.log");
+
+            services.AddSingleton(new LoggerFactory().AddConsole().AddFile(context, Configuration));
+            services.AddLogging();
+            services.AddSingleton(Configuration);
+            services.AddSingleton(appSettings);
+            services.AddSingleton<ISelfInspectionService, SelfInspectionService>();
+            services.AddSingleton<IBitstampConfig, BitstampConfigFile>();
+            services.AddSingleton<IGdaxConfig, GdaxConfigFile>();
+            services.AddSingleton<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
+            services.AddSingleton<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
+            services.AddSingleton<IBitstampDataClient, BitstampDataClient>();
+            services.AddSingleton<IGdaxDataClient, GdaxDataClient>();
+            services.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();
+            services.AddSingleton<IGdaxTradeClient, GdaxTradeClient>();
+            services.AddSingleton<IObservationService, ObservationFileService>();
+            services.AddSingleton<IExchangeDataService, ExchangeDataService>();
+            services.AddSingleton<IExchangeTradeService, ExchangeTradeService>();
             // Add framework services.
             services.AddMvc();
         }

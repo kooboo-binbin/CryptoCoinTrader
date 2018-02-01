@@ -8,6 +8,8 @@ namespace CryptoCoinTrader.Manifest.Interfaces
 {
     public interface IExchangeData
     {
+        string Name { get; }
+
         DateTime DateLastUpdated { get; }
 
         void Register(List<CurrencyPair> paris);

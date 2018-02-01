@@ -20,6 +20,9 @@ using Microsoft.Extensions.Logging;
 using CryptoCoinTrader.Core.Services;
 using CryptoCoinTrader.Core.Exchanges.Bitstamp.Configs;
 using CryptoCoinTrader.Core.Exchanges.Gdax.Configs;
+using Microsoft.Extensions.Options;
+using Karambolo.Extensions.Logging.File;
+using CryptoCoinTrader.Core.Services.Exchanges;
 
 namespace TradeConsole
 {
@@ -38,7 +41,6 @@ namespace TradeConsole
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-us");
         }
 
-
         private static IServiceProvider BuilderDi()
         {
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
@@ -46,28 +48,34 @@ namespace TradeConsole
             var appSettings = new AppSettings();
             configuration.GetSection("app").Bind(appSettings);
 
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton(new LoggerFactory().AddConsole());
-            serviceCollection.AddLogging();
-            serviceCollection.AddSingleton(configuration);
-            serviceCollection.AddSingleton(appSettings);
-            serviceCollection.AddSingleton<ISelfInspectionService, SelfInspectionService>();
-            serviceCollection.AddSingleton<IBitstampConfig, BitstampConfigFile>();
-            serviceCollection.AddSingleton<IGdaxConfig, GdaxConfigFile>();
-            serviceCollection.AddSingleton<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
-            serviceCollection.AddSingleton<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
-            serviceCollection.AddSingleton<IBitstampDataClient, BitstampDataClient>();
-            serviceCollection.AddSingleton<IGdaxDataClient, GdaxDataClient>();
-            serviceCollection.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();
-            serviceCollection.AddSingleton<IGdaxTradeClient, GdaxTradeClient>();
+            var services = new ServiceCollection();
 
-            serviceCollection.AddOptions();
-            serviceCollection.AddTransient<App>();
+            var context = new FileLoggerContext(AppContext.BaseDirectory, "coin.log");
 
-            var serviceProvider = serviceCollection.BuildServiceProvider();
+            services.AddSingleton(new LoggerFactory().AddConsole().AddFile(context, configuration));
+            services.AddLogging();
+            services.AddSingleton(configuration);
+            services.AddSingleton(appSettings);
+            services.AddSingleton<ISelfInspectionService, SelfInspectionService>();
+            services.AddSingleton<IBitstampConfig, BitstampConfigFile>();
+            services.AddSingleton<IGdaxConfig, GdaxConfigFile>();
+            services.AddSingleton<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
+            services.AddSingleton<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
+            services.AddSingleton<IBitstampDataClient, BitstampDataClient>();
+            services.AddSingleton<IGdaxDataClient, GdaxDataClient>();
+            services.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();
+            services.AddSingleton<IGdaxTradeClient, GdaxTradeClient>();
+            services.AddSingleton<IObservationService, ObservationFileService>();
+            services.AddSingleton<IExchangeDataService, ExchangeDataService>();
+            services.AddSingleton<IExchangeTradeService, ExchangeTradeService>();
+
+            services.AddOptions();
+            services.AddTransient<App>();
+
+            var serviceProvider = services.BuildServiceProvider();
             return serviceProvider;
         }
 
-       
+
     }
 }
