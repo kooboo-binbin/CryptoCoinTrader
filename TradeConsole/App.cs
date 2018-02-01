@@ -52,8 +52,9 @@ namespace TradeConsole
                 return;
             }
 
+            TestBuyBistamp();
 
-            var currency1 = CurrencyPair.LtcEur;
+            var currency1 = CurrencyPair.BtcUsd;
             _bitstampDataClient.Register(new List<CurrencyPair>() { currency1 });
             _bitstampDataClient.Start();
 
@@ -70,22 +71,35 @@ namespace TradeConsole
             var reqeust = new OrderRequest() { };
             reqeust.ClientOrderId = Guid.NewGuid().ToString();
             reqeust.CurrencyPair = CurrencyPair.LtcEur;
-            reqeust.OrderType = OrderType.Limit;
+            reqeust.OrderType = OrderType.Limit;  //Market has not been tested
             reqeust.Price = 1m;
             reqeust.TradeType = TradeType.Buy;
             reqeust.Volume = 0.1m;
             _gdaxTradeClient.MakeANewOrder(reqeust);
         }
 
-        private static void WatchSpread(IBitstampDataClient client, IGdaxDataClient client2, CurrencyPair pair)
+        private void TestBuyBistamp()
+        {
+            ///Minmum order size is 5 euro
+            var reqeust = new OrderRequest() { };
+            reqeust.ClientOrderId = Guid.NewGuid().ToString();
+            reqeust.CurrencyPair = CurrencyPair.LtcEur;
+            reqeust.OrderType = OrderType.Limit;  //Market has not been tested
+            reqeust.Price = 5m;
+            reqeust.TradeType = TradeType.Buy;
+            reqeust.Volume = 1m;
+            _bitstampTradeClient.MakeANewOrder(reqeust);
+        }
+
+        private static void WatchSpread(IBitstampDataClient client, IGdaxDataClient client2, CurrencyPair currencyPair)
         {
             Console.Clear();
             var task = Task.Run(() =>
             {
                 while (true)
                 {
-                    var book1 = client.GetOrderBook(CurrencyPair.LtcEur);
-                    var book2 = client2.GetOrderBook(CurrencyPair.LtcEur);
+                    var book1 = client.GetOrderBook(currencyPair);
+                    var book2 = client2.GetOrderBook(currencyPair);
                     Console.SetCursorPosition(0, 2);
                     Console.WriteLine("------------Bid----BitStamp--------btceur-------------Ask--------------");
                     Console.WriteLine(book1.ToString(3));

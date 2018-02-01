@@ -6,6 +6,7 @@ namespace CryptoCoinTrader.Manifest.Trades
 {
     /// <summary>
     /// Limit, Market, Stop 
+    /// Exchange Bitstamp does not have stop
     /// </summary>
     public enum OrderType
     {

@@ -25,7 +25,10 @@ namespace CryptoCoinTrader.Manifest.Trades
         /// </summary>
         public decimal Volume { get; set; }
 
-
+        public override string ToString()
+        {
+            return $"ClientOrderId:{ClientOrderId} OrderType:{OrderType} TradeType:{TradeType} CurrencyPair:{CurrencyPair} Price:{Price} Volume:{Volume}";
+        }
         ///Gdax also support the client specify Funds to decide how much funds can be used to buy the coin
     }
 }
