@@ -20,6 +20,7 @@ namespace CryptoCoinTrader.Core.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Order>().HasIndex("ArbitrageId");
 
          // modelBuilder.Entity<Observation>().Property(it=>it.SpreadPercentage).
 

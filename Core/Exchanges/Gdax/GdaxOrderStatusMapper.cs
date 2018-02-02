@@ -9,7 +9,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax
     {
         private Lazy<Dictionary<string, OrderStatus>> _mapper = new Lazy<Dictionary<string, OrderStatus>>(() =>
         {
-            return new Dictionary<string, OrderStatus>() { { "open", OrderStatus.Open }, { "pending", OrderStatus.Pending }, { "active", OrderStatus.Active } { "done", OrderStatus.Finished } };
+            return new Dictionary<string, OrderStatus>() { { "open", OrderStatus.Open }, { "pending", OrderStatus.Pending }, { "active", OrderStatus.Active }, { "done", OrderStatus.Finished } };
         });
 
         private Lazy<Dictionary<OrderStatus, string>> _toStringMapper = new Lazy<Dictionary<OrderStatus, string>>(() =>

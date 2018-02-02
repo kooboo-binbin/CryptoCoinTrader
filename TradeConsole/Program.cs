@@ -26,6 +26,7 @@ using Karambolo.Extensions.Logging.File;
 using CryptoCoinTrader.Core.Services.Exchanges;
 using CryptoCoinTrader.Core.Data;
 using Microsoft.EntityFrameworkCore;
+using CryptoCoinTrader.Core.Services.Orders;
 
 namespace TradeConsole
 {
@@ -65,9 +66,11 @@ namespace TradeConsole
             {
                 options.UseSqlite("Data Source=cointrader.db");
                 //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            });
+            }, ServiceLifetime.Transient);
 
+            services.AddMemoryCache();
             services.AddSingleton<ISelfInspectionService, SelfInspectionService>();
+            services.AddSingleton<IOrderService, OrderService>();
             services.AddSingleton<IBitstampConfig, BitstampConfigFile>();
             services.AddSingleton<IGdaxConfig, GdaxConfigFile>();
             services.AddSingleton<IBitstampCurrencyMapper, BitstampCurrencyMapper>();

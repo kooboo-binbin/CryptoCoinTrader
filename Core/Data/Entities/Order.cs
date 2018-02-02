@@ -15,6 +15,8 @@ namespace CryptoCoinTrader.Core.Data.Entities
 
         public Guid ArbitrageId { get; set; }
 
+        public OrderStatus OrderStatus { get; set; }
+
         public DateTime DateCreatedOn { get; set; }
 
         public decimal Price { get; set; }

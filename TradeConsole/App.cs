@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using CryptoCoinTrader.Core.Data.Entities;
 using CryptoCoinTrader.Core.Services.Arbitrages;
+using CryptoCoinTrader.Core.Services.Orders;
 
 namespace TradeConsole
 {
@@ -29,13 +30,17 @@ namespace TradeConsole
         private readonly IExchangeTradeService _exchangeTradeService;
         private readonly IObservationService _observationService;
         private readonly IArbitrageService _arbitrageService;
+        private readonly IOrderService _orderService;
+        private readonly IOpportunityService _opportunityService;
 
         public App(ILogger<App> logger,
             ISelfInspectionService selfInspectionService,
             IExchangeDataService exchangeDataService,
             IExchangeTradeService exchangeTradeService,
             IObservationService observationService,
-            IArbitrageService arbitrageService)
+            IArbitrageService arbitrageService,
+            IOrderService orderService,
+            IOpportunityService opportunityService)
         {
             _logger = logger;
             _selfInspectionService = selfInspectionService;
@@ -43,6 +48,8 @@ namespace TradeConsole
             _exchangeTradeService = exchangeTradeService;
             _observationService = observationService;
             _arbitrageService = arbitrageService;
+            _orderService = orderService;
+            _opportunityService = opportunityService;
         }
 
         public void Run()
@@ -143,8 +150,8 @@ namespace TradeConsole
                         var spreadMessage = $"Spread {observation.Exchange2Name}.bid1 {bid2_0.Price:f2} - {observation.Exchange1Name}.ask1 {ask1_0.Price:f2} = {spread:f2} volume:{spreadVolume}";
                         Write(top + 1, spreadMessage);
 
-                        var canArbitrage = CanArbitrage(observation, ask1_0, spread);
-                        var lastArbitrage = CheckLastArbitrage(observation.Id);
+                        var canArbitrage = _opportunityService.CheckCurrentPrice(observation, ask1_0.Price, spread);
+                        var lastArbitrage = _opportunityService.CheckLastArbitrage(observation.Id);
                         if (canArbitrage & lastArbitrage)
                         {
                             var volume = Math.Min(observation.PerVolume, observation.AvaialbeVolume);
@@ -159,34 +166,6 @@ namespace TradeConsole
             });
         }
 
-        private bool CheckLastArbitrage(Guid observationId)
-        {
-            var arbitrage = _arbitrageService.GetLastOne(observationId);
-
-            return true;
-            //Todo:
-        }
-
-        private bool CanArbitrage(Observation observation, OrderBookItem ask1_0, decimal spread)
-        {
-            var canArbitrage = false;
-            if (observation.SpreadType == SpreadType.Percentage)
-            {
-                if ((spread / ask1_0.Price) > observation.SpreadPercentage)
-                {
-                    canArbitrage = true;
-                }
-            }
-            else
-            {
-                if (spread > observation.SpreadValue)
-                {
-                    canArbitrage = true;
-                }
-            }
-
-            return canArbitrage;
-        }
 
         private void LastArbitrageMessage(int top, bool canArbitrage, bool lastArbitrage)
         {
