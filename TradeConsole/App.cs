@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using CryptoCoinTrader.Core.Data.Entities;
+using CryptoCoinTrader.Core.Services.Arbitrages;
 
 namespace TradeConsole
 {
@@ -27,18 +28,21 @@ namespace TradeConsole
         private readonly IExchangeDataService _exchangeDataService;
         private readonly IExchangeTradeService _exchangeTradeService;
         private readonly IObservationService _observationService;
+        private readonly IArbitrageService _arbitrageService;
 
         public App(ILogger<App> logger,
             ISelfInspectionService selfInspectionService,
             IExchangeDataService exchangeDataService,
             IExchangeTradeService exchangeTradeService,
-            IObservationService observationService)
+            IObservationService observationService,
+            IArbitrageService arbitrageService)
         {
             _logger = logger;
             _selfInspectionService = selfInspectionService;
             _exchangeDataService = exchangeDataService;
             _exchangeTradeService = exchangeTradeService;
             _observationService = observationService;
+            _arbitrageService = arbitrageService;
         }
 
         public void Run()
@@ -77,7 +81,7 @@ namespace TradeConsole
             _exchangeDataService.Register(currencyPairs);
             _exchangeDataService.Start();
 
-            WatchSpread(observations);
+            WatchObservatoins(observations);
 
 
             Console.WriteLine();
@@ -110,7 +114,7 @@ namespace TradeConsole
             _exchangeTradeService.MakeANewOrder("bitstamp", reqeust);
         }
 
-        private void WatchSpread(List<Observation> observations)
+        private void WatchObservatoins(List<Observation> observations)
         {
             for (int i = 0; i < observations.Count; i++)
             {
@@ -140,7 +144,7 @@ namespace TradeConsole
                         Write(top + 1, spreadMessage);
 
                         var canArbitrage = CanArbitrage(observation, ask1_0, spread);
-                        var lastArbitrage = CheckLastArbitrage();
+                        var lastArbitrage = CheckLastArbitrage(observation.Id);
                         if (canArbitrage & lastArbitrage)
                         {
                             var volume = Math.Min(observation.PerVolume, observation.AvaialbeVolume);
@@ -155,8 +159,10 @@ namespace TradeConsole
             });
         }
 
-        private bool CheckLastArbitrage()
+        private bool CheckLastArbitrage(Guid observationId)
         {
+            var arbitrage = _arbitrageService.GetLastOne(observationId);
+
             return true;
             //Todo:
         }

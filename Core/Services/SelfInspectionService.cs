@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using CryptoCoinTrader.Core.Exchanges.Bitstamp.Configs;
 using CryptoCoinTrader.Core.Exchanges.Bitstamp.Infos;
 using CryptoCoinTrader.Core.Exchanges.Gdax.Configs;

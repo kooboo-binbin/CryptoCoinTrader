@@ -72,6 +72,8 @@ namespace TradeConsole
             services.AddSingleton<IGdaxConfig, GdaxConfigFile>();
             services.AddSingleton<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
             services.AddSingleton<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
+            services.AddSingleton<IGdaxOrderStatusMapper, GdaxOrderStatusMapper>();
+            services.AddSingleton<IBitmapOrderStatusMapper, BitstampOrderStatusMapper>();
             services.AddSingleton<IBitstampDataClient, BitstampDataClient>();
             services.AddSingleton<IGdaxDataClient, GdaxDataClient>();
             services.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();

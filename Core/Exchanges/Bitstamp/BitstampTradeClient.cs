@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 
 namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 {
@@ -23,20 +24,24 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
     /// </summary>
     public class BitstampTradeClient : IBitstampTradeClient
     {
-        private readonly string _baseUrl = "https://www.bitstamp.net/api/v2";
+        private readonly string _baseUrl = "https://www.bitstamp.net/api";
+        private readonly string _baseUrlV2 = "https://www.bitstamp.net/api/v2";
         private readonly BitstampConfigInfo _config;
         private readonly IBitstampCurrencyMapper _currencyMapper;
+        private readonly IBitmapOrderStatusMapper _orderStatusMapper;
         private ILogger<BitstampTradeClient> _logger;
         private readonly CultureInfo _enCulture = new CultureInfo("en-us");
 
 
         public BitstampTradeClient(IBitstampConfig config,
             IBitstampCurrencyMapper currencyMapper,
-            ILogger<BitstampTradeClient> logger)
+            ILogger<BitstampTradeClient> logger,
+            IBitmapOrderStatusMapper orderStatusMapper)
         {
             _config = config.GetConfigInfo();
             _currencyMapper = currencyMapper;
             _logger = logger;
+            _orderStatusMapper = orderStatusMapper;
         }
 
         public string Name
@@ -69,10 +74,33 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
             return MethodResult<OrderResult>.Failed("Argument tradetype is incorrect!");
         }
 
+        public MethodResult<OrderStatus> GetOrderStatus(string orderId)
+        {
+            RateLimit();
+            var client = new RestClient(_baseUrl);
+            var request = new RestRequest("/order_status", Method.POST);
+            Authenticate(request);
+            request.AddParameter("id", orderId);
+            var response = client.Execute<BitstampOrderStatusResponse>(request);
+            if (response.IsSuccessful)
+            {
+                var orderStatus = _orderStatusMapper.GetOrderStatus(response.Data.status);
+                return new MethodResult<OrderStatus>() { IsSuccessful = true, Data = orderStatus };
+            }
+            else
+            {
+                var errorMessage = $"GetOrderStatus failed, OrderId:{orderId} remote:{response.ErrorMessage}";
+                _logger.LogCritical(errorMessage);
+                return MethodResult<OrderStatus>.Failed(errorMessage);
+            }
+
+        }
+
         public void GetBlance()
         {
-            var client = new RestClient(_baseUrl);
-            var request = new RestRequest("balance/", Method.POST);
+            RateLimit();
+            var client = new RestClient(_baseUrlV2);
+            var request = new RestRequest("/balance/", Method.POST);
 
             Authenticate(request);
 
@@ -82,10 +110,11 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 
         private MethodResult<OrderResult> LimitOrder(OrderRequest order)
         {
+            RateLimit();
             var tradeType = order.TradeType == TradeType.Buy ? "buy" : "sell";
             var currencyPair = _currencyMapper.GetPairName(order.CurrencyPair);
             var resource = $"{tradeType}/{currencyPair}/";
-            var client = new RestClient(_baseUrl);
+            var client = new RestClient(_baseUrlV2);
             var request = new RestRequest(resource, Method.POST);
             Authenticate(request);
             request.AddParameter("amount", order.Volume.ToString(_enCulture));
@@ -114,10 +143,11 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 
         private MethodResult<OrderResult> MarketOrder(OrderRequest order)
         {
+            RateLimit();
             var tradeType = order.TradeType == TradeType.Buy ? "buy" : "sell";
             var currencyPair = _currencyMapper.GetPairName(order.CurrencyPair);
             var resource = $"{tradeType}/market/{currencyPair}/";
-            var client = new RestClient(_baseUrl);
+            var client = new RestClient(_baseUrlV2);
             var request = new RestRequest(resource, Method.POST);
             Authenticate(request);
             request.AddParameter("amount", order.Volume.ToString(_enCulture));
@@ -150,7 +180,14 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
             return d.ToString();
         }
 
-
-
+        private DateTime _lastTime = DateTime.UtcNow;
+        private void RateLimit()
+        {
+            var ts = DateTime.UtcNow - _lastTime;
+            if (ts.TotalMilliseconds < 100)
+            {
+                Thread.Sleep(ts);
+            }
+        }
     }
 }

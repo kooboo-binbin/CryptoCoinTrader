@@ -10,9 +10,7 @@ namespace CryptoCoinTrader.Core.Data.Entities
         [Key]
         public Guid Id { get; set; }
 
-        public string Exchange1Name { get; set; }
-
-        public string Exchange2Name { get; set; }
+        public Guid ObservationId { get; set; }
 
         public decimal Volume { get; set; }
 

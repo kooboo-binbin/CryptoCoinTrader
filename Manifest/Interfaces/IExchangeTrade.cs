@@ -1,4 +1,5 @@
-﻿using CryptoCoinTrader.Manifest.Trades;
+﻿using CryptoCoinTrader.Manifest.Enums;
+using CryptoCoinTrader.Manifest.Trades;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,5 +10,6 @@ namespace CryptoCoinTrader.Manifest.Interfaces
     {
         string Name { get; }
         MethodResult<OrderResult> MakeANewOrder(OrderRequest order);
+        MethodResult<OrderStatus> GetOrderStatus(string orderId);
     }
 }

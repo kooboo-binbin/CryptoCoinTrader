@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CryptoCoinTrader.Manifest
 {
-    public class MethodResult<T> : MethodResult where T : class
+    public class MethodResult<T> : MethodResult
     {
         public T Data { get; set; }
 

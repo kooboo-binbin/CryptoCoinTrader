@@ -14,6 +14,7 @@ using System.Diagnostics;
 using CryptoCoinTrader.Core.Exchanges.Gdax.Configs;
 using System.Net;
 using CryptoCoinTrader.Core.Exchanges.Gdax.Remotes;
+using CryptoCoinTrader.Manifest.Enums;
 
 namespace CryptoCoinTrader.Core.Exchanges.Gdax
 {
@@ -23,11 +24,15 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax
         private readonly string baseUrl = "https://api.gdax.com";
         private readonly GdaxConfigInfo _config;
         private readonly IGdaxCurrencyMapper _currencyMapper;
+        private readonly IGdaxOrderStatusMapper _orderStatusMapper;
 
-        public GdaxTradeClient(IGdaxConfig gdaxConfig, IGdaxCurrencyMapper currencyMapper)
+        public GdaxTradeClient(IGdaxConfig gdaxConfig,
+            IGdaxCurrencyMapper currencyMapper,
+            IGdaxOrderStatusMapper orderStatusMapper)
         {
             _config = gdaxConfig.GetConfigInfo();
             _currencyMapper = currencyMapper;
+            _orderStatusMapper = orderStatusMapper;
         }
 
         public string Name
@@ -54,6 +59,20 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax
                 };
             }
             return MethodResult<OrderResult>.Failed(response.ErrorMessage);
+        }
+
+        public MethodResult<OrderStatus> GetOrderStatus(string orderId)
+        {
+            RateLimit();
+            var request = new RestRequest($"/orders/{orderId}", Method.GET);
+            AddAuthenticationHeader(request);
+            var client = new RestClient(baseUrl);
+            var response = client.Execute<GdaxOrderResponse>(request);
+            if (response.IsSuccessful)
+            {
+                return new MethodResult<OrderStatus>() { IsSuccessful = true, Data = _orderStatusMapper.GetOrderStatus(response.Data.status) };
+            }
+            return MethodResult<OrderStatus>.Failed(response.ErrorMessage);
         }
 
         public void GetAccounts()
