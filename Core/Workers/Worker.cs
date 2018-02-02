@@ -46,12 +46,14 @@ namespace CryptoCoinTrader.Core.Workers
 
         public void Work(List<Observation> observations)
         {
+
             for (int i = 0; i < observations.Count; i++)
             {
+                var index = i;
                 var observation = observations[i];
                 var task = Task.Run(() =>
                 {
-                    RunObservatoin(i, observation);
+                    RunObservatoin(index, observation);
                 });
             }
         }
@@ -60,23 +62,23 @@ namespace CryptoCoinTrader.Core.Workers
         {
             while (observation.RunningStatus == RunningStatus.Running)
             {
+                var top = index * 5;
                 try
                 {
-                    var top = index * 5;
-                    _messageService.Write(top + 0, observation.ToConsole());
-                    var book1 = _exchangeDataService.GetOrderBook(observation.BuyExchangeName, observation.CurrencyPair);
-                    var book2 = _exchangeDataService.GetOrderBook(observation.SellExchangeName, observation.CurrencyPair);
+                    WriteObservation(observation, top);
+                    var bookBuy = _exchangeDataService.GetOrderBook(observation.BuyExchangeName, observation.CurrencyPair);
+                    var bookSell = _exchangeDataService.GetOrderBook(observation.SellExchangeName, observation.CurrencyPair);
 
-                    if (book1.Bids.Count > 0 && book2.Asks.Count > 0)
+                    if (bookBuy.Bids.Count > 0 && bookSell.Asks.Count > 0)
                     {
-                        var ask1_0 = book1.Asks[0];
-                        var bid2_0 = book2.Bids[0];
-                        var spread = bid2_0.Price - ask1_0.Price;
-                        var spreadVolume = Math.Min(bid2_0.Volume, ask1_0.Volume);
-                        var spreadMessage = $"Spread {observation.SellExchangeName}.bid1 {bid2_0.Price:f2} - {observation.BuyExchangeName}.ask1 {ask1_0.Price:f2} = {spread:f2} volume:{spreadVolume}";
+                        var buy_ask_0 = bookBuy.Asks[0]; //the sell price of the exchange which we want to buy.
+                        var sell_bid_0 = bookSell.Bids[0]; //the buy price of the exchange which we wat to sell.
+                        var spread = sell_bid_0.Price - buy_ask_0.Price; //some one buy price is greater than the price some one want to sell. then we have a chance to make a arbitrage
+                        var spreadVolume = Math.Min(sell_bid_0.Volume, buy_ask_0.Volume);
+                        var spreadMessage = $"Spread {observation.SellExchangeName}.bid1 {sell_bid_0.Price:f2} - {observation.BuyExchangeName}.ask1 {buy_ask_0.Price:f2} = {spread:f2} volume:{spreadVolume}";
                         _messageService.Write(top + 1, spreadMessage);
 
-                        var canArbitrage = _opportunityService.CheckCurrentPrice(observation, ask1_0.Price, spread);
+                        var canArbitrage = _opportunityService.CheckCurrentPrice(observation, buy_ask_0.Price, spread, spreadVolume);
                         var lastArbitrage = _opportunityService.CheckLastArbitrage(observation.Id);
                         if (canArbitrage & lastArbitrage)
                         {
@@ -88,16 +90,23 @@ namespace CryptoCoinTrader.Core.Workers
                 }
                 catch (Exception ex)
                 {
+                    observation.RunningStatus = RunningStatus.Error;
+                    WriteObservation(observation, top);
                     _logger.LogCritical(ex, "RunObservation failed.");
                 }
             }
+        }
+
+        private void WriteObservation(Observation observation, int top)
+        {
+            _messageService.Write(top + 0, observation.ToConsole());
         }
 
         private void DoArbitrage(int top, Observation observation, decimal spreadVolume)
         {
             var volume = Math.Min(observation.PerVolume, observation.AvaialbeVolume);
             volume = Math.Min(volume, spreadVolume);
-    
+
             var orderBuyId = Guid.NewGuid();
             var orderSellId = Guid.NewGuid();
             var buyRequest = new OrderRequest()
@@ -123,13 +132,13 @@ namespace CryptoCoinTrader.Core.Workers
             if (!buyResult.IsSuccessful)
             {
                 observation.RunningStatus = RunningStatus.Error;
-                _messageService.Write(top + 0, observation.ToConsole());
+                WriteObservation(observation, top);
                 _logger.LogError($"Make a buy order failed {buyResult.Message}");
             }
             if (!buyResult.IsSuccessful)
             {
                 observation.RunningStatus = RunningStatus.Error;
-                _messageService.Write(top + 0, observation.ToConsole());
+                WriteObservation(observation, top);
                 _logger.LogError($"Make a sell order failed {sellResult.Message}");
             }
             if (buyResult.IsSuccessful && sellResult.IsSuccessful)

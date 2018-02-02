@@ -68,6 +68,7 @@ namespace CryptoCoinTrader.Core.Services
         public void SubtractAvailabeVolume(Guid id, decimal volume)
         {
             var item = GetObservations().FirstOrDefault(it => it.Id == id);
+            item.AvaialbeVolume -= volume;
             if (item.AvaialbeVolume <= 0)
             {
                 item.RunningStatus = RunningStatus.Done;

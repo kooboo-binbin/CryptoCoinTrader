@@ -7,7 +7,7 @@ namespace CryptoCoinTrader.Core.Services
 {
     public interface IOpportunityService
     {
-        bool CheckCurrentPrice(Observation observation, decimal price, decimal spread);
+        bool CheckCurrentPrice(Observation observation, decimal askPrice, decimal spreadValue, decimal spreadVolume);
         bool CheckLastArbitrage(Guid observationId);
     }
 }

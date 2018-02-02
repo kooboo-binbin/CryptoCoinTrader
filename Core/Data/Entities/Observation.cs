@@ -36,14 +36,21 @@ namespace CryptoCoinTrader.Core.Data.Entities
         public SpreadType SpreadType { get; set; }
 
         /// <summary>
+        /// Only the spread volume is greater than our mini volume, then we do a arbitrage
+        /// </summary>
+        public decimal SpreadMinimumVolume { get; set; }
+
+        /// <summary>
         /// Per trade volume
         /// </summary>
         public decimal PerVolume { get; set; }
 
         /// <summary>
-        /// the unit is coin
+        /// the unit is coin, How many volume we want to arbitrage at this observatoin
         /// </summary>
         public decimal MaxVolume { get; set; }
+
+
 
         public decimal AvaialbeVolume { get; set; }
 

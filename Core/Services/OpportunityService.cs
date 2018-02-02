@@ -28,19 +28,23 @@ namespace CryptoCoinTrader.Core.Services
             _logger = logger;
         }
 
-        public bool CheckCurrentPrice(Observation observation, decimal price, decimal spread)
+        public bool CheckCurrentPrice(Observation observation, decimal askPrice, decimal spreadValue, decimal spreadVolume)
         {
+            if (spreadVolume < observation.SpreadMinimumVolume)
+            {
+                return false;
+            }
             var canArbitrage = false;
             if (observation.SpreadType == SpreadType.Percentage)
             {
-                if ((spread / price) > observation.SpreadPercentage)
+                if ((spreadValue / askPrice) > observation.SpreadPercentage)
                 {
                     canArbitrage = true;
                 }
             }
             else
             {
-                if (spread > observation.SpreadValue)
+                if (spreadValue > observation.SpreadValue)
                 {
                     canArbitrage = true;
                 }
@@ -72,11 +76,10 @@ namespace CryptoCoinTrader.Core.Services
                             continue;
                         }
                         var status = _exchangeTradeService.GetOrderStatus(item.ExchangeName, item.RemoteId);
-                        if (status.Data == OrderStatus.Finished)
+                        if (status.Data != OrderStatus.Finished)
                         {
-
+                            return false;
                         }
-                        return false;
                     }
                     return true;
                 }
