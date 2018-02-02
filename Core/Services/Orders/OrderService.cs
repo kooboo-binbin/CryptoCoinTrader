@@ -44,7 +44,7 @@ namespace CryptoCoinTrader.Core.Services.Orders
             });
         }
 
-        public void UpdateOrderStatus(Guid orderId, OrderStatus status)
+        public void UpdateStatus(Guid orderId, OrderStatus status)
         {
             var order = _coinContext.Orders.FirstOrDefault(it => it.Id == orderId);
             if (order != null)

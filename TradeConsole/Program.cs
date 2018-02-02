@@ -27,6 +27,8 @@ using CryptoCoinTrader.Core.Services.Exchanges;
 using CryptoCoinTrader.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using CryptoCoinTrader.Core.Services.Orders;
+using CryptoCoinTrader.Core.Services.Messages;
+using CryptoCoinTrader.Core.Workers;
 
 namespace TradeConsole
 {
@@ -84,6 +86,8 @@ namespace TradeConsole
             services.AddSingleton<IObservationService, ObservationFileService>();
             services.AddSingleton<IExchangeDataService, ExchangeDataService>();
             services.AddSingleton<IExchangeTradeService, ExchangeTradeService>();
+            services.AddSingleton<IMessageService, ConsoleMessageService>();
+            services.AddSingleton<IWorker, Worker>();
 
             services.AddOptions();
             services.AddTransient<App>();

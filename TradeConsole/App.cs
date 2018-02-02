@@ -18,6 +18,7 @@ using System.Linq;
 using CryptoCoinTrader.Core.Data.Entities;
 using CryptoCoinTrader.Core.Services.Arbitrages;
 using CryptoCoinTrader.Core.Services.Orders;
+using CryptoCoinTrader.Core.Workers;
 
 namespace TradeConsole
 {
@@ -29,52 +30,29 @@ namespace TradeConsole
         private readonly IExchangeDataService _exchangeDataService;
         private readonly IExchangeTradeService _exchangeTradeService;
         private readonly IObservationService _observationService;
-        private readonly IArbitrageService _arbitrageService;
-        private readonly IOrderService _orderService;
-        private readonly IOpportunityService _opportunityService;
+        private readonly IWorker _worker;
 
         public App(ILogger<App> logger,
             ISelfInspectionService selfInspectionService,
             IExchangeDataService exchangeDataService,
             IExchangeTradeService exchangeTradeService,
             IObservationService observationService,
-            IArbitrageService arbitrageService,
-            IOrderService orderService,
-            IOpportunityService opportunityService)
+            IOpportunityService opportunityService,
+            IWorker worker)
         {
             _logger = logger;
             _selfInspectionService = selfInspectionService;
             _exchangeDataService = exchangeDataService;
             _exchangeTradeService = exchangeTradeService;
             _observationService = observationService;
-            _arbitrageService = arbitrageService;
-            _orderService = orderService;
-            _opportunityService = opportunityService;
+
+            _worker = worker;
         }
 
         public void Run()
         {
             Console.Clear();
-            Task.Run(() =>
-            {
-                var i = 0;
-                while (true)
-                {
-                    i++;
-                    Write(2, $"I am {i}");
-                    Thread.Sleep(200);
-                };
-            });
-            Task.Run(() =>
-            {
-                var i = 0;
-                while (true)
-                {
-                    i++;
-                    Write(3, $"she is {i}");
-                    Thread.Sleep(200);
-                };
-            });
+
             var inspectionResult = _selfInspectionService.Inspect();
             if (!inspectionResult.IsSuccessful)
             {
@@ -87,9 +65,7 @@ namespace TradeConsole
             var currencyPairs = observations.Select(it => it.CurrencyPair).ToList();
             _exchangeDataService.Register(currencyPairs);
             _exchangeDataService.Start();
-
-            WatchObservatoins(observations);
-
+            _worker.Work(observations);
 
             Console.WriteLine();
             Console.WriteLine("Do you want to start the arbitrage");
@@ -119,74 +95,6 @@ namespace TradeConsole
             reqeust.TradeType = TradeType.Buy;
             reqeust.Volume = 1m;
             _exchangeTradeService.MakeANewOrder("bitstamp", reqeust);
-        }
-
-        private void WatchObservatoins(List<Observation> observations)
-        {
-            for (int i = 0; i < observations.Count; i++)
-            {
-                var observation = observations[i];
-                RunObservatoin(i, observation);
-            }
-        }
-
-        private void RunObservatoin(int i, Observation observation)
-        {
-            var task = Task.Run(() =>
-            {
-                while (true)
-                {
-                    var top = i * 5;
-                    var book1 = _exchangeDataService.GetOrderBook(observation.Exchange1Name, observation.CurrencyPair);
-                    var book2 = _exchangeDataService.GetOrderBook(observation.Exchange2Name, observation.CurrencyPair);
-                    Write(top + 0, observation.ToConsole());
-
-                    if (book1.Bids.Count > 0 && book2.Asks.Count > 0)
-                    {
-                        var ask1_0 = book1.Asks[0];
-                        var bid2_0 = book2.Bids[0];
-                        var spread = bid2_0.Price - ask1_0.Price;
-                        var spreadVolume = Math.Min(bid2_0.Volume, ask1_0.Volume);
-                        var spreadMessage = $"Spread {observation.Exchange2Name}.bid1 {bid2_0.Price:f2} - {observation.Exchange1Name}.ask1 {ask1_0.Price:f2} = {spread:f2} volume:{spreadVolume}";
-                        Write(top + 1, spreadMessage);
-
-                        var canArbitrage = _opportunityService.CheckCurrentPrice(observation, ask1_0.Price, spread);
-                        var lastArbitrage = _opportunityService.CheckLastArbitrage(observation.Id);
-                        if (canArbitrage & lastArbitrage)
-                        {
-                            var volume = Math.Min(observation.PerVolume, observation.AvaialbeVolume);
-                            volume = Math.Min(volume, spreadVolume);
-                            _observationService.SubtractAvailabeVolume(observation.Id, volume);
-                            Write(top + 2, "Do a fake arbitrage");//Todo:
-                        }
-                        LastArbitrageMessage(top + 3, canArbitrage, lastArbitrage);
-                    }
-                    Thread.Sleep(200);
-                }
-            });
-        }
-
-
-        private void LastArbitrageMessage(int top, bool canArbitrage, bool lastArbitrage)
-        {
-            if (canArbitrage & !lastArbitrage)
-            {
-                Write(top, "Last arbitrage is not finished.");
-            }
-            else
-            {
-                Write(top, "                                                                                    ");
-            }
-        }
-
-        private object _consoleLock = new object();
-        private void Write(int top, string message)
-        {
-            lock (_consoleLock)
-            {
-                Console.SetCursorPosition(0, top);
-                Console.WriteLine(message);
-            }
         }
 
     }
