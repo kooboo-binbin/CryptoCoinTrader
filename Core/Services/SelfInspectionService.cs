@@ -136,22 +136,22 @@ namespace CryptoCoinTrader.Core.Services
         {
             var exchangeNames = _exchangeDataService.GetExchangeNames();
             var errorMessages = new List<string>();
-            if (string.IsNullOrWhiteSpace(item.Exchange1Name))
+            if (string.IsNullOrWhiteSpace(item.BuyExchangeName))
             {
-                errorMessages.Add("exchange1name should not be empty");
+                errorMessages.Add("BuyExchangeName should not be empty");
             }
-            if (string.IsNullOrWhiteSpace(item.Exchange2Name))
+            if (string.IsNullOrWhiteSpace(item.SellExchangeName))
             {
-                errorMessages.Add("exchange2name should not be empty");
+                errorMessages.Add("SellExchangeName should not be empty");
             }
 
-            if (!exchangeNames.Contains(item.Exchange1Name))
+            if (!exchangeNames.Contains(item.BuyExchangeName))
             {
-                errorMessages.Add($"{item.Exchange1Name} is invalid");
+                errorMessages.Add($"{item.BuyExchangeName} is invalid");
             }
-            if (!exchangeNames.Contains(item.Exchange2Name))
+            if (!exchangeNames.Contains(item.SellExchangeName))
             {
-                errorMessages.Add($"{item.Exchange2Name} is invalid");
+                errorMessages.Add($"{item.SellExchangeName} is invalid");
             }
             if (errorMessages.Count > 0)
             {

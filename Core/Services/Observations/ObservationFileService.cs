@@ -44,8 +44,8 @@ namespace CryptoCoinTrader.Core.Services
                 list.Add(new Observation()
                 {
                     DateCreated = DateTime.UtcNow,
-                    Exchange1Name = "bitstamp",
-                    Exchange2Name = "gdax",
+                    BuyExchangeName = "bitstamp",
+                    SellExchangeName = "gdax",
                     Id = Guid.NewGuid(),
                     MaxVolume = 100.00m,
                     AvaialbeVolume = 100.00m,
@@ -68,8 +68,10 @@ namespace CryptoCoinTrader.Core.Services
         public void SubtractAvailabeVolume(Guid id, decimal volume)
         {
             var item = GetObservations().FirstOrDefault(it => it.Id == id);
-            item.AvaialbeVolume -= volume;
-
+            if (item.AvaialbeVolume <= 0)
+            {
+                item.RunningStatus = RunningStatus.Done;
+            }
             Task.Run(() =>
             {
                 SaveState();

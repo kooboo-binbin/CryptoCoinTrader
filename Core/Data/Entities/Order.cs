@@ -17,7 +17,7 @@ namespace CryptoCoinTrader.Core.Data.Entities
 
         public OrderStatus OrderStatus { get; set; }
 
-        public DateTime DateCreatedOn { get; set; }
+        public DateTime DateCreated { get; set; }
 
         public decimal Price { get; set; }
 

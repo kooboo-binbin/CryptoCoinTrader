@@ -12,9 +12,9 @@ namespace CryptoCoinTrader.Core.Data.Entities
         [Key]
         public Guid Id { get; set; }
 
-        public string Exchange1Name { get; set; }
+        public string BuyExchangeName { get; set; }
 
-        public string Exchange2Name { get; set; }
+        public string SellExchangeName { get; set; }
 
         public CurrencyPair CurrencyPair { get; set; }
 
@@ -47,12 +47,14 @@ namespace CryptoCoinTrader.Core.Data.Entities
 
         public decimal AvaialbeVolume { get; set; }
 
+        public RunningStatus RunningStatus { get; set; }
+
         public DateTime DateCreated { get; set; }
 
         public string ToConsole()
         {
             var spread = SpreadType == SpreadType.Percentage ? SpreadPercentage.ToString("p2") : SpreadValue.ToString("f2");
-            var message = $"Id:{Id} \t Exchanges:{Exchange1Name}-{Exchange2Name} \t MaxVolume:{MaxVolume:f2} PerVolume:{PerVolume:f2} \t AvailableVolume:{AvaialbeVolume:f2} \t Spread:{spread} ";
+            var message = $"{BuyExchangeName}-{SellExchangeName} \t {RunningStatus} \t Volume: Max{MaxVolume:f2} Per:{PerVolume:f2} \t Available:{AvaialbeVolume:f2} \t Spread:{spread} ";
             return message;
         }
     }

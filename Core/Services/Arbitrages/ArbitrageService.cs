@@ -26,7 +26,7 @@ namespace CryptoCoinTrader.Core.Services.Arbitrages
 
         public Arbitrage GetLastOne(Guid observationId)
         {
-            return _lastArbitrageDict[observationId];
+            return _lastArbitrageDict.GetValueOrDefault(observationId, null);
         }
     }
 }

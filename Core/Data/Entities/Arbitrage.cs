@@ -16,12 +16,5 @@ namespace CryptoCoinTrader.Core.Data.Entities
 
         public DateTime DateCreated { get; set; }
 
-        public DateTime DateBuyExecuted { get; set; }
-
-        public DateTime DateSellExecuted { get; set; }
-
-        public bool Bought { get; set; }
-
-        public bool Sold { get; set; }
     }
 }

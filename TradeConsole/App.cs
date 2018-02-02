@@ -61,14 +61,18 @@ namespace TradeConsole
                 Console.ReadKey();
                 return;
             }
+
+            Console.WriteLine("Prease any key to start it");
+            Console.ReadKey();
+            Console.Clear();
+
             var observations = _observationService.GetObservations();
             var currencyPairs = observations.Select(it => it.CurrencyPair).ToList();
             _exchangeDataService.Register(currencyPairs);
             _exchangeDataService.Start();
             _worker.Work(observations);
 
-            Console.WriteLine();
-            Console.WriteLine("Do you want to start the arbitrage");
+            Console.ReadLine();
             Console.ReadLine();
         }
 

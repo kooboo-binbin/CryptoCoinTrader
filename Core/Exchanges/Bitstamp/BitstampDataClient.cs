@@ -1,4 +1,5 @@
-﻿using CryptoCoinTrader.Manifest.Enums;
+﻿using CryptoCoinTrader.Core.Services;
+using CryptoCoinTrader.Manifest.Enums;
 using CryptoCoinTrader.Manifest.Helpers;
 using CryptoCoinTrader.Manifest.Infos;
 using CryptoCoinTrader.Manifest.Interfaces;
@@ -13,6 +14,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
     public class BitstampDataClient : IBitstampDataClient
     {
         private readonly IBitstampCurrencyMapper _currencyMapper;
+        private readonly IMessageService _messageService;
         private DateTime _dateLastUpdated = DateTime.UtcNow;
         private List<CurrencyPair> _currencyPairs;
         private Dictionary<CurrencyPair, Ticker> _tickerDict = new Dictionary<CurrencyPair, Ticker>();
@@ -21,9 +23,10 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
         public event Action<CurrencyPair, Ticker> TickerChanged;
         public event Action<CurrencyPair, OrderBook> OrderBookChanged;
 
-        public BitstampDataClient(IBitstampCurrencyMapper currencyMapper)
+        public BitstampDataClient(IBitstampCurrencyMapper currencyMapper, IMessageService messageService)
         {
             _currencyMapper = currencyMapper;
+            _messageService = messageService;
         }
 
         public string Name
@@ -132,14 +135,14 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 
         }
 
-        static void _pusher_Error(object sender, PusherException error)
+        void _pusher_Error(object sender, PusherException error)
         {
-            Console.WriteLine("Pusher Error: " + error.ToString());
+            _messageService.Write(20, "Pusher Error: " + error.ToString());
         }
 
-        static void _pusher_ConnectionStateChanged(object sender, ConnectionState state)
+        void _pusher_ConnectionStateChanged(object sender, ConnectionState state)
         {
-            Console.WriteLine("Connection state: " + state.ToString());
+            _messageService.Write(20, "Connection state: " + state.ToString());
         }
 
         private string GetSubscriptionName(CurrencyPair pair)

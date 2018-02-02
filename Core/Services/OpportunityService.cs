@@ -52,6 +52,10 @@ namespace CryptoCoinTrader.Core.Services
         public bool CheckLastArbitrage(Guid observationId)
         {
             var arbitrage = _arbitrageService.GetLastOne(observationId);
+            if (arbitrage == null)
+            {
+                return true;
+            }
             var orders = _orderService.GetList(arbitrage.Id);
             if (orders.Count == 0)
             {

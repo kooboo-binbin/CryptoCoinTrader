@@ -29,6 +29,7 @@ using Microsoft.EntityFrameworkCore;
 using CryptoCoinTrader.Core.Services.Orders;
 using CryptoCoinTrader.Core.Services.Messages;
 using CryptoCoinTrader.Core.Workers;
+using CryptoCoinTrader.Core.Services.Arbitrages;
 
 namespace TradeConsole
 {
@@ -39,6 +40,7 @@ namespace TradeConsole
         {
             SetCulture();
             _serviceProvider = BuilderDi();
+            _serviceProvider.GetService<CoinContext>().Database.EnsureCreated();
             _serviceProvider.GetService<App>().Run();
         }
 
@@ -59,7 +61,7 @@ namespace TradeConsole
 
             var context = new FileLoggerContext(AppContext.BaseDirectory, "coin.log");
 
-            services.AddSingleton(new LoggerFactory().AddConsole().AddFile(context, configuration));
+            services.AddSingleton(new LoggerFactory().AddFile(context, configuration));
             services.AddLogging();
             services.AddSingleton(configuration);
             services.AddSingleton(appSettings);
@@ -81,12 +83,16 @@ namespace TradeConsole
             services.AddSingleton<IBitmapOrderStatusMapper, BitstampOrderStatusMapper>();
             services.AddSingleton<IBitstampDataClient, BitstampDataClient>();
             services.AddSingleton<IGdaxDataClient, GdaxDataClient>();
-            services.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();
-            services.AddSingleton<IGdaxTradeClient, GdaxTradeClient>();
+            //services.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();
+            //services.AddSingleton<IGdaxTradeClient, GdaxTradeClient>();
+            services.AddSingleton<IBitstampTradeClient, BitstampFakeTradeClient>();
+            services.AddSingleton<IGdaxTradeClient, GdaxFakeTradeClient>();
             services.AddSingleton<IObservationService, ObservationFileService>();
             services.AddSingleton<IExchangeDataService, ExchangeDataService>();
             services.AddSingleton<IExchangeTradeService, ExchangeTradeService>();
             services.AddSingleton<IMessageService, ConsoleMessageService>();
+            services.AddSingleton<IOpportunityService, OpportunityService>();
+            services.AddSingleton<IArbitrageService, ArbitrageService>();
             services.AddSingleton<IWorker, Worker>();
 
             services.AddOptions();
