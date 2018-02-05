@@ -5,6 +5,8 @@ How to use
 3. there is a observations.json in the foloder too.  you should config it too. the id should be guid. 
 4. run the app again  dotnet tradeconsole.dll
 
+# observations.json 
+
 ```Java
   "Id": "dc814ec9-3b0d-42e1-a308-5f5556a4e5de",  /// it is id which could be any guid
     "BuyExchangeName": "gdax",					/// which exchange you wnat to buy
