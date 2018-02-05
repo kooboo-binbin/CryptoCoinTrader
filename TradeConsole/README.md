@@ -1,11 +1,11 @@
 ﻿
-How to use
-#dotnet tradeconsole.dll
-#in the folder you will see bitstamp.json and gdax.json. fill your informations.
-#there is a observations.json in the foloder too.  you should config it too. the id should be guid. 
-#run the app again  dotnet tradeconsole.dll
+#How to use
+	#dotnet tradeconsole.dll
+	#in the folder you will see bitstamp.json and gdax.json. fill your informations.
+	#there is a observations.json in the foloder too.  you should config it too. the id should be guid. 
+	#run the app again  dotnet tradeconsole.dll
 
-
+···Java
   "Id": "dc814ec9-3b0d-42e1-a308-5f5556a4e5de",  /// it is id which could be any guid
     "BuyExchangeName": "gdax",					/// which exchange you wnat to buy
     "SellExchangeName": "bitstamp",				/// which exchange you want to sell
