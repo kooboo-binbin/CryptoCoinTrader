@@ -169,6 +169,10 @@ namespace CryptoCoinTrader.Core.Services
             {
                 errorMessages.Add($"{item.SellExchangeName} is invalid");
             }
+            if (item.BuyExchangeName.ToLower() == item.SellExchangeName.ToLower())
+            {
+                errorMessages.Add("sellExchangeName should be different from buyExchangeName");
+            }
             if (errorMessages.Count > 0)
             {
                 return string.Join(", ", errorMessages);
