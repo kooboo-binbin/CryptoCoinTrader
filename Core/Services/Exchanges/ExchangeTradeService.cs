@@ -13,10 +13,22 @@ namespace CryptoCoinTrader.Core.Services.Exchanges
     public class ExchangeTradeService : IExchangeTradeService
     {
         private Dictionary<string, IExchangeTrade> _tradeDict = new Dictionary<string, IExchangeTrade>();
-        public ExchangeTradeService(IGdaxTradeClient gdaxTrade, IBitstampTradeClient bitstampTrade)
+        private readonly List<string> _exchangeNames = new List<string>();
+
+        public ExchangeTradeService(IGdaxTradeClient gdax, IBitstampTradeClient bitstamp)
         {
-            _tradeDict.Add(gdaxTrade.Name.ToLower(), gdaxTrade);
-            _tradeDict.Add(bitstampTrade.Name.ToLower(), bitstampTrade);
+            var exchanges = new List<IExchangeTrade>() { bitstamp, gdax };
+            foreach (var exchange in exchanges)
+            {
+                var name = exchange.Name.ToLower();
+                _tradeDict.Add(name, exchange);
+                _exchangeNames.Add(name);
+            }
+        }
+
+        public List<string> GetExchangeNames()
+        {
+            return _exchangeNames;
         }
 
         public MethodResult<OrderResult> MakeANewOrder(string name, OrderRequest order)

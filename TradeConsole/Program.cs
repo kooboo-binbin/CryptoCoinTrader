@@ -83,10 +83,16 @@ namespace TradeConsole
             services.AddSingleton<IBitmapOrderStatusMapper, BitstampOrderStatusMapper>();
             services.AddSingleton<IBitstampDataClient, BitstampDataClient>();
             services.AddSingleton<IGdaxDataClient, GdaxDataClient>();
-            //services.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();
-            //services.AddSingleton<IGdaxTradeClient, GdaxTradeClient>();
-            services.AddSingleton<IBitstampTradeClient, BitstampFakeTradeClient>();
-            services.AddSingleton<IGdaxTradeClient, GdaxFakeTradeClient>();
+            if (appSettings.Production)
+            {
+                services.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();
+                services.AddSingleton<IGdaxTradeClient, GdaxTradeClient>();
+            }
+            else
+            {
+                services.AddSingleton<IBitstampTradeClient, BitstampFakeTradeClient>();
+                services.AddSingleton<IGdaxTradeClient, GdaxFakeTradeClient>();
+            }
             services.AddSingleton<IObservationService, ObservationFileService>();
             services.AddSingleton<IExchangeDataService, ExchangeDataService>();
             services.AddSingleton<IExchangeTradeService, ExchangeTradeService>();

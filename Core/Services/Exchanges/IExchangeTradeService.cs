@@ -9,6 +9,8 @@ namespace CryptoCoinTrader.Core.Services.Exchanges
 {
     public interface IExchangeTradeService
     {
+        List<string> GetExchangeNames();
+
         /// <summary>
         /// Make a new order
         /// </summary>
@@ -24,5 +26,7 @@ namespace CryptoCoinTrader.Core.Services.Exchanges
         /// <param name="orderId"></param>
         /// <returns></returns>
         MethodResult<OrderStatus> GetOrderStatus(string name, string orderId);
+
+        
     }
 }

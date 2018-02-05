@@ -20,24 +20,27 @@ namespace CryptoCoinTrader.Core.Services
         private readonly IGdaxConfig _gdaxConfig;
         private readonly IObservationService _observationService;
         private readonly IExchangeDataService _exchangeDataService;
+        private readonly IExchangeTradeService _exchangeTradeService;
 
         public SelfInspectionService(AppSettings appSettings,
             IBitstampConfig bitStampConfig,
             IGdaxConfig gdaxConfig,
             IObservationService observationService,
-            IExchangeDataService exchangeDataService)
+            IExchangeDataService exchangeDataService,
+            IExchangeTradeService exchangeTradeService)
         {
             _appSettings = appSettings;
             _bitStampConfig = bitStampConfig;
             _gdaxConfig = gdaxConfig;
             _observationService = observationService;
             _exchangeDataService = exchangeDataService;
+            _exchangeTradeService = exchangeTradeService;
         }
 
         public MethodResult Inspect()
         {
             var messages = new List<string>();
-            var funcs = new List<Func<string>>() { CheckIP, CheckBitStamp, CheckGdax, CheckObservations };
+            var funcs = new List<Func<string>>() { CheckIP, CheckBitStamp, CheckGdax, CheckExchanges, CheckObservations };
             foreach (var fun in funcs)
             {
                 var message = fun();
@@ -132,6 +135,19 @@ namespace CryptoCoinTrader.Core.Services
             return string.Empty;
         }
 
+        private string CheckExchanges()
+        {
+            var errorMessages = new List<string>();
+            var dataNames = _exchangeDataService.GetExchangeNames().Select(it => it.ToLower()).ToList();
+            var tradeNames = _exchangeTradeService.GetExchangeNames().Select(it => it.ToLower()).ToList();
+            var temp = dataNames.Except(tradeNames);
+            if (temp.Count() != 0)
+            {
+                return "exchange data and trade has some different names, please ask exchange developer.";
+            }
+            return string.Empty;
+        }
+
         private string CheckObservation(Data.Entities.Observation item)
         {
             var exchangeNames = _exchangeDataService.GetExchangeNames();
@@ -159,6 +175,7 @@ namespace CryptoCoinTrader.Core.Services
             }
             return string.Empty;
         }
+
 
         private class IPInfo
         {

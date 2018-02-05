@@ -135,11 +135,17 @@ namespace CryptoCoinTrader.Core.Workers
                 WriteObservation(observation, top);
                 _logger.LogError($"Make a buy order failed {buyResult.Message}");
             }
-            if (!buyResult.IsSuccessful)
+            if (!sellResult.IsSuccessful)
             {
                 observation.RunningStatus = RunningStatus.Error;
                 WriteObservation(observation, top);
                 _logger.LogError($"Make a sell order failed {sellResult.Message}");
+            }
+            if (buyResult.IsSuccessful ^ sellResult.IsSuccessful)
+            {
+                var message = $"only one order is executed!!!! buy {buyResult.IsSuccessful} sell {sellResult.IsSuccessful}";
+                _messageService.Write(23, message);
+                _logger.LogCritical(message);
             }
             if (buyResult.IsSuccessful && sellResult.IsSuccessful)
             {

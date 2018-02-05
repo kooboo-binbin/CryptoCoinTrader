@@ -46,7 +46,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 
         public string Name
         {
-            get { return "Bistamp"; }
+            get { return "bitstamp"; }
         }
 
         /// <summary>
@@ -68,7 +68,6 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
                     return LimitOrder(order);
                 case OrderType.Market:
                     return MarketOrder(order);
-
             }
 
             return MethodResult<OrderResult>.Failed("Argument tradetype is incorrect!");

@@ -61,7 +61,7 @@ namespace CryptoCoinTrader.Core.Data.Entities
         public string ToConsole()
         {
             var spread = SpreadType == SpreadType.Percentage ? SpreadPercentage.ToString("p2") : SpreadValue.ToString("f2");
-            var message = $"{BuyExchangeName}-{SellExchangeName} \t {RunningStatus} \t Volume: Max{MaxVolume:f2} Per:{PerVolume:f2} \t Available:{AvaialbeVolume:f2} \t Spread:{spread} ";
+            var message = $"{BuyExchangeName}-{SellExchangeName} \t {RunningStatus} \t Volume! Maximum:{MaxVolume:f2} Minimum:{SpreadMinimumVolume} Per:{PerVolume:f2} \t Available:{AvaialbeVolume:f2} \t Spread:{spread} ";
             return message;
         }
     }
