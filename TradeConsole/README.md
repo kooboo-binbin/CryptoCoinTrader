@@ -5,7 +5,7 @@
     (How to run dotnet core application. https://www.microsoft.com/net/learn/get-started/macos)
     bitstamp.json is the settings file for bitstamp exchange.
     gdax.json is the settings file for gdax exchange.
-    overvations.json is the settings file for arbitrages.
+    overvations.json is the settings file for arbitrages. (the detailed description is at observations.json )
     appsettings.json is for some common settings. please add your IP in to workingips.
     There is a "Production" section in appsettings.json. if the value is false that means we are using Fake Exchange.
     
