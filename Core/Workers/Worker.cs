@@ -97,6 +97,11 @@ namespace CryptoCoinTrader.Core.Workers
             }
         }
 
+        /// <summary>
+        /// Output the observatoin information to console
+        /// </summary>
+        /// <param name="observation"></param>
+        /// <param name="top"></param>
         private void WriteObservation(Observation observation, int top)
         {
             _messageService.Write(top + 0, observation.ToConsole());
@@ -150,6 +155,10 @@ namespace CryptoCoinTrader.Core.Workers
             if (buyResult.IsSuccessful && sellResult.IsSuccessful)
             {
                 _observationService.SubtractAvailabeVolume(observation.Id, volume);
+                if (observation.AvaialbeVolume <= 0)
+                {
+                    WriteObservation(observation, top);
+                }
                 var arbitrage = new Arbitrage
                 {
                     DateCreated = DateTime.UtcNow,

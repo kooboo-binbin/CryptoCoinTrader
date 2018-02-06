@@ -31,6 +31,6 @@ How to use
     "PerVolume": 0.02,							///How many volume we want to buy and sell
     "MaxVolume": 100.0,							///All volume we want to trade . (after we reach it, we will stop this task)
     "AvaialbeVolume": 85.71499556,				///How many volume are not trade.
-    "RunningStatus": 0,							/// 0 is running you don' need to change it
+    "RunningStatus": 0,							/// 0 is running 1 is error 2 is done.
     "DateCreated": "2018-02-01T11:50:39.5081391Z"   ///time.
     ```

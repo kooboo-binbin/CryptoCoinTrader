@@ -11,7 +11,7 @@
             Auto count: <strong>{{ autoCount }}</strong>
         </p>
 
-        <button @click="incrementCounter()">Increment</button>
+        <button class="btn btn-default" @click="incrementCounter()">Increment</button>
         <button @click="resetCounter()">Reset</button>
     </div>
 </template>

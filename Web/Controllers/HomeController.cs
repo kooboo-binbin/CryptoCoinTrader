@@ -19,12 +19,6 @@ namespace CryptoCoinTrader.Web.Controllers
 
         public IActionResult Index()
         {
-            var kk = _context.Arbitrages.ToList();
-            var temp = new Arbitrage();
-            temp.Id = Guid.NewGuid();
-
-            _context.Add(temp);
-            _context.SaveChanges();
             return View();
         }
 

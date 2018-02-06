@@ -12,7 +12,7 @@ namespace CryptoCoinTrader.Manifest.Interfaces
 
         DateTime DateLastUpdated { get; }
 
-        void Register(List<CurrencyPair> paris);
+        void Register(List<CurrencyPair> pairs);
 
         void Start();
 

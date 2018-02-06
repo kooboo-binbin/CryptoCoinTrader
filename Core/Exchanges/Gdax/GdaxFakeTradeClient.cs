@@ -29,7 +29,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax
         {
             _messageService.Write(22, $"Gdax \t {orderId}");
             var rnd = _random.Next(0, 100);
-            var status = rnd < 30 ? OrderStatus.Finished : OrderStatus.Open;
+            var status = rnd < 50 ? OrderStatus.Finished : OrderStatus.Open;
             return new MethodResult<OrderStatus>
             {
                 Data = status,
