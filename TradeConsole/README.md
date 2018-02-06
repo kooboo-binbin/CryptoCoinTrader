@@ -1,11 +1,13 @@
     We can't easy configer some settings in console application. so all settings is saved in files.
-    Before running you will see bitstamp.json, gdax.json and observations.json in the folder.
+    Before running you will see appsettings.json bitstamp.json, gdax.json and observations.json in the folder.
     if not.
     you should run the tradeconsole.dll first. 
     (How to run dotnet core application. https://www.microsoft.com/net/learn/get-started/macos)
     bitstamp.json is the settings file for bitstamp exchange.
     gdax.json is the settings file for gdax exchange.
     overvations.json is the settings file for arbitrages. 
+    appsettings.json is for some common settings. please add your IP in to workingips. 
+    
 
 
 How to use
