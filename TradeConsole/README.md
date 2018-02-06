@@ -20,7 +20,7 @@ How to use
   "Id": "dc814ec9-3b0d-42e1-a308-5f5556a4e5de",  /// it is id which could be any guid
     "BuyExchangeName": "gdax",					/// which exchange you wnat to buy
     "SellExchangeName": "bitstamp",				/// which exchange you want to sell
-    "CurrencyPair": 0,							/// which curreny pair you want to trade, beteur is 0, ltceur is 1
+    "CurrencyPair": 0,							/// which curreny pair you want to trade, btceur is 0, ltceur is 1
     "SpreadValue": 3.0,							/// 
     "SpreadPercentage": 0.03,
     "SpreadType": 0,							///0 Arbitrage by spreadValue, 1 Arbitrage by Spread Percentage
