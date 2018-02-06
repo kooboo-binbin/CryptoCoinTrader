@@ -1,4 +1,4 @@
-    We can't easy config some settings in console application. so all settings is saved in files.
+    We can't easy configer some settings in console application. so all settings is saved in files.
     Before running you will see bitstamp.json, gdax.json and observations.json in the folder.
     if not.
     you should run the tradeconsole.dll first. 
