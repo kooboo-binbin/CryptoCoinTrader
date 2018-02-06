@@ -6,7 +6,8 @@
     bitstamp.json is the settings file for bitstamp exchange.
     gdax.json is the settings file for gdax exchange.
     overvations.json is the settings file for arbitrages.
-    appsettings.json is for some common settings. please add your IP in to workingips. 
+    appsettings.json is for some common settings. please add your IP in to workingips.
+    There is a "Production" section in appsettings.json. if the value is false that means we are using Fake Exchange.
     
 
 
