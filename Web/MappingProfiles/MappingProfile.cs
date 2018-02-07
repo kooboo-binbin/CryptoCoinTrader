@@ -12,12 +12,10 @@ namespace CryptoCoinTrader.Web.MappingProfiles
     {
         public MappingProfile()
         {
-            CreateMap<Models.Observations.ObservationPostModel, Observation>().AfterMap((m, o) =>
-            {
-                o.Id = Guid.NewGuid();
-                o.DateCreated = DateTime.UtcNow;
-                o.RunningStatus = RunningStatus.Stoped;
-            });
+            CreateMap<Observation, Observation>().ForMember(it => it.Id, config => config.Ignore());
+            CreateMap<Observation, Observation>().ForMember(it => it.DateCreated, config => config.Ignore());
+
+         
         }
     }
 }

@@ -46,8 +46,10 @@ namespace CryptoCoinTrader
             if (!inspectionResult.IsSuccessful)
             {
                 Console.WriteLine(inspectionResult.Message);
+#if Debug
                 Console.WriteLine("Press any key to quit");
                 Console.ReadKey();
+#endif
             }
             else
             {

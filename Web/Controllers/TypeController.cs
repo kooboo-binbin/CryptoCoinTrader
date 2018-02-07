@@ -1,3 +1,4 @@
+using CryptoCoinTrader.Manifest.Enums;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -6,13 +7,15 @@ using System.Threading.Tasks;
 
 namespace CryptoCoinTrader.Web.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class TypeController : Controller
     {
         [HttpGet("[action]")]
         public IActionResult RunningStatus()
         {
-            return Content("RunningStatus");
+            var names = Enum.GetNames(typeof(RunningStatus));
+
+            return Ok(names);
         }
     }
 }

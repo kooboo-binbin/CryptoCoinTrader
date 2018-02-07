@@ -30,7 +30,7 @@ namespace CryptoCoinTrader.Core.Services
 
         public bool CheckCurrentPrice(Observation observation, decimal askPrice, decimal spreadValue, decimal spreadVolume)
         {
-            if (spreadVolume < observation.SpreadMinimumVolume)
+            if (spreadVolume < observation.MinimumVolume)
             {
                 return false;
             }

@@ -23,6 +23,11 @@ namespace CryptoCoinTrader.Core.Services
             SaveState();
         }
 
+        public void Update(Observation observation)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Observation> GetObservations()
         {
             if (_observations != null)
@@ -54,9 +59,9 @@ namespace CryptoCoinTrader.Core.Services
                     BuyExchangeName = "bitstamp",
                     SellExchangeName = "gdax",
                     Id = Guid.NewGuid(),
-                    MaxVolume = 100.00m,
+                    MaximumVolume = 100.00m,
                     AvailabeVolume = 100.00m,
-                    SpreadMinimumVolume = 0.05m,
+                    MinimumVolume = 0.05m,
                     PerVolume = 0.03m,
                     SpreadValue = 3m,
                     SpreadPercentage = 0.03m,

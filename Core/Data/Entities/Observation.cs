@@ -42,7 +42,7 @@ namespace CryptoCoinTrader.Core.Data.Entities
         /// <summary>
         /// Only the spread volume is greater than our mini volume, then we do a arbitrage
         /// </summary>
-        public decimal SpreadMinimumVolume { get; set; }
+        public decimal MinimumVolume { get; set; }
 
         /// <summary>
         /// Per trade volume
@@ -52,7 +52,7 @@ namespace CryptoCoinTrader.Core.Data.Entities
         /// <summary>
         /// the unit is coin, How many volume we want to arbitrage at this observatoin
         /// </summary>
-        public decimal MaxVolume { get; set; }
+        public decimal MaximumVolume { get; set; }
 
 
 
@@ -66,7 +66,7 @@ namespace CryptoCoinTrader.Core.Data.Entities
         public string ToConsole()
         {
             var spread = SpreadType == SpreadType.Percentage ? SpreadPercentage.ToString("p2") : SpreadValue.ToString("f2");
-            var message = $"{BuyExchangeName}-{SellExchangeName} \t {RunningStatus} \t Volume! Maximum:{MaxVolume:f2} Minimum:{SpreadMinimumVolume} Per:{PerVolume:f2} \t Available:{AvailabeVolume:f2} \t Spread:{spread} ";
+            var message = $"{BuyExchangeName}-{SellExchangeName} \t {RunningStatus} \t Volume! Maximum:{MaximumVolume:f2} Minimum:{MinimumVolume} Per:{PerVolume:f2} \t Available:{AvailabeVolume:f2} \t Spread:{spread} ";
             return message;
         }
     }

@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1> Observations</h1>
-        <button v-on:click="add">Add</button>
+        <button v-on:click="add" class="btn btn-default">Add</button>
         <p v-if="!observations"><em>Loading...</em></p>
         <table class="table table-striped" v-if="observations">
             <thead>
@@ -41,14 +41,99 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Modal title</h4>
+                        <h4 class="modal-title">{{ title }}</h4>
                     </div>
-                    <div class="modal-body">
-                        <p>One fine body&hellip;</p>
+                    <div class="modal-body form-horizontal" v-if="observation">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Buy exchange name</label>
+                            <div class="col-sm-8 ">
+                                <select class="form-control" v-model="observation.buyExchangeName">
+                                    <option v-for="option in exchangeNames">
+                                        {{option}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Sell exchange name</label>
+                            <div class="col-sm-8 ">
+                                <select class="form-control" v-model="observation.sellExchangeName">
+                                    <option v-for="option in exchangeNames">
+                                        {{option}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Currency pair</label>
+                            <div class="col-sm-8 ">
+                                <select class="form-control" v-model="observation.currencyPair">
+                                    <option v-for="option in currencyPairs">
+                                        {{option}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Running status</label>
+                            <div class="col-sm-8 ">
+                                <select class="form-control" v-model="observation.runningStatus">
+                                    <option v-for="option in runningStatus">
+                                        {{option}}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Spread type</label>
+                            <div class="col-sm-8 ">
+                                <label><input type="radio" value="Value" v-model="observation.spreadType" />Value </label>
+                                <br />
+                                <label><input type="radio" value="Percentage" v-model="observation.spreadType" />Percentage </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" v-if="(observation.spreadType=='Value')">
+                            <label class="col-sm-4 control-label">Spread value</label>
+                            <div class="col-sm-8 ">
+                                <input type="number" class="form-control" v-model="observation.spreadValue" step="1" min="0" max="99999" />
+                            </div>
+                        </div>
+                        <div class="form-group" v-if="(observation.spreadType=='Percentage')">
+                            <label class="col-sm-4 control-label">Spread percentage</label>
+                            <div class="col-sm-8 ">
+                                <input type="number" class="form-control" v-model="observation.spreadPercentage" step="0.01" min="0.01" max="0.6" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Spread minimum volume</label>
+                            <div class="col-sm-8 ">
+                                <input type="number" class="form-control" v-model="observation.minimumVolume" step="0.01" min="0.0001" max="99999" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Per volume</label>
+                            <div class="col-sm-8 ">
+                                <input type="number" class="form-control" v-model="observation.perVolume" step="0.01" min="0.0001" max="99999" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Max volume</label>
+                            <div class="col-sm-8 ">
+                                <input type="number" class="form-control" v-model="observation.maximumVolume" step="0.01" min="0.0001" max="99999" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Availabe volume</label>
+                            <div class="col-sm-8 ">
+                                <input type="number" class="form-control" v-model="observation.availabeVolume" step="0.01" min="0.0001" max="99999" />
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-primary" v-on:click="save">Save changes</button>
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -57,33 +142,57 @@
 </template>
 <script>
 
-
     export default {
         data() {
             return {
-                observations: null
+                observations: null,
+                observation: null,
+                updating: false,
+                exchangeNames: null,
+
+                currencyPairs: null,
+                runningStatus: null,
             }
         },
         methods: {
             add: function () {
-                //console.log(jQuery);
-                console.log($("#observationModal").html());
-               
+                this.updating = false;
+                this.observation = { buyExchangeName: "gdax", sellExchangeName: "bitstamp", currencyPair: "LtcEur", spreadValue: 30, spreadPercentage: 0.03, spreadType: 'Value', minimumVolume: 0.02, perVolume: 0.01, maximumVolume: 10, availabeVolume: 10, runningStatus: 'Stoped' };
                 $('#observationModal').modal('show');
             },
             edit: function (item) {
-                console.log(item);
-                console.log('edit' + item.id);
+                this.updating = true;
+                this.observation = item;
+                $('#observationModal').modal('show');
+
             },
             remove: function (item) {
                 console.log(item.id);
+            },
+            save: async function () {
+                if (this.updating) {
+                    this.$http.put('api/observations', this.observation);
+                }
+                else {
+                    this.$http.post('api/observations', this.observation);
+                }
+                $('#observationModal').modal('hide');
+                let respone = await this.$http.get('api/observations');
+                this.observations = respone.data;
+            }
+        },
+        computed: {
+            title: function () {
+                return this.updating ? "Editing" : "Add a new observation";
             }
         },
         async created() {
             try {
                 let response = await this.$http.get('api/observations');
-                console.log(response.data);
                 this.observations = response.data;
+                this.exchangeNames = ["gdax", "bitstamp"];
+                this.currencyPairs = ["BtcEur", "LtcEur"];
+                this.runningStatus = ["Stoped", "Running", "Error", "Done"];
             } catch (error) {
                 console.log(error);
             }

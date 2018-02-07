@@ -2,7 +2,6 @@ using AutoMapper;
 using CryptoCoinTrader.Core.Data.Entities;
 using CryptoCoinTrader.Core.Services;
 using CryptoCoinTrader.Manifest.Enums;
-using CryptoCoinTrader.Web.Models.Observations;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -26,12 +25,21 @@ namespace CryptoCoinTrader.Web.Controllers
         public IActionResult Get()
         {
             var list = _observationService.GetObservations().ToList();
-            list.Add(new Observation() { BuyExchangeName = "buy", SellExchangeName = "sell" });
+            list.Add(new Observation() { BuyExchangeName = "gdax", SellExchangeName = "bitstamp", MinimumVolume = 1, AvailabeVolume = 2, MaximumVolume = 100, PerVolume = 10 });
             return Ok(list);
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]ObservationPostModel model)
+        public IActionResult Post([FromBody]Observation model)
+        {
+            model.Id = Guid.NewGuid();
+            model.DateCreated = DateTime.UtcNow;
+            _observationService.Add(model);
+            return NoContent();
+        }
+
+        [HttpPut]
+        public IActionResult Put([FromBody] Observation model)
         {
             var observation = _mapper.Map<Observation>(model);
             _observationService.Add(observation);

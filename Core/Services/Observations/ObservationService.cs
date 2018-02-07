@@ -7,18 +7,23 @@ using CryptoCoinTrader.Core.Data.Entities;
 using System.Linq;
 using CryptoCoinTrader.Core.Data;
 using CryptoCoinTrader.Manifest.Enums;
+using AutoMapper;
 
 namespace CryptoCoinTrader.Core.Services.Observations
 {
     public class ObservationService : IObservationService
     {
-        private readonly CoinContext _coinContext;
         private readonly static object _lock = new object();
+        private readonly CoinContext _coinContext;
+        
+        private readonly IMapper _mapper;
         private static List<Observation> _observations;
 
-        public ObservationService(CoinContext coinContext)
+
+        public ObservationService(CoinContext coinContext,IMapper mapper)
         {
             _coinContext = coinContext;
+            _mapper = mapper;
         }
 
         public void Add(Observation observation)
@@ -26,6 +31,14 @@ namespace CryptoCoinTrader.Core.Services.Observations
             var observations = GetObservations();
             observations.Add(observation);
             _coinContext.Add(observation);
+            SaveState();
+        }
+
+        public void Update(Observation observation)
+        {
+            var observations = GetObservations();
+            var old = observations.FirstOrDefault(it => it.Id == observation.Id);
+            _mapper.Map(observation, old);
             SaveState();
         }
 
