@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CryptoCoinTrader.Core.Data;
 using CryptoCoinTrader.Core.Data.Entities;
+using System.Linq;
 
 namespace CryptoCoinTrader.Core.Services.Arbitrages
 {
@@ -27,6 +28,11 @@ namespace CryptoCoinTrader.Core.Services.Arbitrages
         public Arbitrage GetLastOne(Guid observationId)
         {
             return _lastArbitrageDict.GetValueOrDefault(observationId, null);
+        }
+
+        public List<Arbitrage> GetList(Guid observationid)
+        {
+            return _coinContext.Arbitrages.Where(it => it.ObservationId == observationid).ToList();
         }
     }
 }

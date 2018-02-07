@@ -46,7 +46,6 @@ namespace CryptoCoinTrader.Core.Workers
 
         public void Work(List<Observation> observations)
         {
-
             for (int i = 0; i < observations.Count; i++)
             {
                 var index = i;
@@ -109,7 +108,7 @@ namespace CryptoCoinTrader.Core.Workers
 
         private void DoArbitrage(int top, Observation observation, decimal spreadVolume)
         {
-            var volume = Math.Min(observation.PerVolume, observation.AvaialbeVolume);
+            var volume = Math.Min(observation.PerVolume, observation.AvailabeVolume);
             volume = Math.Min(volume, spreadVolume);
 
             var orderBuyId = Guid.NewGuid();
@@ -149,13 +148,13 @@ namespace CryptoCoinTrader.Core.Workers
             if (buyResult.IsSuccessful ^ sellResult.IsSuccessful)
             {
                 var message = $"only one order is executed!!!! buy {buyResult.IsSuccessful} sell {sellResult.IsSuccessful}";
-                _messageService.Write(23, message);
+                _messageService.Error(23, message);
                 _logger.LogCritical(message);
             }
             if (buyResult.IsSuccessful && sellResult.IsSuccessful)
             {
                 _observationService.SubtractAvailabeVolume(observation.Id, volume);
-                if (observation.AvaialbeVolume <= 0)
+                if (observation.AvailabeVolume <= 0)
                 {
                     WriteObservation(observation, top);
                 }

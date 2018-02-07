@@ -251,4 +251,7 @@ _Pvt_Extensions
 .fake/
 
 .vscode/
-/cointrader.db
+bitstamp.json
+gdax.json
+observations.json
+cointrader.db

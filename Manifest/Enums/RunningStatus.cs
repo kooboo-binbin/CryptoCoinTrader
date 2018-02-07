@@ -6,8 +6,10 @@ namespace CryptoCoinTrader.Manifest.Enums
 {
     public enum RunningStatus
     {
-        Running = 0,
-        Error = 1,
-        Done = 2,
+        Stoped = 0,
+        Running = 1,
+        Error = 2,
+        Done = 3,
+
     }
 }

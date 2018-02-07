@@ -15,5 +15,10 @@ namespace CryptoCoinTrader.Core.Services.Messages
                 Console.WriteLine(message);
             }
         }
+
+        public void Error(int top, string message)
+        {
+            Write(top, message);
+        }
     }
 }

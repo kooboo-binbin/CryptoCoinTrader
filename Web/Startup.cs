@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using CryptoCoinTrader.Core;
 using CryptoCoinTrader.Core.Data;
 using CryptoCoinTrader.Core.Exchanges.Bitstamp;
@@ -9,7 +10,12 @@ using CryptoCoinTrader.Core.Exchanges.Bitstamp.Configs;
 using CryptoCoinTrader.Core.Exchanges.Gdax;
 using CryptoCoinTrader.Core.Exchanges.Gdax.Configs;
 using CryptoCoinTrader.Core.Services;
+using CryptoCoinTrader.Core.Services.Arbitrages;
 using CryptoCoinTrader.Core.Services.Exchanges;
+using CryptoCoinTrader.Core.Services.Messages;
+using CryptoCoinTrader.Core.Services.Observations;
+using CryptoCoinTrader.Core.Services.Orders;
+using CryptoCoinTrader.Core.Workers;
 using Karambolo.Extensions.Logging.File;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,32 +44,53 @@ namespace CryptoCoinTrader
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<CoinContext>(options =>
-            {
-                options.UseSqlite("Data Source=cointrader.db");
-                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            });
-
             var appSettings = new AppSettings();
             Configuration.GetSection("app").Bind(appSettings);
             var context = new FileLoggerContext(AppContext.BaseDirectory, "coin.log");
 
-            services.AddSingleton(new LoggerFactory().AddConsole().AddFile(context, Configuration));
+            services.AddSingleton(new LoggerFactory().AddFile(context, Configuration));
             services.AddLogging();
             services.AddSingleton(Configuration);
             services.AddSingleton(appSettings);
-            services.AddSingleton<ISelfInspectionService, SelfInspectionService>();
-            services.AddSingleton<IBitstampConfig, BitstampConfigFile>();
-            services.AddSingleton<IGdaxConfig, GdaxConfigFile>();
-            services.AddSingleton<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
-            services.AddSingleton<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
-            services.AddSingleton<IBitstampDataClient, BitstampDataClient>();
-            services.AddSingleton<IGdaxDataClient, GdaxDataClient>();
-            services.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();
-            services.AddSingleton<IGdaxTradeClient, GdaxTradeClient>();
-            services.AddSingleton<IObservationService, ObservationFileService>();
-            services.AddSingleton<IExchangeDataService, ExchangeDataService>();
-            services.AddSingleton<IExchangeTradeService, ExchangeTradeService>();
+
+            services.AddDbContext<CoinContext>(options =>
+            {
+                options.UseSqlite("Data Source=cointrader.db");
+                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            }, ServiceLifetime.Scoped);
+
+            services.AddMemoryCache();
+            services.AddScoped<ISelfInspectionService, SelfInspectionService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IBitstampConfig, BitstampConfigFile>();
+            services.AddScoped<IGdaxConfig, GdaxConfigFile>();
+            services.AddScoped<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
+            services.AddScoped<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
+            services.AddScoped<IGdaxOrderStatusMapper, GdaxOrderStatusMapper>();
+            services.AddScoped<IBitmapOrderStatusMapper, BitstampOrderStatusMapper>();
+            services.AddScoped<IBitstampDataClient, BitstampDataClient>();
+            services.AddScoped<IGdaxDataClient, GdaxDataClient>();
+            if (appSettings.Production)
+            {
+                services.AddScoped<IBitstampTradeClient, BitstampTradeClient>();
+                services.AddScoped<IGdaxTradeClient, GdaxTradeClient>();
+            }
+            else
+            {
+                services.AddScoped<IBitstampTradeClient, BitstampFakeTradeClient>();
+                services.AddScoped<IGdaxTradeClient, GdaxFakeTradeClient>();
+            }
+            services.AddScoped<IObservationService, ObservationService>();
+            services.AddScoped<IExchangeDataService, ExchangeDataService>();
+            services.AddScoped<IExchangeTradeService, ExchangeTradeService>();
+            services.AddScoped<IMessageService, ConsoleMessageService>();
+            services.AddScoped<IOpportunityService, OpportunityService>();
+            services.AddScoped<IArbitrageService, ArbitrageService>();
+            services.AddScoped<IWorker, Worker>();
+
+            services.AddOptions();
+            services.AddAutoMapper();
+
             // Add framework services.
             services.AddMvc();
         }

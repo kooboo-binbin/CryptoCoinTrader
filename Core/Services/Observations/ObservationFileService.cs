@@ -13,8 +13,15 @@ namespace CryptoCoinTrader.Core.Services
     public class ObservationFileService : IObservationService
     {
         private readonly string fileName = "observations.json";
-        private readonly object _lock = new object();
-        private List<Observation> _observations;
+        private static readonly object _lock = new object();
+        private static List<Observation> _observations;
+
+        public void Add(Observation observation)
+        {
+            var observations = GetObservations();
+            observations.Add(observation);
+            SaveState();
+        }
 
         public List<Observation> GetObservations()
         {
@@ -48,7 +55,7 @@ namespace CryptoCoinTrader.Core.Services
                     SellExchangeName = "gdax",
                     Id = Guid.NewGuid(),
                     MaxVolume = 100.00m,
-                    AvaialbeVolume = 100.00m,
+                    AvailabeVolume = 100.00m,
                     SpreadMinimumVolume = 0.05m,
                     PerVolume = 0.03m,
                     SpreadValue = 3m,
@@ -69,8 +76,8 @@ namespace CryptoCoinTrader.Core.Services
         public void SubtractAvailabeVolume(Guid id, decimal volume)
         {
             var item = GetObservations().FirstOrDefault(it => it.Id == id);
-            item.AvaialbeVolume -= volume;
-            if (item.AvaialbeVolume <= 0)
+            item.AvailabeVolume -= volume;
+            if (item.AvailabeVolume <= 0)
             {
                 item.RunningStatus = RunningStatus.Done;
             }
@@ -85,7 +92,7 @@ namespace CryptoCoinTrader.Core.Services
             var observations = GetObservations();
             foreach (var item in observations)
             {
-                item.AvaialbeVolume = 0;
+                item.AvailabeVolume = 0;
             }
             Task.Run(() =>
             {
@@ -103,6 +110,18 @@ namespace CryptoCoinTrader.Core.Services
                 {
                     sw.WriteLine(json);
                 }
+            }
+        }
+
+        public void Delete(Guid observationId)
+        {
+            var observations = GetObservations();
+            var item = observations.FirstOrDefault(it => it.Id == observationId);
+
+            if (item != null)
+            {
+                observations.Remove(item);
+                SaveState();
             }
         }
     }

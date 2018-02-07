@@ -10,5 +10,7 @@ namespace CryptoCoinTrader.Core.Services.Arbitrages
         Arbitrage GetLastOne(Guid observationId);
 
         void Add(Data.Entities.Arbitrage arbitrage);
+
+        List<Arbitrage> GetList(Guid observationId);
     }
 }

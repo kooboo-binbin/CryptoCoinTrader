@@ -1,24 +1,17 @@
-﻿using CryptoCoinTrader.Manifest.Enums;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using CryptoCoinTrader.Manifest.Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace CryptoCoinTrader.Core.Data.Entities
+namespace CryptoCoinTrader.Web.Models.Observations
 {
-    public class Observation
+    public class ObservationPostModel
     {
-        [Key]
-        public Guid Id { get; set; }
-
         public string BuyExchangeName { get; set; }
 
         public string SellExchangeName { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyPair CurrencyPair { get; set; }
 
         /// <summary>
@@ -36,7 +29,6 @@ namespace CryptoCoinTrader.Core.Data.Entities
         /// By value is 0
         /// By percentage is 1
         /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
         public SpreadType SpreadType { get; set; }
 
         /// <summary>
@@ -55,19 +47,8 @@ namespace CryptoCoinTrader.Core.Data.Entities
         public decimal MaxVolume { get; set; }
 
 
+        public decimal AvaialbeVolume { get; set; }
 
-        public decimal AvailabeVolume { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public RunningStatus RunningStatus { get; set; }
-
-        public DateTime DateCreated { get; set; }
-
-        public string ToConsole()
-        {
-            var spread = SpreadType == SpreadType.Percentage ? SpreadPercentage.ToString("p2") : SpreadValue.ToString("f2");
-            var message = $"{BuyExchangeName}-{SellExchangeName} \t {RunningStatus} \t Volume! Maximum:{MaxVolume:f2} Minimum:{SpreadMinimumVolume} Per:{PerVolume:f2} \t Available:{AvailabeVolume:f2} \t Spread:{spread} ";
-            return message;
-        }
     }
 }
