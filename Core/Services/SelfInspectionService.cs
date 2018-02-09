@@ -75,7 +75,7 @@ namespace CryptoCoinTrader.Core.Services
 
         private string CheckBitStamp()
         {
-            var errorMessage = "Bit stamp config is not configured. please open bitstamp.json to fill it";
+            var errorMessage = "Bit stamp config is not configured.";
             var config = _bitStampConfig.GetConfigInfo();
             if (config == null)
             {
@@ -93,7 +93,7 @@ namespace CryptoCoinTrader.Core.Services
 
         private string CheckGdax()
         {
-            var errorMessage = "Gdax config is not configured. please open bitstamp.json to fill it";
+            var errorMessage = "Gdax config is not configured. ";
             var config = _gdaxConfig.GetConfigInfo();
             if (config == null)
             {
@@ -114,7 +114,7 @@ namespace CryptoCoinTrader.Core.Services
             var observations = _observationService.GetObservations();
             if (observations == null || observations.Count == 0)
             {
-                return "observations.json is not configured,";
+                return "observations is empty, please add a least one";
             }
             else
             {

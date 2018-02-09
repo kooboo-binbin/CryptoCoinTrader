@@ -15,12 +15,12 @@ namespace CryptoCoinTrader.Core.Services.Observations
     {
         private readonly static object _lock = new object();
         private readonly CoinContext _coinContext;
-        
+
         private readonly IMapper _mapper;
         private static List<Observation> _observations;
 
 
-        public ObservationService(CoinContext coinContext,IMapper mapper)
+        public ObservationService(CoinContext coinContext, IMapper mapper)
         {
             _coinContext = coinContext;
             _mapper = mapper;
@@ -57,7 +57,7 @@ namespace CryptoCoinTrader.Core.Services.Observations
 
         private List<Observation> GetObservatoinsFromDatabase()
         {
-            return _coinContext.Observations.ToList();
+            return _coinContext.Observations.Where(it => !it.Deleted).OrderBy(it => it.DateCreated).ToList();
         }
 
         public void SubtractAvailabeVolume(Guid id, decimal volume)
@@ -94,7 +94,7 @@ namespace CryptoCoinTrader.Core.Services.Observations
             if (item != null)
             {
                 observations.Remove(item);
-                _coinContext.Remove(item);
+                item.Deleted = true;
                 SaveState();
             }
         }

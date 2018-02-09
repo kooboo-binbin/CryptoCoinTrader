@@ -24,8 +24,7 @@ namespace CryptoCoinTrader.Web.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var list = _observationService.GetObservations().ToList();
-            list.Add(new Observation() { BuyExchangeName = "gdax", SellExchangeName = "bitstamp", MinimumVolume = 1, AvailabeVolume = 2, MaximumVolume = 100, PerVolume = 10 });
+            var list = _observationService.GetObservations().OrderBy(it => it.DateCreated).ToList();
             return Ok(list);
         }
 

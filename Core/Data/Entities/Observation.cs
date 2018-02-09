@@ -54,7 +54,7 @@ namespace CryptoCoinTrader.Core.Data.Entities
         /// </summary>
         public decimal MaximumVolume { get; set; }
 
-
+        public bool Deleted { get; set; }
 
         public decimal AvailabeVolume { get; set; }
 
@@ -68,6 +68,11 @@ namespace CryptoCoinTrader.Core.Data.Entities
             var spread = SpreadType == SpreadType.Percentage ? SpreadPercentage.ToString("p2") : SpreadValue.ToString("f2");
             var message = $"{BuyExchangeName}-{SellExchangeName} \t {RunningStatus} \t Volume! Maximum:{MaximumVolume:f2} Minimum:{MinimumVolume} Per:{PerVolume:f2} \t Available:{AvailabeVolume:f2} \t Spread:{spread} ";
             return message;
+        }
+
+        public string GetName()
+        {
+            return $"{BuyExchangeName} - {SellExchangeName}";
         }
     }
 }

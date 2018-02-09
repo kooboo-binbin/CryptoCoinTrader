@@ -46,7 +46,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 
         public string Name
         {
-            get { return "bitstamp"; }
+            get { return Constants.Name; }
         }
 
         /// <summary>

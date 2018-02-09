@@ -17,6 +17,7 @@ namespace CryptoCoinTrader.Core.Data
         public DbSet<Observation> Observations { get; set; }
 
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Exchange> Exchanges { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -31,7 +31,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 
         public string Name
         {
-            get { return "Bitstamp"; }
+            get { return Constants.Name; }
         }
 
         public DateTime DateLastUpdated
@@ -137,12 +137,12 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 
         void _pusher_Error(object sender, PusherException error)
         {
-            _messageService.Write(20, "Pusher Error: " + error.ToString());
+            _messageService.Write("Pusher Error: " + error.ToString());
         }
 
         void _pusher_ConnectionStateChanged(object sender, ConnectionState state)
         {
-            _messageService.Write(20, "Connection state: " + state.ToString());
+            _messageService.Write("Connection state: " + state.ToString());
         }
 
         private string GetSubscriptionName(CurrencyPair pair)

@@ -75,8 +75,8 @@ namespace TradeConsole
             services.AddMemoryCache();
             services.AddSingleton<ISelfInspectionService, SelfInspectionService>();
             services.AddSingleton<IOrderService, OrderService>();
-            services.AddSingleton<IBitstampConfig, BitstampConfigFile>();
-            services.AddSingleton<IGdaxConfig, GdaxConfigFile>();
+            services.AddSingleton<IBitstampConfig, BitstampConfig>();
+            services.AddSingleton<IGdaxConfig, GdaxConfig>();
             services.AddSingleton<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
             services.AddSingleton<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
             services.AddSingleton<IGdaxOrderStatusMapper, GdaxOrderStatusMapper>();

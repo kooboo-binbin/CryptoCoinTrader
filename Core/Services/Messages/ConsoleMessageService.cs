@@ -6,19 +6,19 @@ namespace CryptoCoinTrader.Core.Services.Messages
 {
     public class ConsoleMessageService : IMessageService
     {
-        private object _consoleLock = new object();
-        public void Write(int top, string message)
+        public void Write(Guid guid, string message)
         {
-            lock (_consoleLock)
-            {
-                Console.SetCursorPosition(0, top);
-                Console.WriteLine(message);
-            }
+            Console.WriteLine(message);
         }
 
-        public void Error(int top, string message)
+        public void Error(Guid id, string message)
         {
-            Write(top, message);
+            Write(id, message);
+        }
+
+        public void Write(string message)
+        {
+            Console.WriteLine(message);
         }
     }
 }

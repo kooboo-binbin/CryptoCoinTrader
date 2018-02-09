@@ -12,7 +12,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax
     {
         private readonly Random _random = new Random();
         private IMessageService _messageService;
-        public string Name => "Gdax";
+        public string Name => Constants.Name;
 
         public GdaxFakeTradeClient(IMessageService messageService)
         {
@@ -24,10 +24,8 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax
             throw new NotImplementedException();
         }
 
-
         public MethodResult<OrderStatus> GetOrderStatus(string orderId)
         {
-            _messageService.Write(22, $"Gdax \t {orderId}");
             var rnd = _random.Next(0, 100);
             var status = rnd < 50 ? OrderStatus.Finished : OrderStatus.Open;
             return new MethodResult<OrderStatus>

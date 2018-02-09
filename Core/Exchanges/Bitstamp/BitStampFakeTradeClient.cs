@@ -12,7 +12,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
     {
         private readonly Random _random = new Random();
         private readonly IMessageService _messageService;
-        public string Name => "bitstamp";
+        public string Name => Constants.Name;
 
         public BitstampFakeTradeClient(IMessageService messageService)
         {
@@ -26,7 +26,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 
         public MethodResult<OrderStatus> GetOrderStatus(string orderId)
         {
-            _messageService.Write(20, $"bitstamp \t {orderId}");
+            _messageService.Write($"bitstamp \t {orderId}");
             var rnd = _random.Next(0, 100);
             var status = rnd < 50 ? OrderStatus.Finished : OrderStatus.Open;
             return new MethodResult<OrderStatus>

@@ -42,7 +42,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax
 
         public string Name
         {
-            get { return "Gdax"; }
+            get { return Constants.Name; }
         }
 
         public void Register(List<CurrencyPair> pairs)

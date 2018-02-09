@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CryptoCoinTrader.Core;
 using CryptoCoinTrader.Core.Data;
+using CryptoCoinTrader.Core.Exchanges;
 using CryptoCoinTrader.Core.Exchanges.Bitstamp;
 using CryptoCoinTrader.Core.Exchanges.Bitstamp.Configs;
 using CryptoCoinTrader.Core.Exchanges.Gdax;
@@ -16,6 +17,7 @@ using CryptoCoinTrader.Core.Services.Messages;
 using CryptoCoinTrader.Core.Services.Observations;
 using CryptoCoinTrader.Core.Services.Orders;
 using CryptoCoinTrader.Core.Workers;
+using CryptoCoinTrader.Manifest.Interfaces;
 using Karambolo.Extensions.Logging.File;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -62,8 +64,8 @@ namespace CryptoCoinTrader
             services.AddMemoryCache();
             services.AddScoped<ISelfInspectionService, SelfInspectionService>();
             services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IBitstampConfig, BitstampConfigFile>();
-            services.AddScoped<IGdaxConfig, GdaxConfigFile>();
+            services.AddScoped<IBitstampConfig, BitstampConfig>();
+            services.AddScoped<IGdaxConfig, GdaxConfig>();
             services.AddScoped<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
             services.AddScoped<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
             services.AddScoped<IGdaxOrderStatusMapper, GdaxOrderStatusMapper>();
@@ -86,8 +88,9 @@ namespace CryptoCoinTrader
             services.AddScoped<IMessageService, ConsoleMessageService>();
             services.AddScoped<IOpportunityService, OpportunityService>();
             services.AddScoped<IArbitrageService, ArbitrageService>();
+            services.AddScoped<IExchangeSetting, ExchangeSetting>();
+            services.AddScoped<IExchangeConfigService, ExchangeConfigService>();
             services.AddScoped<IWorker, Worker>();
-
             services.AddOptions();
             services.AddAutoMapper();
 

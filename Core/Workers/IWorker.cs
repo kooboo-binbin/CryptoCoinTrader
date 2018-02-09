@@ -7,6 +7,11 @@ namespace CryptoCoinTrader.Core.Workers
 {
     public interface IWorker
     {
-        void Work(List<Observation> observations);
+        void Add(List<Observation> observations);
+        void Add(Observation observation);
+        void Delete(Guid observationId);
+        void Start();
+        void Stop();
+        bool GetStatus();
     }
 }

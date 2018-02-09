@@ -25,14 +25,14 @@
                     <td>{{ item.buyExchangeName }}</td>
                     <td>{{ item.sellExchangeName }}</td>
                     <td>{{ item.currencyPair }}</td>
-                    <td>{{ item.runningStatus }} <em class="glyphicon glyphicon-stop"></em> <em class="glyphicon glyphicon-play"></em></td>
+                    <td>{{ item.runningStatus }} <a href="#"><em class="glyphicon glyphicon-stop"></em></a> <a href="#"><em class="glyphicon glyphicon-play"></em></a></td>
                     <td>{{ item.spreadType }}</td>
                     <td>{{ item.spreadType=='value'? item.spreadValue:item.spreadPercentage }}</td>
-                    <td>{{ item.spreadMinimumVolume }}</td>
+                    <td>{{ item.minimumVolume }}</td>
                     <td>{{ item.perVolume }}</td>
                     <td>{{ item.maxVolume }}</td>
                     <td>{{ item.availabeVolume }}</td>
-                    <td><em class="glyphicon glyphicon-edit" v-on:click="edit(item)"></em> <em v-on:click="remove(item)" class="glyphicon glyphicon-remove"></em> </td>
+                    <td><href href="#"><em class="glyphicon glyphicon-edit" v-on:click="edit(item)"></em></href> <a href="#"><em v-on:click="remove(item)" class="glyphicon glyphicon-remove"></em></a> </td>
                 </tr>
             </tbody>
         </table>
@@ -166,15 +166,19 @@
                 $('#observationModal').modal('show');
 
             },
-            remove: function (item) {
-                console.log(item.id);
+            remove: async function (item) {
+                if (confirm('Are you sure to delete it!')) {
+                    await this.$http.delete('api/observations/' + item.id);
+                    let respone = await this.$http.get('api/observations');
+                    this.observations = respone.data;
+                }
             },
             save: async function () {
                 if (this.updating) {
-                    this.$http.put('api/observations', this.observation);
+                    await this.$http.put('api/observations', this.observation);
                 }
                 else {
-                    this.$http.post('api/observations', this.observation);
+                    await this.$http.post('api/observations', this.observation);
                 }
                 $('#observationModal').modal('hide');
                 let respone = await this.$http.get('api/observations');

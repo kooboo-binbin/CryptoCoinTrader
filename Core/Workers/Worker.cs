@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -25,6 +26,10 @@ namespace CryptoCoinTrader.Core.Workers
         private readonly IOrderService _orderService;
         private readonly ILogger<Worker> _logger;
 
+        private static Dictionary<Guid, CancellationTokenSource> _tasks = new Dictionary<Guid, CancellationTokenSource>();
+
+        private static bool _running { get; set; }
+
         public Worker(IExchangeDataService exchangeDataService,
             IExchangeTradeService exchangeTradeService,
             IMessageService messageService,
@@ -44,27 +49,61 @@ namespace CryptoCoinTrader.Core.Workers
             _logger = logger;
         }
 
-        public void Work(List<Observation> observations)
+        public void Add(List<Observation> observations)
         {
-            for (int i = 0; i < observations.Count; i++)
+            foreach (var item in observations)
             {
-                var index = i;
-                var observation = observations[i];
-                var task = Task.Run(() =>
-                {
-                    RunObservatoin(index, observation);
-                });
+                Add(item);
             }
         }
 
-        private void RunObservatoin(int index, Observation observation)
+        public void Add(Observation observation)
         {
-            while (observation.RunningStatus == RunningStatus.Running)
+            var tokenSource = new CancellationTokenSource();
+            var token = tokenSource.Token;
+            var task = Task.Run(() =>
             {
-                var top = index * 5;
+                RunObservatoin(observation, token);
+            }, token);
+            _tasks.Add(observation.Id, tokenSource);
+        }
+
+        public void Delete(Guid obvervationId)
+        {
+            if (_tasks.ContainsKey(obvervationId))
+            {
+                var tokenSource = _tasks[obvervationId];
+                tokenSource.Cancel();
+                _tasks.Remove(obvervationId);
+            }
+        }
+
+        public void Start()
+        {
+            _running = true;
+        }
+
+        public void Stop()
+        {
+            _running = false;
+        }
+
+        public bool GetStatus()
+        {
+            return _running;
+        }
+
+        private void RunObservatoin(Observation observation, CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                if (!_running || observation.RunningStatus != RunningStatus.Running)
+                {
+                    Thread.Sleep(2 * 1000);
+                    continue;
+                }
                 try
                 {
-                    WriteObservation(observation, top);
                     var bookBuy = _exchangeDataService.GetOrderBook(observation.BuyExchangeName, observation.CurrencyPair);
                     var bookSell = _exchangeDataService.GetOrderBook(observation.SellExchangeName, observation.CurrencyPair);
 
@@ -74,39 +113,27 @@ namespace CryptoCoinTrader.Core.Workers
                         var sell_bid_0 = bookSell.Bids[0]; //the buy price of the exchange which we wat to sell.
                         var spread = sell_bid_0.Price - buy_ask_0.Price; //some one buy price is greater than the price some one want to sell. then we have a chance to make a arbitrage
                         var spreadVolume = Math.Min(sell_bid_0.Volume, buy_ask_0.Volume);
-                        var spreadMessage = $"Spread {observation.SellExchangeName}.bid1 {sell_bid_0.Price:f2} - {observation.BuyExchangeName}.ask1 {buy_ask_0.Price:f2} = {spread:f2} volume:{spreadVolume}";
-                        _messageService.Write(top + 1, spreadMessage);
 
                         var canArbitrage = _opportunityService.CheckCurrentPrice(observation, buy_ask_0.Price, spread, spreadVolume);
                         var lastArbitrage = _opportunityService.CheckLastArbitrage(observation.Id);
                         if (canArbitrage & lastArbitrage)
                         {
-                            DoArbitrage(top, observation, spreadVolume);
+                            DoArbitrage(observation, spreadVolume);
                         }
-                        LastArbitrageMessage(top + 3, canArbitrage, lastArbitrage);
                     }
                     Thread.Sleep(200);
                 }
                 catch (Exception ex)
                 {
+                    _messageService.Error(observation.Id, "Get an unhandled exception");
                     observation.RunningStatus = RunningStatus.Error;
-                    WriteObservation(observation, top);
                     _logger.LogCritical(ex, "RunObservation failed.");
                 }
             }
         }
 
-        /// <summary>
-        /// Output the observatoin information to console
-        /// </summary>
-        /// <param name="observation"></param>
-        /// <param name="top"></param>
-        private void WriteObservation(Observation observation, int top)
-        {
-            _messageService.Write(top + 0, observation.ToConsole());
-        }
 
-        private void DoArbitrage(int top, Observation observation, decimal spreadVolume)
+        private void DoArbitrage(Observation observation, decimal spreadVolume)
         {
             var volume = Math.Min(observation.PerVolume, observation.AvailabeVolume);
             volume = Math.Min(volume, spreadVolume);
@@ -135,29 +162,28 @@ namespace CryptoCoinTrader.Core.Workers
             var sellResult = _exchangeTradeService.MakeANewOrder(observation.SellExchangeName, sellRequest);
             if (!buyResult.IsSuccessful)
             {
+                var message = $"Make a buy failed {buyResult.Message} {observation.GetName()}";
+                _messageService.Error(observation.Id, message);
                 observation.RunningStatus = RunningStatus.Error;
-                WriteObservation(observation, top);
-                _logger.LogError($"Make a buy order failed {buyResult.Message}");
+                _logger.LogError(message);
             }
             if (!sellResult.IsSuccessful)
             {
+                var message = $"Make a sell order failed {sellResult.Message} {observation.GetName()}";
+                _messageService.Error(observation.Id, message);
                 observation.RunningStatus = RunningStatus.Error;
-                WriteObservation(observation, top);
-                _logger.LogError($"Make a sell order failed {sellResult.Message}");
+                _logger.LogError(message);
             }
             if (buyResult.IsSuccessful ^ sellResult.IsSuccessful)
             {
-                var message = $"only one order is executed!!!! buy {buyResult.IsSuccessful} sell {sellResult.IsSuccessful}";
-                _messageService.Error(23, message);
+                var message = $"only one order is executed!!!! buy {buyResult.IsSuccessful} sell {sellResult.IsSuccessful}  {observation.GetName()}";
+                _messageService.Error(observation.Id, message);
                 _logger.LogCritical(message);
             }
             if (buyResult.IsSuccessful && sellResult.IsSuccessful)
             {
                 _observationService.SubtractAvailabeVolume(observation.Id, volume);
-                if (observation.AvailabeVolume <= 0)
-                {
-                    WriteObservation(observation, top);
-                }
+
                 var arbitrage = new Arbitrage
                 {
                     DateCreated = DateTime.UtcNow,
@@ -192,20 +218,9 @@ namespace CryptoCoinTrader.Core.Workers
                     Volume = volume
                 };
                 _orderService.Add(buyOrder, sellOrder);
+                _messageService.Write(observation.Id, $"{observation.GetName()} do a arbitrage");
             }
 
-        }
-
-        private void LastArbitrageMessage(int top, bool canArbitrage, bool lastArbitrage)
-        {
-            if (canArbitrage & !lastArbitrage)
-            {
-                _messageService.Write(top, "Last arbitrage is not finished.");
-            }
-            else
-            {
-                _messageService.Write(top, "                                                                                    ");
-            }
         }
     }
 }

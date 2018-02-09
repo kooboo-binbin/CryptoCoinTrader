@@ -21,47 +21,17 @@ namespace CryptoCoinTrader
             CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-us");
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-us");
 
-            MethodResult inspectionResult;
             var host = BuildWebHost(args);
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<CoinContext>();
                 context.Database.EnsureCreated();
-                var inspectionService = services.GetService<ISelfInspectionService>();
-                inspectionResult = inspectionService.Inspect();
-                RunObservatoin(inspectionResult, services);
             }
-#if Debug
-            if (inspectionResult.IsSuccessful)
-            {
-                host.Run();
-            }
-#else
+
             host.Run();
-#endif
         }
-        private static void RunObservatoin(MethodResult inspectionResult, IServiceProvider services)
-        {
-            if (!inspectionResult.IsSuccessful)
-            {
-                Console.WriteLine(inspectionResult.Message);
-#if Debug
-                Console.WriteLine("Press any key to quit");
-                Console.ReadKey();
-#endif
-            }
-            else
-            {
-                Task.Run(() =>
-                {
-                    Console.Write("Start");
-                    var observatoinServices = services.GetRequiredService<IObservationService>();
-                    var worker = services.GetRequiredService<IWorker>();
-                    worker.Work(observatoinServices.GetObservations());
-                });
-            }
-        }
+   
 
         public static IWebHost BuildWebHost(string[] args) =>
            WebHost.CreateDefaultBuilder(args)

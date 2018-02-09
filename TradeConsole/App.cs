@@ -70,7 +70,7 @@ namespace TradeConsole
             var currencyPairs = observations.Select(it => it.CurrencyPair).ToList();
             _exchangeDataService.Register(currencyPairs);
             _exchangeDataService.Start();
-            _worker.Work(observations);
+            _worker.Add(observations);
 
             Console.ReadLine();
             Console.ReadLine();
