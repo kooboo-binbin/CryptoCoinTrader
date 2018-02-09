@@ -200,10 +200,8 @@
             } catch (error) {
                 console.log(error);
             }
-        },
-        mounted() {
-            console.log($)
         }
+
     }
 
 </script>

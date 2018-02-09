@@ -14,15 +14,21 @@
                         <textarea class="form-control json" v-model="item.settings"></textarea>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-default" v-on:click="save(item)">Save</button>
+                        <button class="btn btn-primary" v-on:click="save(item)">Save</button>
+                        <button class="btn btn-default" v-on:click="test(item)">test</button>
                     </div>
                 </div>
             </div>
         </div>
+        <trade-test ref="test"></trade-test>
     </div>
 </template>
 
 <script>
+    import Vue from 'Vue'
+    import TradeTest from './trade-test.vue'
+
+
     var Exchange = function (name, settings) {
         var self = this;
         self.name = name;
@@ -36,7 +42,16 @@
                 exchanges: null
             }
         },
+        components: {
+            'trade-test': TradeTest
+        },
         methods: {
+            test: function (item) {
+                console.log(this.$refs.test);
+                this.$refs.test.changeName(item.name);
+                console.log('exchange.test');
+                $("#tradeModal").modal('show');
+            },
             active: function (exchange) {
                 this.exchanges.forEach(function (item) {
                     item.show = false;
