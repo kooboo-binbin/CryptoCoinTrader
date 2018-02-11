@@ -16,10 +16,12 @@
     import CounterExample from './counter-example'
     import HomePage from './home-page'
     import NavMenu from './nav-menu'
+    import Pagination from './pagination.vue'
  
     Vue.component('counter-example', CounterExample);
     Vue.component('home-page', HomePage);
     Vue.component('nav-menu', NavMenu);
+    Vue.component('pagination', Pagination);
 
     export default {
         data() {

@@ -16,16 +16,26 @@
         },
         methods: {
             stop() {
-                this.running = false;
-                this.$http.put('api/trade', { running: false });
-
+                try {
+                    this.$http.put('api/trade', { running: false });
+                    this.running = false;
+                } catch (ex) {
+                    this.$toastr.e(ex);
+                    console.log(ex);
+                }
             },
             async start() {
-                let response = this.$http.put('api/trade', { running: true });
-                if (response.data.isSuccessful) {
-                    this.running = true;
-                } else {
-                    alert(response.data.message);
+                try {
+                    let response = await this.$http.put('api/trade', { running: true });
+                    let result = response.data;
+                    if (result.isSuccessful) {
+                        this.running = true;
+                    } else {
+                        this.$toastr.e(result.message);
+                    }
+                } catch (ex) {
+                    this.$toastr.e(ex);
+                    console.log(ex);
                 }
             }
         },

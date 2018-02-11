@@ -51,7 +51,11 @@ namespace CryptoCoinTrader.Core.Services
             }
             if (messages.Count > 0)
             {
-                return new MethodResult() { IsSuccessful = false, Message = string.Join("\r\n", messages) };
+                for (var i = 0; i < messages.Count; i++)
+                {
+                    messages[i] = $"{i + 1}:{messages[i]}";
+                }
+                return new MethodResult() { IsSuccessful = false, Message = string.Join("<br />", messages) };
             }
             return new MethodResult() { IsSuccessful = true };
         }

@@ -65,7 +65,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax.Configs
                 }
                 if (messages.Count > 0)
                 {
-                    return new MethodResult() { IsSuccessful = false, Message = string.Join("\r\n", messages) };
+                    return new MethodResult() { IsSuccessful = false, Message = string.Join("<br />", messages) };
                 }
             }
             return new MethodResult() { IsSuccessful = true };
