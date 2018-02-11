@@ -15,7 +15,7 @@
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary" v-on:click="save(item)">Save</button>
-                        <button class="btn btn-default" v-on:click="test(item)">test</button>
+                        <button class="btn btn-default" v-on:click="test(item)">Create a test order</button>
                     </div>
                 </div>
             </div>

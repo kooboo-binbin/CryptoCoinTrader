@@ -52,9 +52,22 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp.Configs
             else
             {
                 var config = JsonConvert.DeserializeObject<BitstampConfigInfo>(json);
-                if (string.IsNullOrWhiteSpace(config.ApiKey) || string.IsNullOrWhiteSpace(config.Secret) || string.IsNullOrWhiteSpace(config.CustomerId))
+                var messages = new List<string>();
+                if (string.IsNullOrWhiteSpace(config.ApiKey))
                 {
-                    return new MethodResult() { IsSuccessful = false, Message = errorMessage };
+                    messages.Add("ApiKey is empty");
+                }
+                if (string.IsNullOrWhiteSpace(config.Secret))
+                {
+                    messages.Add("Secret is empty");
+                }
+                if (string.IsNullOrWhiteSpace(config.CustomerId))
+                {
+                    messages.Add("CustomerId is empty");
+                }
+                if (messages.Count > 0)
+                {
+                    return new MethodResult() { IsSuccessful = false, Message = string.Join("\r\n", messages) };
                 }
             }
             return new MethodResult() { IsSuccessful = true };

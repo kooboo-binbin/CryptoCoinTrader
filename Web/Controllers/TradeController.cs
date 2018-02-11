@@ -1,6 +1,8 @@
 using CryptoCoinTrader.Core.Services;
+using CryptoCoinTrader.Core.Services.Exchanges;
 using CryptoCoinTrader.Core.Workers;
 using CryptoCoinTrader.Manifest;
+using CryptoCoinTrader.Manifest.Trades;
 using CryptoCoinTrader.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,10 +17,14 @@ namespace CryptoCoinTrader.Web.Controllers
     {
         private readonly IWorker _worker;
         private readonly ISelfInspectionService _insepectionService;
-        public TradeController(IWorker worker, ISelfInspectionService inspectionService)
+        private readonly IExchangeTradeService _exchangeTradeService;
+        public TradeController(IWorker worker,
+            ISelfInspectionService inspectionService,
+            IExchangeTradeService exchangeTradeService)
         {
             _worker = worker;
             _insepectionService = inspectionService;
+            _exchangeTradeService = exchangeTradeService;
         }
 
         [HttpGet]
@@ -46,6 +52,20 @@ namespace CryptoCoinTrader.Web.Controllers
                 _worker.Stop();
             }
             return Ok(result);
+        }
+
+        [HttpPost("[action]")]
+        public IActionResult Test([FromBody] TradeTestModel model)
+        {
+            var orderRequest = new OrderRequest();
+            orderRequest.ClientOrderId = Guid.NewGuid().ToString();
+            orderRequest.CurrencyPair = model.CurrencyPair;
+            orderRequest.OrderType = OrderType.Market;
+            //orderRequest.Price
+            orderRequest.TradeType = model.TradeType;
+            orderRequest.Volume = model.Volume;
+            var orderResult = _exchangeTradeService.MakeANewOrder(model.ExchangeName, orderRequest);
+            return Ok(orderResult);
         }
     }
 }

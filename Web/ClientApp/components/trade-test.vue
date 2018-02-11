@@ -4,7 +4,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">trade test</h4>
+                    <h4 class="modal-title">Order test (only market order now)</h4>
                 </div>
                 <div class="modal-body form-horizontal">
                     <div class="form-group">
@@ -29,12 +29,12 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label class="col-sm-4 control-label">Price</label>
                         <div class="col-sm-8 ">
                             <input type="number" class="form-control" v-model="price" step="0.01" min="0.0001" max="99999" />
                         </div>
-                    </div>
+                    </div>-->
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Volume</label>
                         <div class="col-sm-8 ">
@@ -44,8 +44,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="buy">Buy</button>
-                    <button type="button" class="btn btn-default" v-on:click="sell">Sell</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" v-on:click="test('buy')">Buy</button>
+                    <button type="button" class="btn btn-default" v-on:click="test('sell')">Sell</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -68,19 +68,26 @@
             changeName: function (name) {
                 this.exchangeName = name;
             },
-            buy: async function () {
+            test: async function (tradeType) {
 
                 var confirmMessage = `Are you sure
 price:${this.price}
 volume:${this.volume}`;
 
                 if (confirm(confirmMessage)) {
-                    
+                    var data = { ExchangeName: this.exchangeName, currencyPair: this.currencyPair, volume: this.volume, tradeType: this.tradeType };
+                    let response = await this.$http.post('api/trade/test', data);
+                    var result = response.data;
+                    console.log(result);
+                    if (result.isSuccessful) {
+                        this.$toastr.s(`Make a order successfully, rmeoteOrderId:${result.data.id}`);
+
+                    }
+                    else {
+                        this.$toastr.e(result.message);
+                    }
                 }
             },
-            sell: function () {
-                this.$toastr.e("the function is not implemented");
-            }
         },
         async created() {
             this.exchangeNames = ["gdax", "bitstamp"];

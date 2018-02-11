@@ -50,9 +50,22 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax.Configs
             else
             {
                 var config = JsonConvert.DeserializeObject<GdaxConfigInfo>(json);
-                if (string.IsNullOrWhiteSpace(config.Key) || string.IsNullOrWhiteSpace(config.Secret) || string.IsNullOrWhiteSpace(config.Passphrase))
+                var messages = new List<string>();
+                if (string.IsNullOrWhiteSpace(config.Key))
                 {
-                    return new MethodResult() { IsSuccessful = false, Message = errorMessage };
+                    messages.Add("Key is empty");
+                }
+                if (string.IsNullOrWhiteSpace(config.Secret))
+                {
+                    messages.Add("Secret is emtpy");
+                }
+                if (string.IsNullOrWhiteSpace(config.Passphrase))
+                {
+                    messages.Add("Passphrase is empty");
+                }
+                if (messages.Count > 0)
+                {
+                    return new MethodResult() { IsSuccessful = false, Message = string.Join("\r\n", messages) };
                 }
             }
             return new MethodResult() { IsSuccessful = true };
