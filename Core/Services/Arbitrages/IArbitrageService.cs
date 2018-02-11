@@ -1,6 +1,7 @@
 ﻿using CryptoCoinTrader.Core.Data.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CryptoCoinTrader.Core.Services.Arbitrages
@@ -12,5 +13,7 @@ namespace CryptoCoinTrader.Core.Services.Arbitrages
         void Add(Data.Entities.Arbitrage arbitrage);
 
         List<Arbitrage> GetList(Guid observationId);
+
+        IQueryable<Arbitrage> GetQuery();
     }
 }

@@ -1,7 +1,28 @@
 <template>
+
     <div>
         <h1>arbitrage logs</h1>
 
+
+
+        <div class="row form-inline">
+            <div class=" form-group">
+                <label for="observationId">Observation id</label>
+
+                <input type="text" class="form-control" id="observationId" v-model="observationId">
+            </div>
+            <div class=" form-group">
+                <label for="startDate">Start date</label>
+                <input type="date" class="form-control" id="startDate" v-model="startDate">
+            </div>
+            <div class=" form-group">
+                <label for="enddate">End date</label>
+                <input type="date" class="form-control" id="endDate" v-model="endDate">
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" v-on:click="filter">Filter</button>
+            </div>
+        </div>
         <p v-if="!arbitrages"><em>Loading...</em></p>
         <table class="table table-striped" v-if="arbitrages">
             <thead>
@@ -25,17 +46,36 @@
         </table>
         <pagination v-bind:pagination="pagination" v-on:pageChange="pageChange"></pagination>
     </div>
+
+
 </template>
 <script>
+    var getData = async function (vue) {
+        var page = vue.pagination.page;
+        var pageSize = vue.pagination.pageSize;
+        var data = {
+            observationId: vue.observationId,
+            startDate: vue.startDate,
+            endDate: vue.endDate,
+            page: page,
+            pageSize: pageSize
+        };
+        let response = await vue.$http.get('api/arbitrages', { params: data });
+        vue.arbitrages = response.data.items;
+        vue.pagination = response.data.pagination;
+    };
 
     export default {
         data() {
             return {
+                observationId: null,
+                startDate: null,
+                endDate: null,
+
                 arbitrages: null,
-                pagination: null,
+                pagination: { page: 1, pageSize: 20, pageCount: 1, total: 20, hasNextPage: false, hasPreviousPage: false },
             }
         },
-
         methods: {
             look(item) {
                 console.log('look orders')
@@ -43,11 +83,14 @@
             },
             pageChange(p) {
                 this.pagination.page = p;
-                console.log('aa' + p);
+                getData(this);
             },
+            filter() {
+                getData(this);
+            }
         },
         async created() {
-            this.pagination = { page: 5, pageSize: 20, pageCount: 30, total: 600, hasNextPage: true, hasPreviousPage: true };
+            getData(this);
         }
     }
 </script>

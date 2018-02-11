@@ -47,10 +47,7 @@
         },
         methods: {
             test: function (item) {
-                console.log(this.$refs.test);
-                this.$refs.test.changeName(item.name);
-                console.log('exchange.test');
-                $("#tradeModal").modal('show');
+                this.$refs.test.show(item.name);
             },
             active: function (exchange) {
                 this.exchanges.forEach(function (item) {

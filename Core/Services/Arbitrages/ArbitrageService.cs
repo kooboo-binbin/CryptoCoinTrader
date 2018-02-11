@@ -34,5 +34,11 @@ namespace CryptoCoinTrader.Core.Services.Arbitrages
         {
             return _coinContext.Arbitrages.Where(it => it.ObservationId == observationid).ToList();
         }
+
+        public IQueryable<Arbitrage> GetQuery()
+        {
+            return _coinContext.Arbitrages.AsQueryable();
+        }
+
     }
 }

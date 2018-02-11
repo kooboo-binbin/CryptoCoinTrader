@@ -65,8 +65,9 @@
             }
         },
         methods: {
-            changeName: function (name) {
+            show: function (name) {
                 this.exchangeName = name;
+                $("#tradeModal").modal('show');
             },
             test: async function (tradeType) {
 
