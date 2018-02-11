@@ -10,8 +10,7 @@
     export default {
         data() {
             return {
-                running: false,
-                errorMessage,
+                running: false
             }
         },
         methods: {
