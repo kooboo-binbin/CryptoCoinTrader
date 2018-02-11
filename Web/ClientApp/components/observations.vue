@@ -2,8 +2,7 @@
     <div>
         <h1> Observations</h1>
         <button v-on:click="add" class="btn btn-default">Add</button>
-        <p v-if="!observations"><em>Loading...</em></p>
-        <table class="table table-striped" v-if="observations">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Buy exchange name</th>
@@ -20,19 +19,26 @@
                 </tr>
 
             </thead>
-            <tbody>
-                <tr v-for="item in observations">
+            <tbody v-if="!items">
+                <tr><td colspan="11"><em>Loading</em></td></tr>
+            </tbody>
+            <tbody v-if="items">
+                <tr v-for="item in items">
                     <td>{{ item.buyExchangeName }}</td>
                     <td>{{ item.sellExchangeName }}</td>
                     <td>{{ item.currencyPair }}</td>
-                    <td>{{ item.runningStatus }} <a href="#"><em class="glyphicon glyphicon-stop"></em></a> <a href="#"><em class="glyphicon glyphicon-play"></em></a></td>
+                    <td>
+                        {{ item.runningStatus }}
+                        <a href="#" v-if="item.runningStatus=='Running'" v-on:click="updateStatus(item,'Stoped')"><em class="glyphicon glyphicon-stop"></em></a>
+                        <a href="#" v-if="item.runningStatus=='Stoped'" v-on:click="updateStatus(item,'Running')"><em class="glyphicon glyphicon-play"></em></a>
+                    </td>
                     <td>{{ item.spreadType }}</td>
                     <td>{{ item.spreadType=='value'? item.spreadValue:item.spreadPercentage }}</td>
                     <td>{{ item.minimumVolume }}</td>
                     <td>{{ item.perVolume }}</td>
                     <td>{{ item.maxVolume }}</td>
                     <td>{{ item.availabeVolume }}</td>
-                    <td><href href="#"><em class="glyphicon glyphicon-edit" v-on:click="edit(item)"></em></href> <a href="#"><em v-on:click="remove(item)" class="glyphicon glyphicon-remove"></em></a> </td>
+                    <td><a href="#"><em class="glyphicon glyphicon-edit" v-on:click="edit(item)"></em></a> <a href="#"><em v-on:click="remove(item)" class="glyphicon glyphicon-remove"></em></a> </td>
                 </tr>
             </tbody>
         </table>
@@ -141,11 +147,15 @@
     </div>
 </template>
 <script>
+    var getData = async function () {
+        let respone = await this.$http.get('api/observations');
+        this.items = respone.data;
+    };
 
     export default {
         data() {
             return {
-                observations: null,
+                items: null,
                 observation: null,
                 updating: false,
                 exchangeNames: null,
@@ -169,8 +179,7 @@
             remove: async function (item) {
                 if (confirm('Are you sure to delete it!')) {
                     await this.$http.delete('api/observations/' + item.id);
-                    let respone = await this.$http.get('api/observations');
-                    this.observations = respone.data;
+                    await getData.call(this);
                 }
             },
             save: async function () {
@@ -181,8 +190,19 @@
                     await this.$http.post('api/observations', this.observation);
                 }
                 $('#observationModal').modal('hide');
-                let respone = await this.$http.get('api/observations');
-                this.observations = respone.data;
+                await getData.call(this);
+            },
+            updateStatus: async function (item, status) {
+                let url = `api/observations/${item.id}`;
+                let response = await this.$http.put(url, { status: status });
+                let result = response.data;
+                if (result.isSuccessful) {
+                    item.runningStatus = status;
+                    this.$toastr.s(result.message);
+                }
+                else {
+                    this.$toastr.e(result.message)
+                }
             }
         },
         computed: {
@@ -192,11 +212,10 @@
         },
         async created() {
             try {
-                let response = await this.$http.get('api/observations');
-                this.observations = response.data;
                 this.exchangeNames = ["gdax", "bitstamp"];
                 this.currencyPairs = ["BtcEur", "LtcEur"];
                 this.runningStatus = ["Stoped", "Running", "Error", "Done"];
+                await getData.call(this);
             } catch (error) {
                 console.log(error);
             }

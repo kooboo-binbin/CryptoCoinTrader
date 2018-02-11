@@ -1,7 +1,9 @@
 using AutoMapper;
 using CryptoCoinTrader.Core.Data.Entities;
 using CryptoCoinTrader.Core.Services;
+using CryptoCoinTrader.Manifest;
 using CryptoCoinTrader.Manifest.Enums;
+using CryptoCoinTrader.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -40,9 +42,18 @@ namespace CryptoCoinTrader.Web.Controllers
         [HttpPut]
         public IActionResult Put([FromBody] Observation model)
         {
-            var observation = _mapper.Map<Observation>(model);
-            _observationService.Add(observation);
+            _observationService.Update(model);
             return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Put(Guid id, [FromBody]RunningStatusModel model)
+        {
+            var observations = _observationService.GetObservations();
+            var old = observations.FirstOrDefault(it => it.Id == id);
+            old.RunningStatus = model.Status;
+            _observationService.Update(old);
+            return Ok(new MethodResult() { IsSuccessful = true, Message = "Update status successfully." });
         }
 
         [HttpDelete("{id}")]

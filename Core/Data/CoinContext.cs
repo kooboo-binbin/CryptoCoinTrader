@@ -21,10 +21,10 @@ namespace CryptoCoinTrader.Core.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Order>().HasIndex("ArbitrageId");
-
-         // modelBuilder.Entity<Observation>().Property(it=>it.SpreadPercentage).
-
+            modelBuilder.Entity<Order>().HasIndex(nameof(Order.ArbitrageId));
+            modelBuilder.Entity<Order>().HasIndex(nameof(Order.ObservationId));
+            modelBuilder.Entity<Arbitrage>().HasIndex(nameof(Order.ObservationId));
+            // modelBuilder.Entity<Observation>().Property(it=>it.SpreadPercentage).
         }
     }
 }

@@ -1,10 +1,6 @@
 <template>
-
     <div>
-        <h1>arbitrage logs</h1>
-
-
-
+        <h1>orders </h1>
         <div class="row form-inline">
             <div class=" form-group">
                 <label for="observationId">Observation id</label>
@@ -23,31 +19,40 @@
                 <button type="button" class="btn btn-primary" v-on:click="filter">Filter</button>
             </div>
         </div>
-        <p v-if="!arbitrages"><em>Loading...</em></p>
-        <table class="table table-striped" v-if="arbitrages">
+
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Id</th>
-                    <th>ObservationId</th>
+                    <th>Remote id</th>
+                    <th>Arbitrage id</th>
+                    <th>Observation id</th>
+                    <th>Exchange name</th>
+                    <th>Order status</th>
                     <th>Volume</th>
+                    <th>Currency pair</th>
                     <th>DateCreated</th>
-                    <th></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr v-for="item in arbitrages">
+            <tbody v-if="!items">
+                <tr><td colspan="9"><em>Loading</em></td></tr>
+            </tbody>
+            <tbody v-if="items">
+                <tr v-for="item in items">
                     <td>{{ item.id }}</td>
+                    <td>{{ item.remoteId }}</td>
+                    <td>{{ item.arbitrageId }}</td>
                     <td>{{ item.observationId }}</td>
+                    <td>{{ item.exchangeName }}</td>
+                    <td>{{ item.orderStatus }}</td>
                     <td>{{ item.volume }}</td>
+                    <td>{{ item.currencyPair }}</td>
                     <td>{{ item.dateCreated }}</td>
-                    <td><href href="#" title="find all orders" v-on:click="look(item)"><em class="glyphicon glyphicon-piggy-bank"></em></href> </td>
                 </tr>
             </tbody>
         </table>
         <pagination v-bind:pagination="pagination" v-on:pageChange="pageChange"></pagination>
     </div>
-
-
 </template>
 <script>
     var getData = async function (vue) {
@@ -60,8 +65,8 @@
             page: page,
             pageSize: pageSize
         };
-        let response = await vue.$http.get('api/arbitrages', { params: data });
-        vue.arbitrages = response.data.items;
+        let response = await vue.$http.get('api/orders', { params: data });
+        vue.items = response.data.items;
         vue.pagination = response.data.pagination;
     };
 
@@ -72,15 +77,12 @@
                 startDate: null,
                 endDate: null,
 
-                arbitrages: null,
+                items: null,
                 pagination: { page: 1, pageSize: 20, pageCount: 1, total: 20, hasNextPage: false, hasPreviousPage: false },
             }
         },
         methods: {
-            look(item) {
-                console.log('look orders')
-                console.log(item);
-            },
+
             pageChange(p) {
                 this.pagination.page = p;
                 getData(this);

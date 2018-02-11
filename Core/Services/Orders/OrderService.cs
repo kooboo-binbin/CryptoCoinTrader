@@ -55,6 +55,11 @@ namespace CryptoCoinTrader.Core.Services.Orders
             }
         }
 
+        public IQueryable<Order> GetQuery()
+        {
+            return _coinContext.Orders.AsQueryable();
+        }
+
         private string GetKey(Guid arbitrageId)
         {
             return $"orders:{arbitrageId}";

@@ -196,25 +196,27 @@ namespace CryptoCoinTrader.Core.Workers
                 var buyOrder = new Order
                 {
                     ArbitrageId = arbitrage.Id,
+                    ObservationId = arbitrage.ObservationId,
                     DateCreated = DateTime.UtcNow,
                     ExchangeName = observation.BuyExchangeName,
                     Id = Guid.NewGuid(),
                     OrderStatus = buyResult.Data.Status,
                     Price = 0,//it is market,
                     RemoteId = buyResult.Data.Id,
-                    Target = observation.CurrencyPair,
+                    CurrencyPair = observation.CurrencyPair,
                     Volume = volume
                 };
                 var sellOrder = new Order
                 {
                     ArbitrageId = arbitrage.Id,
+                    ObservationId = arbitrage.ObservationId,
                     DateCreated = DateTime.UtcNow,
                     ExchangeName = observation.SellExchangeName,
                     Id = Guid.NewGuid(),
                     OrderStatus = buyResult.Data.Status,
                     Price = 0,//it is market,
                     RemoteId = buyResult.Data.Id,
-                    Target = observation.CurrencyPair,
+                    CurrencyPair = observation.CurrencyPair,
                     Volume = volume
                 };
                 _orderService.Add(buyOrder, sellOrder);

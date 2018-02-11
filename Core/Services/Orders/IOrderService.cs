@@ -2,6 +2,7 @@
 using CryptoCoinTrader.Manifest.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CryptoCoinTrader.Core.Services.Orders
@@ -18,6 +19,8 @@ namespace CryptoCoinTrader.Core.Services.Orders
         /// <param name="arbitrageId"></param>
         /// <returns></returns>
         List<Data.Entities.Order> GetList(Guid arbitrageId);
+
+        IQueryable<Order> GetQuery();
 
     }
 }
