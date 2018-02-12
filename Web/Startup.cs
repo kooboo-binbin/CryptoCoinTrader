@@ -18,6 +18,7 @@ using CryptoCoinTrader.Core.Services.Observations;
 using CryptoCoinTrader.Core.Services.Orders;
 using CryptoCoinTrader.Core.Workers;
 using CryptoCoinTrader.Manifest.Interfaces;
+using CryptoCoinTrader.Web;
 using Karambolo.Extensions.Logging.File;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -70,17 +71,17 @@ namespace CryptoCoinTrader
             services.AddScoped<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
             services.AddScoped<IGdaxOrderStatusMapper, GdaxOrderStatusMapper>();
             services.AddScoped<IBitmapOrderStatusMapper, BitstampOrderStatusMapper>();
-            services.AddScoped<IBitstampDataClient, BitstampDataClient>();
-            services.AddScoped<IGdaxDataClient, GdaxDataClient>();
+            services.AddSingleton<IBitstampDataClient, BitstampDataClient>();
+            services.AddSingleton<IGdaxDataClient, GdaxDataClient>();
             if (appSettings.Production)
             {
-                services.AddScoped<IBitstampTradeClient, BitstampTradeClient>();
-                services.AddScoped<IGdaxTradeClient, GdaxTradeClient>();
+                services.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();
+                services.AddSingleton<IGdaxTradeClient, GdaxTradeClient>();
             }
             else
             {
-                services.AddScoped<IBitstampTradeClient, BitstampFakeTradeClient>();
-                services.AddScoped<IGdaxTradeClient, GdaxFakeTradeClient>();
+                services.AddSingleton<IBitstampTradeClient, BitstampFakeTradeClient>();
+                services.AddSingleton<IGdaxTradeClient, GdaxFakeTradeClient>();
             }
             services.AddScoped<IObservationService, ObservationService>();
             services.AddScoped<IExchangeDataService, ExchangeDataService>();
@@ -91,6 +92,7 @@ namespace CryptoCoinTrader
             services.AddScoped<IExchangeSetting, ExchangeSetting>();
             services.AddScoped<IExchangeConfigService, ExchangeConfigService>();
             services.AddScoped<IWorker, Worker>();
+            services.AddScoped<App, App>();
             services.AddOptions();
             services.AddAutoMapper();
 

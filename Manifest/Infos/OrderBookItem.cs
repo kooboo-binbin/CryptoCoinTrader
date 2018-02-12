@@ -17,5 +17,10 @@ namespace CryptoCoinTrader.Manifest.Infos
         /// For USD, Eur normally
         /// </summary>
         public decimal Price { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Price:f2}-{Volume:f4}";
+        }
     }
 }

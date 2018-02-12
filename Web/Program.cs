@@ -11,6 +11,7 @@ using System.Globalization;
 using CryptoCoinTrader.Core.Services;
 using CryptoCoinTrader.Core.Workers;
 using CryptoCoinTrader.Manifest;
+using CryptoCoinTrader.Web;
 
 namespace CryptoCoinTrader
 {
@@ -27,11 +28,14 @@ namespace CryptoCoinTrader
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<CoinContext>();
                 context.Database.EnsureCreated();
+
+                var app = services.GetRequiredService<App>();
+                app.Run();
             }
 
             host.Run();
         }
-   
+
 
         public static IWebHost BuildWebHost(string[] args) =>
            WebHost.CreateDefaultBuilder(args)

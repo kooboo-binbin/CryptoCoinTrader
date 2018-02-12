@@ -1,10 +1,11 @@
 <template>
     <div class="container-fluid">
         <div class="row">
-            <div class="page-header col-lg-12">  <strong> Running status {{running?'Running':'Stopped'}}</strong></div>
+            <div class="page-header col-lg-12">  <strong>Home </strong></div>
         </div>
         <div class="row">
             <div class="col-lg-12 box">
+                <span>Current status: <strong> {{running?'Running':'Stopped'}} </strong>  </span>
                 <button class="btn btn-primary" v-on:click="stop" v-if="running">Stop</button>
                 <button class="btn btn-primary" v-on:click="start" v-if="!running">Start</button>
             </div>

@@ -9,8 +9,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="box col-lg-12">
-                <table class="table table-striped table-responsive">
+            <div class="box col-lg-12 table-responsive">
+                <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>Buy exchange name</th>
@@ -169,7 +169,7 @@
                 observation: null,
                 updating: false,
                 exchangeNames: null,
-
+        
                 currencyPairs: null,
                 runningStatus: null,
             }

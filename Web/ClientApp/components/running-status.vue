@@ -1,26 +1,100 @@
 <template>
     <div class="row">
-        <ul class="watch" v-if="items">
-            <li v-for="item in items">
+        <div class="col-lg-12">
+            <ul class="watch" v-if="items">
+                <li v-for="item in items">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                                <th>Name</th>
+                                <th>Value</th>
+                            </tr>
 
-                <span>
-                    Buy:gdax
-                </span>
-                <span>
-                    Sell:bitstamp
-                </span>
-                <span>
-                    <a href="#" v-if="item.runningStatus=='Running'" v-on:click="updateStatus(item,'Stoped')"><em class="glyphicon glyphicon-stop"></em></a>
-                    <a href="#" v-if="item.runningStatus=='Stoped'" v-on:click="updateStatus(item,'Running')"><em class="glyphicon glyphicon-play"></em></a>
-                </span>
-            </li>
-        </ul>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Buy </td>
+                                <td>{{item.observation.buyExchangeName}}</td>
+                                <td>Spread Type</td>
+                                <td>{{item.observation.spreadType}}: {{item.observation.spreadType=='Value'?item.observation.spreadValue:item.observation.spreadPercentage}} </td>
+
+
+                            </tr>
+                            <tr>
+                                <td>Sell</td>
+                                <td>{{item.observation.sellExchangeName}}</td>
+                                <td>Per </td>
+                                <td>{{item.observation.perVolume}}</td>
+
+
+                            </tr>
+                            <tr>
+                                <td> Current status: </td>
+                                <td>
+                                    <strong>{{item.observation.runningStatus}}</strong>  <a href="#" title="click to run" v-if="item.observation.runningStatus=='Running'" v-on:click="updateStatus(item.observation,'Stoped')"><em class="glyphicon glyphicon-stop"></em></a>
+                                    <a href="#" title="click to stop" v-if="item.observation.runningStatus=='Stoped'" v-on:click="updateStatus(item.observation,'Running')"><em class="glyphicon glyphicon-play"></em></a>
+                                </td>
+                                <td>Minimum</td>
+                                <td>{{item.observation.minimumVolume}}</td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td>Currency pair</td>
+                                <td>{{item.observation.currencyPair}}</td>
+                                <td>Max </td>
+                                <td>{{item.observation.maximumVolume}}</td>
+                            </tr>
+                            <tr>
+                                <td>Bid 1</td>
+                                <td>{{item.orderBook.bid1}}</td>
+                                <td>Ask 1</td>
+                                <td>{{item.orderBook.ask1}}</td>
+                            </tr>
+                            <tr>
+                                <td>Spread Value</td>
+                                <td>{{item.orderBook.spreadValue}}</td>
+                                <td>Spread Volume</td>
+                                <td>{{item.orderBook.spreadVolume}}</td>
+                            </tr>
+                            <tr>
+                                <td>Bid 2</td>
+                                <td>{{item.orderBook.bid2}}</td>
+                                <td>Ask 2</td>
+                                <td>{{item.orderBook.ask2}}</td>
+                            </tr>
+                            <tr>
+                                <td>Bid 3</td>
+                                <td>{{item.orderBook.bid3}}</td>
+                                <td>Ask 3</td>
+                                <td>{{item.orderBook.ask3}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 <script>
-    var getData = async function () {
-        let respone = await this.$http.get('api/observations');
-        this.items = respone.data;
+
+    var times = 0;
+    var getData = async function (vue) {
+        try {
+
+            let respone = await vue.$http.get('api/watchs');
+            vue.items = respone.data;
+            times++;
+            console.log(times);
+            // console.log(vue.items);
+
+        } catch (ex) {
+            console.log(ex);
+        }
     };
 
     export default {
@@ -44,7 +118,12 @@
             }
         },
         async created() {
-            await getData.call(this);
+            var self = this;
+            this.task = window.setInterval(function () { getData(self) }, 500);
+        },
+        beforeDestroy() {
+            console.log('before destory.');
+            window.clearInterval(this.task);
         }
     }
 </script>
@@ -52,12 +131,28 @@
     .watch {
         width: 100%;
         list-style: none;
+        padding-left: 0px;
+        overflow-x: auto;
+        overflow-y: hidden;
     }
+
+        .watch th {
+            width: 25%
+        }
 
         .watch li {
             border-radius: 2px;
             float: left;
-            width: 100px;
-            height: 200px;
+            width: 550px;
+            height: 350px;
+            background-color: white;
+            padding: 5px 5px 5px 5px;
+            margin-right: 30px;
+            margin-bottom: 30px;
         }
+
+            .watch li span {
+                display: inline-block;
+                width: 200px;
+            }
 </style>
