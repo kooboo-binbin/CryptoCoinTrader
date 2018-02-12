@@ -7,9 +7,9 @@
             <div class="col-lg-12 box">
                 <div class="form-inline">
                     <div class=" form-group">
-                        <label for="observationId">Observation id</label>
+                        <label for="observationName">Observation name</label>
 
-                        <input type="text" class="form-control" id="observationId" v-model="observationId">
+                        <input type="text" class="form-control" id="observationName" v-model="observationName">
                     </div>
                     <div class=" form-group">
                         <label for="startDate">Start date</label>
@@ -32,9 +32,9 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>ObservationId</th>
+                            <th>Observation name</th>
                             <th>Volume</th>
-                            <th>DateCreated</th>
+                            <th>Date created</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -44,7 +44,7 @@
                     <tbody v-if="items">
                         <tr v-for="item in items">
                             <td>{{ item.id }}</td>
-                            <td>{{ item.observationId }}</td>
+                            <td>{{ item.observationName }}</td>
                             <td>{{ item.volume }}</td>
                             <td>{{ item.dateCreated }}</td>
                             <td><href href="#" title="find all orders" v-on:click="look(item)"><em class="glyphicon glyphicon-piggy-bank"></em></href> </td>
@@ -65,7 +65,7 @@
         var page = vue.pagination.page;
         var pageSize = vue.pagination.pageSize;
         var data = {
-            observationId: vue.observationId,
+            observationName: vue.observationName,
             startDate: vue.startDate,
             endDate: vue.endDate,
             page: page,

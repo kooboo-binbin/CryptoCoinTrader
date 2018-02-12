@@ -14,8 +14,13 @@ namespace CryptoCoinTrader.Core.Data.Entities
         [Key]
         public Guid Id { get; set; }
 
+        [StringLength(50)]
+        public string Name { get; set; }
+
+        [StringLength(50)]
         public string FromExchangeName { get; set; }
 
+        [StringLength(50)]
         public string ToExchangeName { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
@@ -83,6 +88,7 @@ namespace CryptoCoinTrader.Core.Data.Entities
             old.FromExchangeName = this.FromExchangeName;
             old.MaximumVolume = this.MaximumVolume;
             old.MinimumVolume = this.MinimumVolume;
+            old.Name = this.Name;
             old.PerVolume = this.PerVolume;
             old.RunningStatus = this.RunningStatus;
             old.SpreadPercentage = this.SpreadPercentage;

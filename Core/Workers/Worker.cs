@@ -199,6 +199,7 @@ namespace CryptoCoinTrader.Core.Workers
                     DateCreated = DateTime.UtcNow,
                     Id = Guid.NewGuid(),
                     ObservationId = observation.Id,
+                    ObservationName = observation.Name,
                     Volume = volume
                 };
                 _arbitrageService.Add(arbitrage);
@@ -207,6 +208,7 @@ namespace CryptoCoinTrader.Core.Workers
                 {
                     ArbitrageId = arbitrage.Id,
                     ObservationId = arbitrage.ObservationId,
+                    ObservationName = arbitrage.ObservationName,
                     DateCreated = DateTime.UtcNow,
                     ExchangeName = observation.FromExchangeName,
                     Id = Guid.NewGuid(),
@@ -220,6 +222,7 @@ namespace CryptoCoinTrader.Core.Workers
                 {
                     ArbitrageId = arbitrage.Id,
                     ObservationId = arbitrage.ObservationId,
+                    ObservationName = arbitrage.ObservationName,
                     DateCreated = DateTime.UtcNow,
                     ExchangeName = observation.ToExchangeName,
                     Id = Guid.NewGuid(),

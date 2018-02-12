@@ -13,7 +13,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <td>Id</td>
+                            <th>Name </th>
                             <th>From exchange name</th>
                             <th>To exchange name</th>
                             <th>Currency pair</th>
@@ -33,7 +33,7 @@
                     </tbody>
                     <tbody v-if="items">
                         <tr v-for="item in items">
-                            <td>{{ item.id }}</td>
+                            <td><span v-bind:title="'id: '+item.id">{{item.name}}</span></td>
                             <td>{{ item.fromExchangeName }}</td>
                             <td>{{ item.toExchangeName }}</td>
                             <td>{{ item.currencyPair }}</td>
@@ -62,6 +62,12 @@
                         <h4 class="modal-title">{{ title }}</h4>
                     </div>
                     <div class="modal-body form-horizontal" v-if="observation">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Name</label>
+                            <div class="col-sm-8 ">
+                                <input class="form-control" v-model="observation.name" type="text" maxlength="50" />
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="col-sm-4 control-label">From exchange name</label>
                             <div class="col-sm-8 ">
@@ -171,7 +177,7 @@
                 observation: null,
                 updating: false,
                 exchangeNames: null,
-        
+
                 currencyPairs: null,
                 runningStatus: null,
             }

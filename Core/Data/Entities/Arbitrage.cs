@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CryptoCoinTrader.Manifest.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -15,6 +16,11 @@ namespace CryptoCoinTrader.Core.Data.Entities
         public decimal Volume { get; set; }
 
         public DateTime DateCreated { get; set; }
+
+        public CurrencyPair CurrencyPair { get; set; }
+
+        [StringLength(50)]
+        public string ObservationName { get; set; }
 
     }
 }

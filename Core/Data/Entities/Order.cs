@@ -11,14 +11,20 @@ namespace CryptoCoinTrader.Core.Data.Entities
     public class Order
     {
         [Key]
-        public Guid Id { get; set; }   
+        public Guid Id { get; set; }
 
+        [StringLength(50)]
         public string RemoteId { get; set; }
 
         public Guid ArbitrageId { get; set; }
         public Guid ObservationId { get; set; }
 
+        [StringLength(50)]
+        public string ObservationName { get; set; }
+
+        [StringLength(50)]
         public string ExchangeName { get; set; }
+       
 
         [JsonConverter(typeof(StringEnumConverter))]
         public OrderStatus OrderStatus { get; set; }

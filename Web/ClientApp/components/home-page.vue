@@ -6,8 +6,8 @@
         <div class="row">
             <div class="col-lg-12 box">
                 <span>Current status: <strong> {{running?'Running':'Stopped'}} </strong>  </span>
-                <button class="btn btn-primary" v-on:click="stop" v-if="running">Stop</button>
-                <button class="btn btn-primary" v-on:click="start" v-if="!running">Start</button>
+                <button class="btn btn-primary" v-on:click="stop" v-if="running">{{stopLabel}}</button>
+                <button class="btn btn-primary" v-on:click="start" v-if="!running">{{startLabel}}</button>
             </div>
         </div>
         <running-status></running-status>
@@ -21,22 +21,27 @@
     export default {
         data() {
             return {
-                running: false
+                running: false,
+                startLabel: 'Start',
+                stopLabel: 'Stop'
             }
         },
         methods: {
-            stop() {
+            async stop() {
                 try {
-                    this.$http.put('api/trade', { running: false });
+                    this.stopLabel = 'Stop ...';
+                    await this.$http.put('api/trade', { running: false });
                     this.running = false;
                     this.$toastr.s("Stop successfully.");
                 } catch (ex) {
                     this.$toastr.e(ex);
                     console.log(ex);
                 }
+                this.stopLabel = 'Stop';
             },
             async start() {
                 try {
+                    this.startLabel = 'Start ...';
                     let response = await this.$http.put('api/trade', { running: true });
                     let result = response.data;
                     if (result.isSuccessful) {
@@ -45,10 +50,12 @@
                     } else {
                         this.$toastr.e(result.message);
                     }
+
                 } catch (ex) {
                     this.$toastr.e(ex);
                     console.log(ex);
                 }
+                this.startLabel = 'Start';
             }
         },
         async created() {
