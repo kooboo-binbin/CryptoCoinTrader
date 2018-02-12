@@ -1,57 +1,69 @@
 <template>
-    <div>
-        <h1>orders </h1>
-        <div class="row form-inline">
-            <div class=" form-group">
-                <label for="observationId">Observation id</label>
-
-                <input type="text" class="form-control" id="observationId" v-model="observationId">
-            </div>
-            <div class=" form-group">
-                <label for="startDate">Start date</label>
-                <input type="date" class="form-control" id="startDate" v-model="startDate">
-            </div>
-            <div class=" form-group">
-                <label for="enddate">End date</label>
-                <input type="date" class="form-control" id="endDate" v-model="endDate">
-            </div>
-            <div class="form-group">
-                <button type="button" class="btn btn-primary" v-on:click="filter">Filter</button>
-            </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="page-header col-lg-12"><strong>Orders </strong></div>
         </div>
 
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Remote id</th>
-                    <th>Arbitrage id</th>
-                    <th>Observation id</th>
-                    <th>Exchange name</th>
-                    <th>Order status</th>
-                    <th>Volume</th>
-                    <th>Currency pair</th>
-                    <th>DateCreated</th>
-                </tr>
-            </thead>
-            <tbody v-if="!items">
-                <tr><td colspan="9"><em>Loading</em></td></tr>
-            </tbody>
-            <tbody v-if="items">
-                <tr v-for="item in items">
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.remoteId }}</td>
-                    <td>{{ item.arbitrageId }}</td>
-                    <td>{{ item.observationId }}</td>
-                    <td>{{ item.exchangeName }}</td>
-                    <td>{{ item.orderStatus }}</td>
-                    <td>{{ item.volume }}</td>
-                    <td>{{ item.currencyPair }}</td>
-                    <td>{{ item.dateCreated }}</td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="row">
+            <div class="col-lg-12 box">
+                <div class="form-inline">
+
+                    <div class=" form-group">
+                        <label for="observationId">Observation id</label>
+
+                        <input type="text" class="form-control" id="observationId" v-model="observationId">
+                    </div>
+                    <div class=" form-group">
+                        <label for="startDate">Start date</label>
+                        <input type="date" class="form-control" id="startDate" v-model="startDate">
+                    </div>
+                    <div class=" form-group">
+                        <label for="enddate">End date</label>
+                        <input type="date" class="form-control" id="endDate" v-model="endDate">
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary" v-on:click="filter">Filter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="box col-lg-12">
+                <table class="table table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Remote id</th>
+                            <th>Arbitrage id</th>
+                            <th>Observation id</th>
+                            <th>Exchange name</th>
+                            <th>Order status</th>
+                            <th>Volume</th>
+                            <th>Currency pair</th>
+                            <th>DateCreated</th>
+                        </tr>
+                    </thead>
+                    <tbody v-if="!items">
+                        <tr><td colspan="9"><em>Loading</em></td></tr>
+                    </tbody>
+                    <tbody v-if="items">
+                        <tr v-for="item in items">
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.remoteId }}</td>
+                            <td>{{ item.arbitrageId }}</td>
+                            <td>{{ item.observationId }}</td>
+                            <td>{{ item.exchangeName }}</td>
+                            <td>{{ item.orderStatus }}</td>
+                            <td>{{ item.volume }}</td>
+                            <td>{{ item.currencyPair }}</td>
+                            <td>{{ item.dateCreated }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <pagination v-bind:pagination="pagination" v-on:pageChange="pageChange"></pagination>
+
     </div>
 </template>
 <script>

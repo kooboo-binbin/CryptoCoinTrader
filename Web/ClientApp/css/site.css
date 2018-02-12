@@ -1,3 +1,22 @@
+body {
+    background-color: #f2f2f2;
+}
+
+.box {
+    background-color: white;
+    padding: 15px 10px 10px 10px;
+    border-radius: 5px;
+    margin-bottom: 25px;
+}
+
+.page-header {
+    background-color: white;
+    padding: 15px 10px 10px 10px;
+    border-radius: 5px;
+    margin-top: 4px;
+    margin-bottom: 25px;
+}
+
 .main-nav li .glyphicon {
     margin-right: 10px;
 }
@@ -17,6 +36,7 @@
     left: 0;
     right: 0;
     z-index: 1;
+
 }
 
 
@@ -32,7 +52,7 @@
     /* On small screens, convert the nav menu to a vertical sidebar */
     .main-nav {
         height: 100%;
-        width: calc(25% - 20px);
+        width: calc(17% - 20px);
     }
 
         .main-nav .navbar {

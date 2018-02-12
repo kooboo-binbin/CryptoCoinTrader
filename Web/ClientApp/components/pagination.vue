@@ -1,28 +1,29 @@
 <template>
-    <div class="row">
-        <div class="col-sm-5">
-            <div class="page-details">
-                showing {{recordStart}} to {{recordStart + pagination.pageSize}} of {{pagination.total}}
-            </div>
+
+
+    <div class="row box">
+        <div class="col-lg-5 page-details">
+            showing {{recordStart}} to {{recordStart + pagination.pageSize}} of {{pagination.total}}
         </div>
-        <div class="col-sm-7">
-            <nav class="page-pagination" v-if="pagination" aria-label="Page navigation">
-                <ul class="pagination">
-                    <li>
-                        <a href="#" v-bind:class="{disabled:!pagination.hasPreviousPage}" v-on:click="previous" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li v-for="item in pages" v-bind:class="{active:item.active}"><a href="#" v-on:click="page(item.page)">{{item.page +1}}</a></li>
-                    <li>
-                        <a href="#" v-bind:class="{disabled:!pagination.hasNextPage}" v-on:click="next" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+
+        <nav class="col-lg-7 page-pagination" v-if="pagination" aria-label="Page navigation">
+            <ul class="pagination">
+                <li>
+                    <a href="#" v-bind:class="{disabled:!pagination.hasPreviousPage}" v-on:click="previous" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li v-for="item in pages" v-bind:class="{active:item.active}"><a href="#" v-on:click="page(item.page)">{{item.page +1}}</a></li>
+                <li>
+                    <a href="#" v-bind:class="{disabled:!pagination.hasNextPage}" v-on:click="next" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
     </div>
+
 </template>
 <script>
     var PageModel = function (active, page) {
@@ -80,5 +81,9 @@
 
     .page-pagination {
         text-align: right;
+    }
+
+    .pagination {
+        margin: 0;
     }
 </style>

@@ -1,47 +1,57 @@
 <template>
-    <div>
-        <h1> Observations</h1>
-        <button v-on:click="add" class="btn btn-default">Add</button>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Buy exchange name</th>
-                    <th>Sell exchange name</th>
-                    <th>Currency pair</th>
-                    <th>Running status</th>
-                    <th>Spread type</th>
-                    <th>Value / Percentage</th>
-                    <th>Spread minimum</th>
-                    <th>Per volume</th>
-                    <th>Max </th>
-                    <th>Availabe</th>
-                    <th>Operations</th>
-                </tr>
+    <div class="container-fluid">
+        <div class="row page-header">
+            <strong> Observations</strong>
+        </div>
+        <div class="row">
+            <div class="box col-lg-12">
+                <button v-on:click="add" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="box col-lg-12">
+                <table class="table table-striped table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Buy exchange name</th>
+                            <th>Sell exchange name</th>
+                            <th>Currency pair</th>
+                            <th>Running status</th>
+                            <th>Spread type</th>
+                            <th>Value / Percentage</th>
+                            <th>Spread minimum</th>
+                            <th>Per volume</th>
+                            <th>Max </th>
+                            <th>Availabe</th>
+                            <th>Operations</th>
+                        </tr>
 
-            </thead>
-            <tbody v-if="!items">
-                <tr><td colspan="11"><em>Loading</em></td></tr>
-            </tbody>
-            <tbody v-if="items">
-                <tr v-for="item in items">
-                    <td>{{ item.buyExchangeName }}</td>
-                    <td>{{ item.sellExchangeName }}</td>
-                    <td>{{ item.currencyPair }}</td>
-                    <td>
-                        {{ item.runningStatus }}
-                        <a href="#" v-if="item.runningStatus=='Running'" v-on:click="updateStatus(item,'Stoped')"><em class="glyphicon glyphicon-stop"></em></a>
-                        <a href="#" v-if="item.runningStatus=='Stoped'" v-on:click="updateStatus(item,'Running')"><em class="glyphicon glyphicon-play"></em></a>
-                    </td>
-                    <td>{{ item.spreadType }}</td>
-                    <td>{{ item.spreadType=='value'? item.spreadValue:item.spreadPercentage }}</td>
-                    <td>{{ item.minimumVolume }}</td>
-                    <td>{{ item.perVolume }}</td>
-                    <td>{{ item.maxVolume }}</td>
-                    <td>{{ item.availabeVolume }}</td>
-                    <td><a href="#"><em class="glyphicon glyphicon-edit" v-on:click="edit(item)"></em></a> <a href="#"><em v-on:click="remove(item)" class="glyphicon glyphicon-remove"></em></a> </td>
-                </tr>
-            </tbody>
-        </table>
+                    </thead>
+                    <tbody v-if="!items">
+                        <tr><td colspan="11"><em>Loading</em></td></tr>
+                    </tbody>
+                    <tbody v-if="items">
+                        <tr v-for="item in items">
+                            <td>{{ item.buyExchangeName }}</td>
+                            <td>{{ item.sellExchangeName }}</td>
+                            <td>{{ item.currencyPair }}</td>
+                            <td>
+                                {{ item.runningStatus }}
+
+                            </td>
+                            <td>{{ item.spreadType }}</td>
+                            <td>{{ item.spreadType=='value'? item.spreadValue:item.spreadPercentage }}</td>
+                            <td>{{ item.minimumVolume }}</td>
+                            <td>{{ item.perVolume }}</td>
+                            <td>{{ item.maxVolume }}</td>
+                            <td>{{ item.availabeVolume }}</td>
+                            <td><a href="#"><em class="glyphicon glyphicon-edit" v-on:click="edit(item)"></em></a> <a href="#"><em v-on:click="remove(item)" class="glyphicon glyphicon-remove"></em></a> </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <div id="observationModal" class="modal fade" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -192,18 +202,7 @@
                 $('#observationModal').modal('hide');
                 await getData.call(this);
             },
-            updateStatus: async function (item, status) {
-                let url = `api/observations/${item.id}`;
-                let response = await this.$http.put(url, { status: status });
-                let result = response.data;
-                if (result.isSuccessful) {
-                    item.runningStatus = status;
-                    this.$toastr.s(result.message);
-                }
-                else {
-                    this.$toastr.e(result.message)
-                }
-            }
+
         },
         computed: {
             title: function () {

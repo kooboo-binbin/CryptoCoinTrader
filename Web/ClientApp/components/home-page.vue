@@ -1,9 +1,15 @@
 <template>
-    <div>
-        <h1> Running status {{running?'Running':'Stopped'}}</h1>
-        <button class="btn btn-default" v-on:click="stop" v-if="running">Stop</button>
-        <button class="btn btn-default" v-on:click="start" v-if="!running">Start</button>
-
+    <div class="container-fluid">
+        <div class="row">
+            <div class="page-header col-lg-12">  <strong> Running status {{running?'Running':'Stopped'}}</strong></div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 box">
+                <button class="btn btn-primary" v-on:click="stop" v-if="running">Stop</button>
+                <button class="btn btn-primary" v-on:click="start" v-if="!running">Start</button>
+            </div>
+        </div>
+        <running-status></running-status>
     </div>
 </template>
 <script>
