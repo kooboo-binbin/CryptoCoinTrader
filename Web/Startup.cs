@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using CryptoCoinTrader.Core;
 using CryptoCoinTrader.Core.Data;
 using CryptoCoinTrader.Core.Exchanges;
@@ -60,17 +59,17 @@ namespace CryptoCoinTrader
             {
                 options.UseSqlite("Data Source=cointrader.db");
                 //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            }, ServiceLifetime.Scoped);
+            }, ServiceLifetime.Singleton);
 
             services.AddMemoryCache();
-            services.AddScoped<ISelfInspectionService, SelfInspectionService>();
-            services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IBitstampConfig, BitstampConfig>();
-            services.AddScoped<IGdaxConfig, GdaxConfig>();
-            services.AddScoped<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
-            services.AddScoped<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
-            services.AddScoped<IGdaxOrderStatusMapper, GdaxOrderStatusMapper>();
-            services.AddScoped<IBitmapOrderStatusMapper, BitstampOrderStatusMapper>();
+            services.AddSingleton<ISelfInspectionService, SelfInspectionService>();
+            services.AddSingleton<IOrderService, OrderService>();
+            services.AddSingleton<IBitstampConfig, BitstampConfig>();
+            services.AddSingleton<IGdaxConfig, GdaxConfig>();
+            services.AddSingleton<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
+            services.AddSingleton<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
+            services.AddSingleton<IGdaxOrderStatusMapper, GdaxOrderStatusMapper>();
+            services.AddSingleton<IBitmapOrderStatusMapper, BitstampOrderStatusMapper>();
             services.AddSingleton<IBitstampDataClient, BitstampDataClient>();
             services.AddSingleton<IGdaxDataClient, GdaxDataClient>();
             if (appSettings.Production)
@@ -83,18 +82,17 @@ namespace CryptoCoinTrader
                 services.AddSingleton<IBitstampTradeClient, BitstampFakeTradeClient>();
                 services.AddSingleton<IGdaxTradeClient, GdaxFakeTradeClient>();
             }
-            services.AddScoped<IObservationService, ObservationService>();
-            services.AddScoped<IExchangeDataService, ExchangeDataService>();
-            services.AddScoped<IExchangeTradeService, ExchangeTradeService>();
-            services.AddScoped<IMessageService, ConsoleMessageService>();
-            services.AddScoped<IOpportunityService, OpportunityService>();
-            services.AddScoped<IArbitrageService, ArbitrageService>();
-            services.AddScoped<IExchangeSetting, ExchangeSetting>();
-            services.AddScoped<IExchangeConfigService, ExchangeConfigService>();
-            services.AddScoped<IWorker, Worker>();
-            services.AddScoped<App, App>();
+            services.AddSingleton<IObservationService, ObservationService>();
+            services.AddSingleton<IExchangeDataService, ExchangeDataService>();
+            services.AddSingleton<IExchangeTradeService, ExchangeTradeService>();
+            services.AddSingleton<IMessageService, ConsoleMessageService>();
+            services.AddSingleton<IOpportunityService, OpportunityService>();
+            services.AddSingleton<IArbitrageService, ArbitrageService>();
+            services.AddSingleton<IExchangeSetting, ExchangeSetting>();
+            services.AddSingleton<IExchangeConfigService, ExchangeConfigService>();
+            services.AddSingleton<IWorker, Worker>();
+            services.AddSingleton<App, App>();
             services.AddOptions();
-            services.AddAutoMapper();
 
             // Add framework services.
             services.AddMvc();

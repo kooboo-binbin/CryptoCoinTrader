@@ -25,6 +25,7 @@
                 try {
                     this.$http.put('api/trade', { running: false });
                     this.running = false;
+                    this.$toastr.s("Stop successfully.");
                 } catch (ex) {
                     this.$toastr.e(ex);
                     console.log(ex);
@@ -36,6 +37,7 @@
                     let result = response.data;
                     if (result.isSuccessful) {
                         this.running = true;
+                        this.$toastr.s("Start successfully.");
                     } else {
                         this.$toastr.e(result.message);
                     }

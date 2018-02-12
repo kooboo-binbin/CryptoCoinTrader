@@ -1,6 +1,7 @@
 using AutoMapper;
 using CryptoCoinTrader.Core.Data.Entities;
 using CryptoCoinTrader.Core.Services;
+using CryptoCoinTrader.Core.Workers;
 using CryptoCoinTrader.Manifest;
 using CryptoCoinTrader.Manifest.Enums;
 using CryptoCoinTrader.Web.Models;
@@ -15,12 +16,14 @@ namespace CryptoCoinTrader.Web.Controllers
     [Route("api/[controller]")]
     public class ObservationsController : Controller
     {
-        private readonly IMapper _mapper;
+
         private readonly IObservationService _observationService;
-        public ObservationsController(IMapper mapper,
-            IObservationService observationService)
+        private readonly IWorker _worker;
+        public ObservationsController(IObservationService observationService,
+            IWorker worker)
         {
             _observationService = observationService;
+            _worker = worker;
         }
 
         [HttpGet]
@@ -36,6 +39,7 @@ namespace CryptoCoinTrader.Web.Controllers
             model.Id = Guid.NewGuid();
             model.DateCreated = DateTime.UtcNow;
             _observationService.Add(model);
+            _worker.Add(model);
             return NoContent();
         }
 
@@ -60,6 +64,7 @@ namespace CryptoCoinTrader.Web.Controllers
         public IActionResult Delete(Guid id)
         {
             _observationService.Delete(id);
+            _worker.Delete(id);
             return NoContent();
         }
 

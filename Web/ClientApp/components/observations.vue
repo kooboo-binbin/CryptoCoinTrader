@@ -40,7 +40,7 @@
 
                             </td>
                             <td>{{ item.spreadType }}</td>
-                            <td>{{ item.spreadType=='value'? item.spreadValue:item.spreadPercentage }}</td>
+                            <td>{{ item.spreadType=='Value'? item.spreadValue:item.spreadPercentage }}</td>
                             <td>{{ item.minimumVolume }}</td>
                             <td>{{ item.perVolume }}</td>
                             <td>{{ item.maxVolume }}</td>

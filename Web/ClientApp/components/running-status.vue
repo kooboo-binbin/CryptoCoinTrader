@@ -25,7 +25,7 @@
                             <tr>
                                 <td>To exchange</td>
                                 <td>{{item.observation.toExchangeName}}</td>
-                                <td>Per </td>
+                                <td>Per volume</td>
                                 <td>{{item.observation.perVolume}}</td>
 
 
@@ -36,7 +36,7 @@
                                     <strong>{{item.observation.runningStatus}}</strong>  <a href="#" title="click to run" v-if="item.observation.runningStatus=='Running'" v-on:click="updateStatus(item.observation,'Stoped')"><em class="glyphicon glyphicon-stop"></em></a>
                                     <a href="#" title="click to stop" v-if="item.observation.runningStatus=='Stoped'" v-on:click="updateStatus(item.observation,'Running')"><em class="glyphicon glyphicon-play"></em></a>
                                 </td>
-                                <td>Minimum</td>
+                                <td>Minimum volume</td>
                                 <td>{{item.observation.minimumVolume}}</td>
 
 
@@ -45,8 +45,8 @@
                             <tr>
                                 <td>Currency pair</td>
                                 <td>{{item.observation.currencyPair}}</td>
-                                <td>Max </td>
-                                <td>{{item.observation.maximumVolume}}</td>
+                                <td>Maximum volume </td>
+                                <td>{{item.observation.maximumVolume}} -- {{item.observation.availabeVolume}}</td>
                             </tr>
                             <tr>
                                 <td>Ask 1</td>
@@ -120,7 +120,7 @@
         },
         async created() {
             var self = this;
-            this.task = window.setInterval(function () { getData(self) }, 500);
+            this.task = window.setInterval(function () { getData(self) }, 1000);
         },
         beforeDestroy() {
             console.log('before destory.');
