@@ -39,7 +39,7 @@
                         </tr>
                     </thead>
                     <tbody v-if="!items">
-                        <tr><td colspan="5"><em>Loading</em></td></tr>
+                        <tr><td colspan="5"><em>Loading...</em></td></tr>
                     </tbody>
                     <tbody v-if="items">
                         <tr v-for="item in items">
@@ -47,7 +47,7 @@
                             <td>{{ item.observationName }}</td>
                             <td>{{ item.volume }}</td>
                             <td>{{ item.dateCreated }}</td>
-                            <td><href href="#" title="find all orders" v-on:click="look(item)"><em class="glyphicon glyphicon-piggy-bank"></em></href> </td>
+                            <td>  <router-link :to="{path:'/orders', query:{arbitrageId:item.id}}"><em title="find all orders" class="glyphicon glyphicon-tint"></em></router-link> </td>
                         </tr>
                     </tbody>
                 </table>
@@ -79,7 +79,7 @@
     export default {
         data() {
             return {
-                observationId: null,
+                observationName: null,
                 startDate: null,
                 endDate: null,
 
@@ -88,10 +88,7 @@
             }
         },
         methods: {
-            look(item) {
-                console.log('look orders')
-                console.log(item);
-            },
+
             pageChange(p) {
                 this.pagination.page = p;
                 getData(this);
