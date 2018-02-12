@@ -15,8 +15,8 @@ namespace CryptoCoinTrader.Core.Services.Observations
         private readonly static object _lock = new object();
         private readonly CoinContext _coinContext;
 
-
         private static List<Observation> _observations;
+        private static bool isOld = false;
 
 
         public ObservationService(CoinContext coinContext)
@@ -26,42 +26,37 @@ namespace CryptoCoinTrader.Core.Services.Observations
 
         public void Add(Observation observation)
         {
-            var observations = GetObservations();
-            observations.Add(observation);
-            _coinContext.Add(observation);
-            SaveState();
+            lock (_lock)
+            {
+                _coinContext.Add(observation);
+                SaveState();
+            }
+
         }
 
         public void Update(Observation observation)
         {
-            var observations = GetObservations();
-            var old = observations.FirstOrDefault(it => it.Id == observation.Id);
-            old.AvailabeVolume = observation.AvailabeVolume;
-            old.CurrencyPair = observation.CurrencyPair;
-            old.DateCreated = observation.DateCreated;
-            old.FromExchangeName = observation.FromExchangeName;
-            old.MaximumVolume = observation.MaximumVolume;
-            old.MinimumVolume = observation.MinimumVolume;
-            old.PerVolume = observation.PerVolume;
-            old.RunningStatus = observation.RunningStatus;
-            old.SpreadPercentage = observation.SpreadPercentage;
-            old.SpreadType = observation.SpreadType;
-            old.SpreadValue = observation.SpreadValue;
-            old.ToExchangeName = observation.ToExchangeName;
-
-            SaveState();
+            lock (_lock)
+            {
+                var old2 = GetObservatoinsFromDatabase().FirstOrDefault(it => it.Id == observation.Id);
+                observation.AssignTo(old2);
+                SaveState();
+            }
         }
 
         public List<Observation> GetObservations()
         {
-            if (_observations != null)
+            lock (_lock)
             {
-                return _observations;
-            }
-            else
-            {
-                _observations = GetObservatoinsFromDatabase();
-                return _observations;
+                if (_observations != null && !isOld)
+                {
+                    return _observations;
+                }
+                else
+                {
+                    _observations = GetObservatoinsFromDatabase();
+                    return _observations;
+                }
             }
         }
 
@@ -72,49 +67,40 @@ namespace CryptoCoinTrader.Core.Services.Observations
 
         public void SubtractAvailabeVolume(Guid id, decimal volume)
         {
-            var item = GetObservations().FirstOrDefault(it => it.Id == id);
-            item.AvailabeVolume -= volume;
-            if (item.AvailabeVolume <= 0)
+            lock (_lock)
             {
-                item.RunningStatus = RunningStatus.Done;
-            }
-            Task.Run(() =>
-            {
+                var item = GetObservatoinsFromDatabase().FirstOrDefault(it => it.Id == id);
+                item.AvailabeVolume -= volume;
+                if (item.AvailabeVolume <= 0)
+                {
+                    item.RunningStatus = RunningStatus.Done;
+                }
+
                 SaveState();
-            });
+            }
         }
 
-        public void ResetVolume()
-        {
-            var observations = GetObservations();
-            foreach (var item in observations)
-            {
-                item.AvailabeVolume = 0;
-            }
-            Task.Run(() =>
-            {
-                SaveState();
-            });
-        }
+
 
         public void Delete(Guid observationId)
         {
-            var observations = GetObservations();
-            var item = observations.FirstOrDefault(it => it.Id == observationId);
-            if (item != null)
+            lock (_lock)
             {
-                observations.Remove(item);
-                item.Deleted = true;
-                SaveState();
+                var observations = GetObservatoinsFromDatabase();
+                var item = observations.FirstOrDefault(it => it.Id == observationId);
+                if (item != null)
+                {
+                    item.Deleted = true;
+                    SaveState();
+                }
             }
         }
 
         public void SaveState()
         {
-            lock (_lock)
-            {
-                _coinContext.SaveChanges();
-            }
+            isOld = true;
+            _coinContext.SaveChanges();
+
         }
     }
 }

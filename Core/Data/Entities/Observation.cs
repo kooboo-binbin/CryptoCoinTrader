@@ -74,5 +74,21 @@ namespace CryptoCoinTrader.Core.Data.Entities
         {
             return $"{FromExchangeName} - {ToExchangeName}";
         }
+
+        public void AssignTo(Observation old)
+        {
+            old.AvailabeVolume = this.AvailabeVolume;
+            old.CurrencyPair = this.CurrencyPair;
+            old.DateCreated = this.DateCreated;
+            old.FromExchangeName = this.FromExchangeName;
+            old.MaximumVolume = this.MaximumVolume;
+            old.MinimumVolume = this.MinimumVolume;
+            old.PerVolume = this.PerVolume;
+            old.RunningStatus = this.RunningStatus;
+            old.SpreadPercentage = this.SpreadPercentage;
+            old.SpreadType = this.SpreadType;
+            old.SpreadValue = this.SpreadValue;
+            old.ToExchangeName = this.ToExchangeName;
+        }
     }
 }

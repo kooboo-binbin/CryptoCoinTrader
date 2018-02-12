@@ -26,8 +26,8 @@ namespace CryptoCoinTrader.Core.Workers
         private readonly IOrderService _orderService;
         private readonly ILogger<Worker> _logger;
 
-        private static Dictionary<Guid, CancellationTokenSource> _tasks = new Dictionary<Guid, CancellationTokenSource>();
-
+        private static Dictionary<Guid, CancellationTokenSource> _taskDict = new Dictionary<Guid, CancellationTokenSource>();
+        private static List<Task> _tasks = new List<Task>();
         private static bool _running { get; set; }
 
         public Worker(IExchangeDataService exchangeDataService,
@@ -51,7 +51,7 @@ namespace CryptoCoinTrader.Core.Workers
 
         public void Add(List<Observation> observations)
         {
-            foreach (var item in observations)
+            foreach (var item in observations.ToArray())
             {
                 Add(item);
             }
@@ -65,16 +65,17 @@ namespace CryptoCoinTrader.Core.Workers
             {
                 RunObservatoin(observation, token);
             }, token);
-            _tasks.Add(observation.Id, tokenSource);
+            _tasks.Add(task);
+            _taskDict.Add(observation.Id, tokenSource);
         }
 
         public void Delete(Guid obvervationId)
         {
-            if (_tasks.ContainsKey(obvervationId))
+            if (_taskDict.ContainsKey(obvervationId))
             {
-                var tokenSource = _tasks[obvervationId];
+                var tokenSource = _taskDict[obvervationId];
                 tokenSource.Cancel();
-                _tasks.Remove(obvervationId);
+                _taskDict.Remove(obvervationId);
             }
         }
 
@@ -229,7 +230,7 @@ namespace CryptoCoinTrader.Core.Workers
                     Volume = volume
                 };
                 _orderService.Add(buyOrder, sellOrder);
-                _messageService.Write(observation.Id, $"{observation.GetName()} do a arbitrage");
+                _messageService.Write(observation.Id, $"{observation.GetName()} do a arbitrage {DateTime.UtcNow}");
             }
 
         }

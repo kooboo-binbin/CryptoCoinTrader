@@ -90,7 +90,7 @@
             let respone = await vue.$http.get('api/watchs');
             vue.items = respone.data;
             times++;
-           // console.log(times);
+            // console.log(times);
             // console.log(vue.items);
 
         } catch (ex) {
@@ -120,6 +120,7 @@
         },
         async created() {
             var self = this;
+            getData(self);
             this.task = window.setInterval(function () { getData(self) }, 1000);
         },
         beforeDestroy() {

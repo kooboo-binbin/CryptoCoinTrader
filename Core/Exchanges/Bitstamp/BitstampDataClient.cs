@@ -11,14 +11,17 @@ using System.Text;
 
 namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 {
+    /// <summary>
+    /// Should be singleton
+    /// </summary>
     public class BitstampDataClient : IBitstampDataClient
     {
         private readonly IBitstampCurrencyMapper _currencyMapper;
         private readonly IMessageService _messageService;
         private DateTime _dateLastUpdated = DateTime.UtcNow;
         private List<CurrencyPair> _currencyPairs;
-        private Dictionary<CurrencyPair, Ticker> _tickerDict = new Dictionary<CurrencyPair, Ticker>();
-        private Dictionary<CurrencyPair, OrderBook> _orderBookDict = new Dictionary<CurrencyPair, OrderBook>();
+        private  Dictionary<CurrencyPair, Ticker> _tickerDict = new Dictionary<CurrencyPair, Ticker>();
+        private  Dictionary<CurrencyPair, OrderBook> _orderBookDict = new Dictionary<CurrencyPair, OrderBook>();
 
         public event Action<CurrencyPair, Ticker> TickerChanged;
         public event Action<CurrencyPair, OrderBook> OrderBookChanged;
@@ -71,7 +74,11 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 
         public OrderBook GetOrderBook(CurrencyPair pair)
         {
-            return _orderBookDict[pair];
+            if (_orderBookDict.ContainsKey(pair))
+            {
+                return _orderBookDict[pair];
+            }
+            return new OrderBook();
         }
 
         private void RegisterTradeChannel(Pusher pusher, CurrencyPair pair)

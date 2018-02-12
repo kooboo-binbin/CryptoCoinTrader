@@ -15,7 +15,9 @@ using CryptoCoinTrader.Core.Exchanges.Gdax.Remotes;
 
 namespace CryptoCoinTrader.Core.Exchanges.Gdax
 {
-    //VPN
+    /// <summary>
+    /// Should be singleton
+    /// </summary>
     public class GdaxDataClient : IGdaxDataClient
     {
         private readonly IGdaxCurrencyMapper _currencyMapper;
@@ -73,7 +75,11 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax
 
         public OrderBook GetOrderBook(CurrencyPair pair)
         {
-            return _orderBookDict[pair];
+            if (_orderBookDict.ContainsKey(pair))
+            {
+                return _orderBookDict[pair];
+            }
+            return new OrderBook();
         }
 
         private void Socket_Opened(object sender, EventArgs e)

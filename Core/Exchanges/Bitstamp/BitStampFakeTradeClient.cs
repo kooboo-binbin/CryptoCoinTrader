@@ -26,7 +26,6 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 
         public MethodResult<OrderStatus> GetOrderStatus(string orderId)
         {
-            _messageService.Write($"bitstamp \t {orderId}");
             var rnd = _random.Next(0, 100);
             var status = rnd < 50 ? OrderStatus.Finished : OrderStatus.Open;
             return new MethodResult<OrderStatus>

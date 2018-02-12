@@ -23,16 +23,15 @@ namespace CryptoCoinTrader
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-us");
 
             var host = BuildWebHost(args);
-            using (var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<CoinContext>();
-                context.Database.EnsureCreated();
+            
+            var scope = host.Services.CreateScope();
 
-                var app = services.GetRequiredService<App>();
-                app.Run();
-            }
-
+            var services = scope.ServiceProvider;
+            var context = services.GetRequiredService<CoinContext>();
+            context.Database.EnsureCreated();
+            var app = services.GetRequiredService<App>();
+            app.Run();
+           
             host.Run();
         }
 

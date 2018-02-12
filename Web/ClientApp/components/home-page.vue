@@ -14,6 +14,10 @@
     </div>
 </template>
 <script>
+    var getData = async function () {
+        let response = await this.$http.get('api/trade');
+        this.running = response.data.running;
+    };
     export default {
         data() {
             return {
@@ -48,9 +52,15 @@
             }
         },
         async created() {
-            let response = await this.$http.get('api/trade');
-            this.running = response.data.running;
+            var self = this;
+            getData.call(self);
+            this.task = window.setInterval(function () { getData.call(self) }, 2000);
+        },
+        beforeDestroy() {
+            console.log('home. before destory.');
+            window.clearInterval(this.task);
         }
+
     }
 </script>
 <style>

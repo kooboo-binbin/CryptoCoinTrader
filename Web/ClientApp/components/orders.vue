@@ -33,11 +33,11 @@
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Remote id</th>
+                           
                             <th>Arbitrage id</th>
                             <th>Observation id</th>
                             <th>Exchange name</th>
-                            <th>Order status</th>
+                            <!--<th>Order status</th>-->
                             <th>Volume</th>
                             <th>Currency pair</th>
                             <th>DateCreated</th>
@@ -48,12 +48,11 @@
                     </tbody>
                     <tbody v-if="items">
                         <tr v-for="item in items">
-                            <td>{{ item.id }}</td>
-                            <td>{{ item.remoteId }}</td>
+                            <td> <span v-bind:title="'remoeId:'+item.remoteId">{{ item.id }}</span></td>
                             <td>{{ item.arbitrageId }}</td>
                             <td>{{ item.observationId }}</td>
                             <td>{{ item.exchangeName }}</td>
-                            <td>{{ item.orderStatus }}</td>
+                            <!--<td>{{ item.orderStatus }}</td>-->
                             <td>{{ item.volume }}</td>
                             <td>{{ item.currencyPair }}</td>
                             <td>{{ item.dateCreated }}</td>

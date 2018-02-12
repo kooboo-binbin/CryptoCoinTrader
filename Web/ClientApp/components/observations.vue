@@ -13,6 +13,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
+                            <td>Id</td>
                             <th>From exchange name</th>
                             <th>To exchange name</th>
                             <th>Currency pair</th>
@@ -32,6 +33,7 @@
                     </tbody>
                     <tbody v-if="items">
                         <tr v-for="item in items">
+                            <td>{{ item.id }}</td>
                             <td>{{ item.fromExchangeName }}</td>
                             <td>{{ item.toExchangeName }}</td>
                             <td>{{ item.currencyPair }}</td>
