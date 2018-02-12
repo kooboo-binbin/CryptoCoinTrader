@@ -104,11 +104,20 @@ namespace CryptoCoinTrader.Core.Workers
                 }
                 try
                 {
-                    var bookBuy = _exchangeDataService.GetOrderBook(observation.BuyExchangeName, observation.CurrencyPair);
-                    var bookSell = _exchangeDataService.GetOrderBook(observation.SellExchangeName, observation.CurrencyPair);
-
+                    var bookBuy = _exchangeDataService.GetOrderBook(observation.FromExchangeName, observation.CurrencyPair);
+                    var bookSell = _exchangeDataService.GetOrderBook(observation.ToExchangeName, observation.CurrencyPair);
+                    var timeFrom = _exchangeDataService.GetLastUpdated(observation.FromExchangeName);
+                    var timeTo = _exchangeDataService.GetLastUpdated(observation.ToExchangeName);
+                    var ts = Math.Abs((timeFrom - timeTo).TotalSeconds);
+                    var ts2 = Math.Abs((DateTime.UtcNow - timeFrom).TotalSeconds);
+                    if (Math.Max(ts, ts2) > 10)
+                    {
+                        _logger.LogError("Date is not updated");
+                        continue;// the data has no be udpated recently;
+                    }
                     if (bookBuy.Bids.Count > 0 && bookSell.Asks.Count > 0)
                     {
+
                         var buy_ask_0 = bookBuy.Asks[0]; //the sell price of the exchange which we want to buy.
                         var sell_bid_0 = bookSell.Bids[0]; //the buy price of the exchange which we wat to sell.
                         var spread = sell_bid_0.Price - buy_ask_0.Price; //some one buy price is greater than the price some one want to sell. then we have a chance to make a arbitrage
@@ -158,8 +167,8 @@ namespace CryptoCoinTrader.Core.Workers
                 TradeType = TradeType.Sell,
                 Volume = volume,
             };
-            var buyResult = _exchangeTradeService.MakeANewOrder(observation.BuyExchangeName, buyRequest);
-            var sellResult = _exchangeTradeService.MakeANewOrder(observation.SellExchangeName, sellRequest);
+            var buyResult = _exchangeTradeService.MakeANewOrder(observation.FromExchangeName, buyRequest);
+            var sellResult = _exchangeTradeService.MakeANewOrder(observation.ToExchangeName, sellRequest);
             if (!buyResult.IsSuccessful)
             {
                 var message = $"Make a buy failed {buyResult.Message} {observation.GetName()}";
@@ -198,7 +207,7 @@ namespace CryptoCoinTrader.Core.Workers
                     ArbitrageId = arbitrage.Id,
                     ObservationId = arbitrage.ObservationId,
                     DateCreated = DateTime.UtcNow,
-                    ExchangeName = observation.BuyExchangeName,
+                    ExchangeName = observation.FromExchangeName,
                     Id = Guid.NewGuid(),
                     OrderStatus = buyResult.Data.Status,
                     Price = 0,//it is market,
@@ -211,7 +220,7 @@ namespace CryptoCoinTrader.Core.Workers
                     ArbitrageId = arbitrage.Id,
                     ObservationId = arbitrage.ObservationId,
                     DateCreated = DateTime.UtcNow,
-                    ExchangeName = observation.SellExchangeName,
+                    ExchangeName = observation.ToExchangeName,
                     Id = Guid.NewGuid(),
                     OrderStatus = buyResult.Data.Status,
                     Price = 0,//it is market,

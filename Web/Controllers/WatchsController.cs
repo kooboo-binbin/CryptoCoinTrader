@@ -31,8 +31,8 @@ namespace CryptoCoinTrader.Web.Controllers
             {
                 var orderBook = new WatchOrderBookModel();
 
-                var sell_book = _exchangeDataService.GetOrderBook(item.SellExchangeName, item.CurrencyPair);
-                var buy_book = _exchangeDataService.GetOrderBook(item.BuyExchangeName, item.CurrencyPair);
+                var sell_book = _exchangeDataService.GetOrderBook(item.ToExchangeName, item.CurrencyPair);
+                var buy_book = _exchangeDataService.GetOrderBook(item.FromExchangeName, item.CurrencyPair);
                 var bid1 = new OrderBookItem();
                 var ask1 = new OrderBookItem();
                 if (sell_book.Bids.Count > 0)

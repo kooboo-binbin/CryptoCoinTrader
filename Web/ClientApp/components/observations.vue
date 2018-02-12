@@ -13,8 +13,8 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Buy exchange name</th>
-                            <th>Sell exchange name</th>
+                            <th>From exchange name</th>
+                            <th>To exchange name</th>
                             <th>Currency pair</th>
                             <th>Running status</th>
                             <th>Spread type</th>
@@ -32,8 +32,8 @@
                     </tbody>
                     <tbody v-if="items">
                         <tr v-for="item in items">
-                            <td>{{ item.buyExchangeName }}</td>
-                            <td>{{ item.sellExchangeName }}</td>
+                            <td>{{ item.fromExchangeName }}</td>
+                            <td>{{ item.toExchangeName }}</td>
                             <td>{{ item.currencyPair }}</td>
                             <td>
                                 {{ item.runningStatus }}
@@ -61,9 +61,9 @@
                     </div>
                     <div class="modal-body form-horizontal" v-if="observation">
                         <div class="form-group">
-                            <label class="col-sm-4 control-label">Buy exchange name</label>
+                            <label class="col-sm-4 control-label">From exchange name</label>
                             <div class="col-sm-8 ">
-                                <select class="form-control" v-model="observation.buyExchangeName">
+                                <select class="form-control" v-model="observation.fromExchangeName">
                                     <option v-for="option in exchangeNames">
                                         {{option}}
                                     </option>
@@ -71,9 +71,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-4 control-label">Sell exchange name</label>
+                            <label class="col-sm-4 control-label">To exchange name</label>
                             <div class="col-sm-8 ">
-                                <select class="form-control" v-model="observation.sellExchangeName">
+                                <select class="form-control" v-model="observation.toExchangeName">
                                     <option v-for="option in exchangeNames">
                                         {{option}}
                                     </option>
@@ -177,7 +177,7 @@
         methods: {
             add: function () {
                 this.updating = false;
-                this.observation = { buyExchangeName: "gdax", sellExchangeName: "bitstamp", currencyPair: "LtcEur", spreadValue: 30, spreadPercentage: 0.03, spreadType: 'Value', minimumVolume: 0.02, perVolume: 0.01, maximumVolume: 10, availabeVolume: 10, runningStatus: 'Stoped' };
+                this.observation = { fromExchangeName: "bitstamp", toExchangeName: "gdax", currencyPair: "LtcEur", spreadValue: 30, spreadPercentage: 0.03, spreadType: 'Value', minimumVolume: 0.02, perVolume: 0.01, maximumVolume: 10, availabeVolume: 10, runningStatus: 'Stoped' };
                 $('#observationModal').modal('show');
             },
             edit: function (item) {
@@ -199,6 +199,7 @@
                 else {
                     await this.$http.post('api/observations', this.observation);
                 }
+                this.$toastr.s("Save successfully.")
                 $('#observationModal').modal('hide');
                 await getData.call(this);
             },

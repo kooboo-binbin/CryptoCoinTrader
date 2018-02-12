@@ -14,9 +14,9 @@ namespace CryptoCoinTrader.Core.Data.Entities
         [Key]
         public Guid Id { get; set; }
 
-        public string BuyExchangeName { get; set; }
+        public string FromExchangeName { get; set; }
 
-        public string SellExchangeName { get; set; }
+        public string ToExchangeName { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyPair CurrencyPair { get; set; }
@@ -66,13 +66,13 @@ namespace CryptoCoinTrader.Core.Data.Entities
         public string ToConsole()
         {
             var spread = SpreadType == SpreadType.Percentage ? SpreadPercentage.ToString("p2") : SpreadValue.ToString("f2");
-            var message = $"{BuyExchangeName}-{SellExchangeName} \t {RunningStatus} \t Volume! Maximum:{MaximumVolume:f2} Minimum:{MinimumVolume} Per:{PerVolume:f2} \t Available:{AvailabeVolume:f2} \t Spread:{spread} ";
+            var message = $"{FromExchangeName}-{ToExchangeName} \t {RunningStatus} \t Volume! Maximum:{MaximumVolume:f2} Minimum:{MinimumVolume} Per:{PerVolume:f2} \t Available:{AvailabeVolume:f2} \t Spread:{spread} ";
             return message;
         }
 
         public string GetName()
         {
-            return $"{BuyExchangeName} - {SellExchangeName}";
+            return $"{FromExchangeName} - {ToExchangeName}";
         }
     }
 }

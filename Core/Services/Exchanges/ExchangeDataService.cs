@@ -35,6 +35,11 @@ namespace CryptoCoinTrader.Core.Services.Exchanges
             return _dictData[name.ToLower()].GetOrderBook(pair);
         }
 
+        public DateTime GetLastUpdated(string name)
+        {
+            return _dictData[name.ToLower()].DateLastUpdated;
+        }
+
         public void Register(List<CurrencyPair> paris)
         {
             foreach (var item in _dictData)

@@ -56,8 +56,8 @@ namespace CryptoCoinTrader.Core.Services
                 list.Add(new Observation()
                 {
                     DateCreated = DateTime.UtcNow,
-                    BuyExchangeName = "bitstamp",
-                    SellExchangeName = "gdax",
+                    FromExchangeName = "bitstamp",
+                    ToExchangeName = "gdax",
                     Id = Guid.NewGuid(),
                     MaximumVolume = 100.00m,
                     AvailabeVolume = 100.00m,

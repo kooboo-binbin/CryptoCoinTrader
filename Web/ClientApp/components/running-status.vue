@@ -15,16 +15,16 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Buy </td>
-                                <td>{{item.observation.buyExchangeName}}</td>
+                                <td>From exchange</td>
+                                <td>{{item.observation.fromExchangeName}}</td>
                                 <td>Spread Type</td>
                                 <td>{{item.observation.spreadType}}: {{item.observation.spreadType=='Value'?item.observation.spreadValue:item.observation.spreadPercentage}} </td>
 
 
                             </tr>
                             <tr>
-                                <td>Sell</td>
-                                <td>{{item.observation.sellExchangeName}}</td>
+                                <td>To exchange</td>
+                                <td>{{item.observation.toExchangeName}}</td>
                                 <td>Per </td>
                                 <td>{{item.observation.perVolume}}</td>
 
@@ -49,10 +49,11 @@
                                 <td>{{item.observation.maximumVolume}}</td>
                             </tr>
                             <tr>
-                                <td>Bid 1</td>
-                                <td>{{item.orderBook.bid1}}</td>
                                 <td>Ask 1</td>
                                 <td>{{item.orderBook.ask1}}</td>
+                                <td>Bid 1</td>
+                                <td>{{item.orderBook.bid1}}</td>
+
                             </tr>
                             <tr>
                                 <td>Spread Value</td>
@@ -61,16 +62,16 @@
                                 <td>{{item.orderBook.spreadVolume}}</td>
                             </tr>
                             <tr>
-                                <td>Bid 2</td>
-                                <td>{{item.orderBook.bid2}}</td>
                                 <td>Ask 2</td>
                                 <td>{{item.orderBook.ask2}}</td>
+                                <td>Bid 2</td>
+                                <td>{{item.orderBook.bid2}}</td>
                             </tr>
                             <tr>
-                                <td>Bid 3</td>
-                                <td>{{item.orderBook.bid3}}</td>
                                 <td>Ask 3</td>
                                 <td>{{item.orderBook.ask3}}</td>
+                                <td>Bid 3</td>
+                                <td>{{item.orderBook.bid3}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -89,7 +90,7 @@
             let respone = await vue.$http.get('api/watchs');
             vue.items = respone.data;
             times++;
-            console.log(times);
+           // console.log(times);
             // console.log(vue.items);
 
         } catch (ex) {

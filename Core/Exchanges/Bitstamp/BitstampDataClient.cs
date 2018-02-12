@@ -143,6 +143,10 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
         void _pusher_ConnectionStateChanged(object sender, ConnectionState state)
         {
             _messageService.Write("Connection state: " + state.ToString());
+            if (state == ConnectionState.Disconnected)
+            {
+                Start();
+            }
         }
 
         private string GetSubscriptionName(CurrencyPair pair)

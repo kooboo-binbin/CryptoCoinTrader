@@ -12,5 +12,6 @@ namespace CryptoCoinTrader.Core.Services.Exchanges
         void Register(List<CurrencyPair> paris);
         void Start();
         OrderBook GetOrderBook(string name, CurrencyPair pair);
+        DateTime GetLastUpdated(string name);
     }
 }

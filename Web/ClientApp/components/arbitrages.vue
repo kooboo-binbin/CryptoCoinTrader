@@ -84,7 +84,7 @@
                 endDate: null,
 
                 items: null,
-                pagination: { page: 1, pageSize: 20, pageCount: 1, total: 20, hasNextPage: false, hasPreviousPage: false },
+                pagination: { page: 0, pageSize: 20, pageCount: 1, total: 20, hasNextPage: false, hasPreviousPage: false },
             }
         },
         methods: {
