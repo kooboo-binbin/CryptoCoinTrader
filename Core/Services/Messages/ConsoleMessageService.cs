@@ -6,14 +6,14 @@ namespace CryptoCoinTrader.Core.Services.Messages
 {
     public class ConsoleMessageService : IMessageService
     {
-        public void Write(Guid guid, string message)
+        public void Write(Guid id, string observationName, string message)
         {
             Console.WriteLine(message);
         }
 
-        public void Error(Guid id, string message)
+        public void Error(Guid id, string observationName, string message)
         {
-            Write(id, message);
+            Write(id, observationName, message);
         }
 
         public void Write(string message)

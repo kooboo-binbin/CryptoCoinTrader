@@ -6,8 +6,8 @@ namespace CryptoCoinTrader.Core.Services
 {
     public interface IMessageService
     {
-        void Write(Guid id, string message);
-        void Error(Guid id, string message);
+        void Write(Guid observationId, string observationName, string message);
+        void Error(Guid observationId, string observationName, string message);
         void Write(string message);
     }
 }

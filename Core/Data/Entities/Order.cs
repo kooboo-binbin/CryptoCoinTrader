@@ -24,8 +24,7 @@ namespace CryptoCoinTrader.Core.Data.Entities
 
         [StringLength(50)]
         public string ExchangeName { get; set; }
-       
-
+      
         [JsonConverter(typeof(StringEnumConverter))]
         public OrderStatus OrderStatus { get; set; }
 

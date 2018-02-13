@@ -40,12 +40,14 @@ namespace CryptoCoinTrader.Web
         /// </summary>
         public void Run()
         {
+            //Todo: create a service scope for each run times. else if many records are added in to coinContext. the Performance will deteriorate
             var observations = _observationService.GetObservations();
             ///Todo: Improve  if a new observatoin is added. we can register a new currencypair
             var currencyPairs = new List<CurrencyPair>() { CurrencyPair.BtcEur, CurrencyPair.LtcEur };
             _exchangeDataService.Register(currencyPairs);
             _exchangeDataService.Start();
 
+           
             _worker.Add(observations);
         }
     }

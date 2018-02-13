@@ -71,6 +71,7 @@ namespace TradeConsole
             _exchangeDataService.Register(currencyPairs);
             _exchangeDataService.Start();
             _worker.Add(observations);
+            
 
             Console.ReadLine();
             Console.ReadLine();

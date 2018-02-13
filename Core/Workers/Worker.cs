@@ -135,7 +135,7 @@ namespace CryptoCoinTrader.Core.Workers
                 }
                 catch (Exception ex)
                 {
-                    _messageService.Error(observation.Id, "Get an unhandled exception");
+                    _messageService.Error(observation.Id, observation.Name, "Get an unhandled exception");
                     observation.RunningStatus = RunningStatus.Error;
                     _logger.LogCritical(ex, "RunObservation failed.");
                 }
@@ -173,21 +173,21 @@ namespace CryptoCoinTrader.Core.Workers
             if (!buyResult.IsSuccessful)
             {
                 var message = $"Make a buy failed {buyResult.Message} {observation.GetName()}";
-                _messageService.Error(observation.Id, message);
+                _messageService.Error(observation.Id, observation.Name, message);
                 observation.RunningStatus = RunningStatus.Error;
                 _logger.LogError(message);
             }
             if (!sellResult.IsSuccessful)
             {
                 var message = $"Make a sell order failed {sellResult.Message} {observation.GetName()}";
-                _messageService.Error(observation.Id, message);
+                _messageService.Error(observation.Id, observation.Name, message);
                 observation.RunningStatus = RunningStatus.Error;
                 _logger.LogError(message);
             }
             if (buyResult.IsSuccessful ^ sellResult.IsSuccessful)
             {
                 var message = $"only one order is executed!!!! buy {buyResult.IsSuccessful} sell {sellResult.IsSuccessful}  {observation.GetName()}";
-                _messageService.Error(observation.Id, message);
+                _messageService.Error(observation.Id, observation.Name, message);
                 _logger.LogCritical(message);
             }
             if (buyResult.IsSuccessful && sellResult.IsSuccessful)
@@ -233,7 +233,7 @@ namespace CryptoCoinTrader.Core.Workers
                     Volume = volume
                 };
                 _orderService.Add(buyOrder, sellOrder);
-                _messageService.Write(observation.Id, $"{observation.GetName()} do a arbitrage {DateTime.UtcNow}");
+                _messageService.Write(observation.Id, observation.Name, $"{observation.Name} do a arbitrage {DateTime.UtcNow}");
             }
 
         }

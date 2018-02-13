@@ -18,6 +18,7 @@ namespace CryptoCoinTrader.Core.Data
 
         public DbSet<Order> Orders { get; set; }
         public DbSet<Exchange> Exchanges { get; set; }
+        public DbSet<Log> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

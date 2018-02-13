@@ -85,7 +85,7 @@ namespace CryptoCoinTrader
             services.AddScoped<IObservationService, ObservationService>();
             services.AddScoped<IExchangeDataService, ExchangeDataService>();
             services.AddScoped<IExchangeTradeService, ExchangeTradeService>();
-            services.AddScoped<IMessageService, ConsoleMessageService>();
+            services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IOpportunityService, OpportunityService>();
             services.AddScoped<IArbitrageService, ArbitrageService>();
             services.AddScoped<IExchangeSetting, ExchangeSetting>();
