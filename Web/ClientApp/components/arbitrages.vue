@@ -47,7 +47,7 @@
                             <td>{{ item.observationName }}</td>
                             <td>{{ item.volume }}</td>
                             <td>{{ item.dateCreated }}</td>
-                            <td>  <router-link :to="{name:'orders', query:{arbitrageId:item.id}}"><em title="find all orders" class="glyphicon glyphicon-tint"></em></router-link> </td>
+                            <td>  <router-link :to="{path:'/orders', query:{arbitrageId:item.id}}"><em title="find all orders" class="glyphicon glyphicon-tint"></em></router-link> </td>
                         </tr>
                     </tbody>
                 </table>
@@ -61,16 +61,17 @@
 
 </template>
 <script>
-    var getData = async function (vue) {
-        var page = vue.pagination.page;
-        var pageSize = vue.pagination.pageSize;
+    var getData = async function (vue, changeRoute) {
         var data = {
             observationName: vue.observationName,
             startDate: vue.startDate,
             endDate: vue.endDate,
-            page: page,
-            pageSize: pageSize
+            page: vue.pagination.page,
+            pageSize: vue.pagination.pageSize,
         };
+        if (changeRoute) {
+            vue.$router.push({ path: '/arbitrages', query: data });
+        }
         let response = await vue.$http.get('api/arbitrages', { params: data });
         vue.items = response.data.items;
         vue.pagination = response.data.pagination;
@@ -82,23 +83,27 @@
                 observationName: null,
                 startDate: null,
                 endDate: null,
-
                 items: null,
-                pagination: { page: 0, pageSize: 20, pageCount: 1, total: 20, hasNextPage: false, hasPreviousPage: false },
+                pagination: { page: 1, pageSize: 20, pageCount: 1, total: 20, hasNextPage: false, hasPreviousPage: false },
             }
         },
         methods: {
-
             pageChange(p) {
                 this.pagination.page = p;
-                getData(this);
+                getData(this, true);
             },
             filter() {
-                getData(this);
+                getData(this, true);
             }
         },
         async created() {
-            getData(this);
+            this.observationName = this.$route.query.observationName;
+            this.startDate = this.$route.query.startDate;
+            this.endDate = this.$route.query.endDate;
+            this.pagination.page = this.$route.query.page || 1;
+            this.pagination.pageSize = this.$route.query.pageSize || 20;
+
+            getData(this, false);
         }
     }
 </script>

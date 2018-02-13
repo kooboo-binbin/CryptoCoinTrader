@@ -9,13 +9,13 @@
         <nav class="col-lg-7 page-pagination" v-if="pagination" aria-label="Page navigation">
             <ul class="pagination">
                 <li>
-                    <a href="#" v-bind:class="{disabled:!pagination.hasPreviousPage}" v-on:click="previous" aria-label="Previous">
+                    <a v-bind:class="{disabled:!pagination.hasPreviousPage}" v-on:click="previous" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li v-for="item in pages" v-bind:class="{active:item.active}"><a href="#" v-on:click="page(item.page)">{{item.page +1}}</a></li>
+                <li v-for="item in pages" v-bind:class="{active:item.active}"><a v-on:click="page(item.page)">{{item.page}}</a></li>
                 <li>
-                    <a href="#" v-bind:class="{disabled:!pagination.hasNextPage}" v-on:click="next" aria-label="Next">
+                    <a v-bind:class="{disabled:!pagination.hasNextPage}" v-on:click="next" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -42,17 +42,17 @@
                 var current = this.pagination.page;
                 var total = this.pagination.pageCount;
                 for (var i = current - 4; i < current; i++) {
-                    if (i >= 0) {
+                    if (i >= 1) {
                         temp.push(new PageModel(i == current, i));
                     }
                 }
-                for (var i = current; i < total & i < current + 4; i++) {
+                for (var i = current; i <= total & i < current + 4; i++) {
                     temp.push(new PageModel(i == current, i));
                 }
                 return temp;
             },
             recordStart: function () {
-                return this.pagination.page * this.pagination.pageSize;
+                return (this.pagination.page - 1) * this.pagination.pageSize;
             }
         },
         methods: {
@@ -65,7 +65,7 @@
                 }
             },
             previous: function () {
-                if (this.pagination.page > 0) {
+                if (this.pagination.page > 1) {
                     this.$emit('pageChange', this.pagination.page - 1);
                 }
             }

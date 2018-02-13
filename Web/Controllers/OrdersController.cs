@@ -19,9 +19,13 @@ namespace CryptoCoinTrader.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(string observationName, DateTime? startDate, DateTime? endDate, int page = 0, int pageSize = 20)
+        public IActionResult Get(Guid? arbitrageId, string observationName, DateTime? startDate, DateTime? endDate, int page = 1, int pageSize = 20)
         {
             var query = _orderService.GetQuery();
+            if (arbitrageId.HasValue)
+            {
+                query = query.Where(it => it.ArbitrageId == arbitrageId);
+            }
             if (!string.IsNullOrWhiteSpace(observationName))
             {
                 query = query.Where(it => it.ObservationName.Contains(observationName));

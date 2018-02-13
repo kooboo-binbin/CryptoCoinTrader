@@ -65,16 +65,20 @@
     </div>
 </template>
 <script>
-    var getData = async function (vue) {
+    var getData = async function (vue, changeRoute) {
         var page = vue.pagination.page;
         var pageSize = vue.pagination.pageSize;
         var data = {
+            arbitrageId: vue.arbitrageId,
             observationName: vue.observationName,
             startDate: vue.startDate,
             endDate: vue.endDate,
             page: page,
             pageSize: pageSize
         };
+        if (changeRoute) {
+            vue.$router.push({ path: '/orders', query: data });
+        }
         let response = await vue.$http.get('api/orders', { params: data });
         vue.items = response.data.items;
         vue.pagination = response.data.pagination;
@@ -83,26 +87,32 @@
     export default {
         data() {
             return {
+                arbitrageId: null,
                 observationName: null,
                 startDate: null,
                 endDate: null,
 
                 items: null,
-                pagination: { page: 0, pageSize: 20, pageCount: 1, total: 20, hasNextPage: false, hasPreviousPage: false },
+                pagination: { page: 1, pageSize: 20, pageCount: 1, total: 20, hasNextPage: false, hasPreviousPage: false },
             }
         },
         methods: {
-
             pageChange(p) {
                 this.pagination.page = p;
-                getData(this);
+                getData(this, true);
             },
             filter() {
-                getData(this);
+                getData(this, true);
             }
         },
         async created() {
-            getData(this);
+            this.observationName = this.$route.query.observationName;
+            this.arbitrageId = this.$route.query.arbitrageId;
+            this.startDate = this.$route.query.startDate;
+            this.endDate = this.$route.query.endDate;
+            this.pagination.page = this.$route.query.page || 1;
+            this.pagination.pageSize = this.$route.query.pageSize || 20;
+            getData(this, false);
         }
     }
 </script>

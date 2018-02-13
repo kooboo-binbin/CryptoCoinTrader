@@ -9,6 +9,15 @@ namespace CryptoCoinTrader.Web.Controllers
 {
     public class BaseController : Controller
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="page">the page is start from 1</param>
+        /// <param name="pageSize"></param>
+        /// <param name="pagination"></param>
+        /// <returns></returns>
         protected IQueryable<T> Paging<T>(IQueryable<T> query, int page, int pageSize, Pagination pagination) where T : class
         {
             var total = query.Count();

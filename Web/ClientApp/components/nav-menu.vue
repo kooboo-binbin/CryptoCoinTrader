@@ -15,7 +15,6 @@
                 <div class="navbar-collapse collapse in" v-show="!collapsed">
                     <ul class="nav navbar-nav">
                         <li v-for="route in routes">
-                            <!-- TODO: highlight active link -->
                             <router-link :to="route.path" v-bind:exact="route.path=='/'">
                                 <span :class="route.style"></span> {{ route.display }}
                             </router-link>
