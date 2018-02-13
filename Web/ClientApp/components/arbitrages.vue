@@ -9,7 +9,7 @@
                     <div class=" form-group">
                         <label for="observationName">Observation name</label>
 
-                        <input type="text" class="form-control" id="observationName" v-model="observationName">
+                        <input type="text" class="form-control" id="observationName" v-model="observationName" v-on:keyup.enter="filter">
                     </div>
                     <div class=" form-group">
                         <label for="startDate">Start date</label>
@@ -47,7 +47,7 @@
                             <td>{{ item.observationName }}</td>
                             <td>{{ item.volume }}</td>
                             <td>{{ item.dateCreated }}</td>
-                            <td>  <router-link :to="{path:'/orders', query:{arbitrageId:item.id}}"><em title="find all orders" class="glyphicon glyphicon-tint"></em></router-link> </td>
+                            <td>  <router-link :to="{name:'orders', query:{arbitrageId:item.id}}"><em title="find all orders" class="glyphicon glyphicon-tint"></em></router-link> </td>
                         </tr>
                     </tbody>
                 </table>

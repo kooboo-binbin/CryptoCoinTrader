@@ -11,7 +11,7 @@
                     <div class=" form-group">
                         <label for="observationId">Observation name</label>
 
-                        <input type="text" class="form-control" id="observationName" v-model="observationName">
+                        <input type="text" class="form-control" id="observationName" v-model="observationName" v-on:keyup.enter="filter">
                     </div>
                     <div class=" form-group">
                         <label for="startDate">Start date</label>
@@ -83,7 +83,7 @@
     export default {
         data() {
             return {
-                observationId: null,
+                observationName: null,
                 startDate: null,
                 endDate: null,
 

@@ -29,7 +29,11 @@ body {
     color: white;
 }
 
-.navbar-nav > li > a.router-link-exact-active {
+/*.navbar-nav > li > a.router-link-exact-active {
+    color: white;
+}*/
+
+.navbar-nav > li > a.router-link-active {
     color: white;
 }
 /* Keep the nav menu independent of scrolling and on top of other items */
