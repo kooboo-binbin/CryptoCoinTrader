@@ -16,49 +16,52 @@ namespace CryptoCoinTrader.Core.Services.Orders
         private readonly CoinContext _coinContext;
         private readonly object _lock = new object();
 
-        public OrderService(CoinContext context, IMemoryCache cache)
+        private readonly ICoinContextService _coinContextService;
+
+        public OrderService(CoinContext context, IMemoryCache cache,
+            ICoinContextService coinContextService)
         {
             _coinContext = context;
             _cache = cache;
+            _coinContextService = coinContextService;
         }
 
         public void Add(Order order1, Order order2)
         {
-            lock (_lock)
+            _coinContextService.Execute((context) =>
             {
-                _coinContext.Add(order1);
-                _coinContext.Add(order2);
-                _coinContext.SaveChanges();
-            }
+                context.Add(order1);
+                context.Add(order2);
+                context.SaveChanges();
+            });
         }
 
         public List<Order> GetList(Guid arbitrageId)
         {
             return _cache.GetOrCreate(GetKey(arbitrageId), (ICacheEntry entry) =>
             {
-                lock (_lock)
+                entry.SlidingExpiration = TimeSpan.FromDays(10);
+                using (var context = _coinContextService.GetContext())
                 {
-                    entry.SlidingExpiration = TimeSpan.FromDays(10);
-                    return _coinContext.Orders.Where(it => it.ArbitrageId == arbitrageId).ToList();
+                    return context.Orders.Where(it => it.ArbitrageId == arbitrageId).ToList();
                 }
             });
         }
 
         public void UpdateStatus(Guid orderId, OrderStatus status)
         {
-            var order = _coinContext.Orders.FirstOrDefault(it => it.Id == orderId);
-            if (order != null)
+            _coinContextService.Execute((context) =>
             {
-                order.OrderStatus = status;
-                _coinContext.SaveChanges();
-                _cache.Remove(GetKey(order.ArbitrageId));
-            }
+                var order = context.Orders.FirstOrDefault(it => it.Id == orderId);
+                if (order != null)
+                {
+                    order.OrderStatus = status;
+                    context.SaveChanges();
+                    _cache.Remove(GetKey(order.ArbitrageId));
+                }
+            });
         }
 
-        public IQueryable<Order> GetQuery()
-        {
-            return _coinContext.Orders.AsQueryable();
-        }
 
         private string GetKey(Guid arbitrageId)
         {

@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="2.0.1" />
     <PackageReference Include="NewId" Version="3.0.1" />
     <PackageReference Include="RestSharp" Version="106.2.1" />
   </ItemGroup>

@@ -9,10 +9,10 @@ namespace CryptoCoinTrader.Core.Services.Messages
 {
     public class MessageService : IMessageService
     {
-        private CoinContext _coinContext;
-        public MessageService(CoinContext coinContext)
+        private ICoinContextService _coinContextService;
+        public MessageService(ICoinContextService coinContextService)
         {
-            _coinContext = coinContext;
+            _coinContextService = coinContextService;
         }
 
         public void Write(Guid guid, string observationName, string message)
@@ -35,14 +35,17 @@ namespace CryptoCoinTrader.Core.Services.Messages
 
         private void AddLog(Guid? guid, string observationName, string message, LogType type = LogType.Info)
         {
-            var log = new Log();
-            log.DateCreated = DateTime.UtcNow;
-            log.LogType = type;
-            log.Message = message;
-            log.ObservatoinId = guid;
-            log.ObservationName = observationName;
-            _coinContext.Add(log);
-            _coinContext.SaveChanges();
+            using (var context = _coinContextService.GetContext())
+            {
+                var log = new Log();
+                log.DateCreated = DateTime.UtcNow;
+                log.LogType = type;
+                log.Message = message;
+                log.ObservatoinId = guid;
+                log.ObservationName = observationName;
+                context.Add(log);
+                context.SaveChanges();
+            }
         }
     }
 }

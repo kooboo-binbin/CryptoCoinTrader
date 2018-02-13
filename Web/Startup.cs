@@ -62,6 +62,7 @@ namespace CryptoCoinTrader
             }, ServiceLifetime.Scoped);
 
             services.AddMemoryCache();
+            services.AddScoped<ICoinContextService, CoinContextService>();
             services.AddScoped<ISelfInspectionService, SelfInspectionService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IBitstampConfig, BitstampConfig>();

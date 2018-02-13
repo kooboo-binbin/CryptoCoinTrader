@@ -13,94 +13,127 @@ namespace CryptoCoinTrader.Core.Services.Observations
     public class ObservationService : IObservationService
     {
         private readonly static object _lock = new object();
-        private readonly CoinContext _coinContext;
 
+        private readonly ICoinContextService _coinContextService;
         private static List<Observation> _observations;
-        private static bool isOld = false;
+       
 
 
-        public ObservationService(CoinContext coinContext)
+        public ObservationService(ICoinContextService coinContextService)
         {
-            _coinContext = coinContext;
+            _coinContextService = coinContextService;
         }
 
         public void Add(Observation observation)
         {
-            lock (_lock)
+            _observations.Add(observation);
+            Task.Run(() =>
             {
-                _coinContext.Add(observation);
-                SaveState();
-            }
-
+                using (var context = _coinContextService.GetContext())
+                {
+                    context.Add(observation);
+                    context.SaveChanges();
+                }
+            });
         }
 
         public void Update(Observation observation)
         {
-            lock (_lock)
+            var old = GetObservations().FirstOrDefault(it => it.Id == observation.Id);
+            observation.AssignTo(old);
+            UpdateDatabase(observation);
+        }
+
+        private void UpdateDatabase(Observation observation)
+        {
+            Task.Run(() =>
             {
-                var old2 = GetObservatoinsFromDatabase().FirstOrDefault(it => it.Id == observation.Id);
-                observation.AssignTo(old2);
-                SaveState();
-            }
+                ExecuteInDatabase((item) =>
+                {
+                    observation.AssignTo(item);
+                }, observation.Id);
+            });
         }
 
         public List<Observation> GetObservations()
         {
-            lock (_lock)
+            if (_observations != null)
             {
-                if (_observations != null && !isOld)
-                {
-                    return _observations;
-                }
-                else
-                {
-                    _observations = GetObservatoinsFromDatabase();
-                    return _observations;
-                }
+                return _observations;
+            }
+            else
+            {
+                _observations = GetObservatoinsFromDatabase();
+                return _observations;
             }
         }
 
         private List<Observation> GetObservatoinsFromDatabase()
         {
-            return _coinContext.Observations.Where(it => !it.Deleted).OrderBy(it => it.DateCreated).ToList();
+            using (var context = _coinContextService.GetContext())
+            {
+                return context.Observations.Where(it => !it.Deleted).OrderBy(it => it.DateCreated).ToList();
+            }
         }
 
         public void SubtractAvailabeVolume(Guid id, decimal volume)
         {
-            lock (_lock)
-            {
-                var item = GetObservatoinsFromDatabase().FirstOrDefault(it => it.Id == id);
-                item.AvailabeVolume -= volume;
-                if (item.AvailabeVolume <= 0)
-                {
-                    item.RunningStatus = RunningStatus.Done;
-                }
+            var item = GetObservations().FirstOrDefault(it => it.Id == id);
+            item.AvailabeVolume -= volume;
 
-                SaveState();
-            }
+            SubtractAvailabeVolumeDatabase(id, volume);
         }
 
+        private void SubtractAvailabeVolumeDatabase(Guid id, decimal volume)
+        {
+            Task.Run(() =>
+            {
+                ExecuteInDatabase((item) =>
+                    {
+                        item.AvailabeVolume -= volume;
+                        if (item.AvailabeVolume <= 0)
+                        {
+                            item.RunningStatus = RunningStatus.Done;
+                        }
+
+                    }, id);
+            });
+        }
 
 
         public void Delete(Guid observationId)
         {
-            lock (_lock)
+            var item = GetObservations().FirstOrDefault(it => it.Id == observationId);
+            if (item != null)
             {
-                var observations = GetObservatoinsFromDatabase();
-                var item = observations.FirstOrDefault(it => it.Id == observationId);
-                if (item != null)
-                {
-                    item.Deleted = true;
-                    SaveState();
-                }
+                _observations.Remove(item);
             }
+            DeleteDatabase(observationId);
         }
 
-        public void SaveState()
+        private void DeleteDatabase(Guid observationId)
         {
-            isOld = true;
-            _coinContext.SaveChanges();
+            Task.Run(() =>
+            {
+                ExecuteInDatabase((item) =>
+                {
+                    if (item != null)
+                    {
+                        item.Deleted = true;
+                    }
+                }, observationId);
 
+            });
+        }
+
+        private void ExecuteInDatabase(Action<Observation> action, Guid observationId)
+        {
+            using (var context = _coinContextService.GetContext())
+            {
+                var item = context.Observations.FirstOrDefault(it => it.Id == observationId);
+                action(item);
+                context.SaveChanges();
+            }
         }
     }
 }

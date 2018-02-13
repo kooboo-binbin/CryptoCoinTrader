@@ -135,8 +135,9 @@ namespace CryptoCoinTrader.Core.Workers
                 }
                 catch (Exception ex)
                 {
-                    _messageService.Error(observation.Id, observation.Name, "Get an unhandled exception");
+                    _messageService.Error(observation.Id, observation.Name, "Get an unhandled exception" + ex.ToString());
                     observation.RunningStatus = RunningStatus.Error;
+                    _observationService.Update(observation);
                     _logger.LogCritical(ex, "RunObservation failed.");
                 }
             }

@@ -33,8 +33,8 @@
                             <tr>
                                 <td> Current status: </td>
                                 <td>
-                                    <strong>{{item.observation.runningStatus}}</strong>  <a href="#" title="click to run" v-if="item.observation.runningStatus=='Running'" v-on:click="updateStatus(item.observation,'Stoped')"><em class="glyphicon glyphicon-stop"></em></a>
-                                    <a href="#" title="click to stop" v-if="item.observation.runningStatus=='Stoped'" v-on:click="updateStatus(item.observation,'Running')"><em class="glyphicon glyphicon-play"></em></a>
+                                    <strong>{{item.observation.runningStatus}}</strong>  <a href="#" title="click to stop" v-if="item.observation.runningStatus=='Running'" v-on:click="updateStatus(item.observation,'Stoped')"><em class="glyphicon glyphicon-stop"></em></a>
+                                    <a href="#" title="click to run" v-if="item.observation.runningStatus=='Stoped'" v-on:click="updateStatus(item.observation,'Running')"><em class="glyphicon glyphicon-play"></em></a>
                                 </td>
                                 <td>Minimum volume</td>
                                 <td>{{item.observation.minimumVolume}}</td>
@@ -106,6 +106,7 @@
         },
         methods: {
             updateStatus: async function (item, status) {
+               
                 let url = `api/observations/${item.id}`;
                 let response = await this.$http.put(url, { status: status });
                 let result = response.data;

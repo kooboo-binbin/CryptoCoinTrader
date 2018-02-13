@@ -9,20 +9,25 @@ namespace CryptoCoinTrader.Core.Services.Arbitrages
 {
     public class ArbitrageService : IArbitrageService
     {
+        private readonly ICoinContextService _coinContextService;
+        private readonly static Dictionary<Guid, Arbitrage> _lastArbitrageDict = new Dictionary<Guid, Arbitrage>();
         private readonly CoinContext _coinContext;
-        private Dictionary<Guid, Arbitrage> _lastArbitrageDict = new Dictionary<Guid, Arbitrage>();
 
-        public ArbitrageService(CoinContext coinContext)
+        public ArbitrageService(ICoinContextService coinContextService, CoinContext coinContext)
         {
+            _coinContextService = coinContextService;
             _coinContext = coinContext;
         }
 
         public void Add(Arbitrage arbitrage)
         {
-            _lastArbitrageDict[arbitrage.ObservationId] = arbitrage;
+            _lastArbitrageDict[arbitrage.ObservationId] = arbitrage; //Get a null excption? 2018-2-13
+            using (var context = _coinContextService.GetContext())
+            {
+                context.Add(arbitrage);
+                context.SaveChanges();
+            }
 
-            _coinContext.Add(arbitrage);
-            _coinContext.SaveChanges();
         }
 
         public Arbitrage GetLastOne(Guid observationId)
@@ -32,7 +37,10 @@ namespace CryptoCoinTrader.Core.Services.Arbitrages
 
         public List<Arbitrage> GetList(Guid observationid)
         {
-            return _coinContext.Arbitrages.Where(it => it.ObservationId == observationid).ToList();
+            using (var context = _coinContextService.GetContext())
+            {
+                return context.Arbitrages.Where(it => it.ObservationId == observationid).ToList();
+            }
         }
 
         public IQueryable<Arbitrage> GetQuery()

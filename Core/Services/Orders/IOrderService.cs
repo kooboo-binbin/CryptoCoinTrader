@@ -20,7 +20,7 @@ namespace CryptoCoinTrader.Core.Services.Orders
         /// <returns></returns>
         List<Data.Entities.Order> GetList(Guid arbitrageId);
 
-        IQueryable<Order> GetQuery();
+       
 
     }
 }

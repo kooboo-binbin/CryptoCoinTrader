@@ -13,7 +13,6 @@ namespace CryptoCoinTrader.Core.Services
         List<Observation> GetObservations();
         void SubtractAvailabeVolume(Guid id, decimal volume);
 
-        void SaveState();
         void Delete(Guid observationId);
     }
 }

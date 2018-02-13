@@ -7,6 +7,9 @@ using System.Text;
 
 namespace CryptoCoinTrader.Core.Data
 {
+    /// <summary>
+    /// One thread should have an individual instance
+    /// </summary>
     public class CoinContext : DbContext
     {
         public CoinContext(DbContextOptions<CoinContext> options) : base(options)

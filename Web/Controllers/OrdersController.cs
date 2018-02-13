@@ -1,3 +1,4 @@
+using CryptoCoinTrader.Core.Data;
 using CryptoCoinTrader.Core.Data.Entities;
 using CryptoCoinTrader.Core.Services.Orders;
 using CryptoCoinTrader.Web.Models;
@@ -12,16 +13,16 @@ namespace CryptoCoinTrader.Web.Controllers
     [Route("api/[Controller]")]
     public class OrdersController : BaseController
     {
-        private readonly IOrderService _orderService;
-        public OrdersController(IOrderService orderService)
+        private readonly CoinContext _coinContext;
+        public OrdersController(CoinContext coinContext)
         {
-            _orderService = orderService;
+            _coinContext = coinContext;
         }
 
         [HttpGet]
         public IActionResult Get(Guid? arbitrageId, string observationName, DateTime? startDate, DateTime? endDate, int page = 1, int pageSize = 20)
         {
-            var query = _orderService.GetQuery();
+            var query = _coinContext.Orders.AsQueryable();
             if (arbitrageId.HasValue)
             {
                 query = query.Where(it => it.ArbitrageId == arbitrageId);
