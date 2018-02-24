@@ -46,7 +46,7 @@
                     <tbody v-if="items">
                         <tr v-for="item in items">
                             <td>{{ item.id }}</td>
-                            <td>{{ item.type }}</td>
+                            <td>{{ item.logType }}</td>
                             <td>{{ item.message }}</td>
                             <td>{{ item.dateCreated }}</td>
                         </tr>

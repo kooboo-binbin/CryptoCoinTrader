@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CryptoCoinTrader.Core.Exchanges.Bitstamp;
+using CryptoCoinTrader.Core.Exchanges.Bl3p;
 using CryptoCoinTrader.Core.Exchanges.Gdax;
 using CryptoCoinTrader.Manifest.Enums;
 using CryptoCoinTrader.Manifest.Infos;
@@ -14,9 +15,9 @@ namespace CryptoCoinTrader.Core.Services.Exchanges
         private readonly Dictionary<string, IExchangeData> _dictData = new Dictionary<string, IExchangeData>();
         private readonly List<string> _exchangeNames = new List<string>();
 
-        public ExchangeDataService(IBitstampDataClient bitstamp, IGdaxDataClient gdax)
+        public ExchangeDataService(IBitstampDataClient bitstamp, IGdaxDataClient gdax, IBl3pDataClient bl3p)
         {
-            var exchanges = new List<IExchangeData>() { bitstamp, gdax };
+            var exchanges = new List<IExchangeData>() { bitstamp, gdax, bl3p };
             foreach (var exchange in exchanges)
             {
                 var name = exchange.Name.ToLower();

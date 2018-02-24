@@ -7,6 +7,7 @@ using CryptoCoinTrader.Core.Data;
 using CryptoCoinTrader.Core.Exchanges;
 using CryptoCoinTrader.Core.Exchanges.Bitstamp;
 using CryptoCoinTrader.Core.Exchanges.Bitstamp.Configs;
+using CryptoCoinTrader.Core.Exchanges.Bl3p;
 using CryptoCoinTrader.Core.Exchanges.Gdax;
 using CryptoCoinTrader.Core.Exchanges.Gdax.Configs;
 using CryptoCoinTrader.Core.Services;
@@ -69,10 +70,13 @@ namespace CryptoCoinTrader
             services.AddScoped<IGdaxConfig, GdaxConfig>();
             services.AddScoped<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
             services.AddScoped<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
+            services.AddScoped<IBl3pCurrencyMapper, Bl3pCurrencyMapper>();
             services.AddScoped<IGdaxOrderStatusMapper, GdaxOrderStatusMapper>();
             services.AddScoped<IBitmapOrderStatusMapper, BitstampOrderStatusMapper>();
             services.AddSingleton<IBitstampDataClient, BitstampDataClient>();
             services.AddSingleton<IGdaxDataClient, GdaxDataClient>();
+            services.AddSingleton<IBl3pDataClient, Bl3pDataClient>();
+            
             if (appSettings.Production)
             {
                 services.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();
@@ -92,6 +96,7 @@ namespace CryptoCoinTrader
             services.AddScoped<IExchangeSetting, ExchangeSetting>();
             services.AddScoped<IExchangeConfigService, ExchangeConfigService>();
             services.AddScoped<IWorker, Worker>();
+           
             services.AddScoped<App, App>();
             services.AddOptions();
 

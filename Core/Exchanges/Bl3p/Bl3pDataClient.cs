@@ -12,7 +12,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Bl3p
 {
     public class Bl3pDataClient : IBl3pDataClient
     {
-        public string Name => "bl3p";
+        public string Name => Constants.Name;
 
         public DateTime DateLastUpdated => DateTime.UtcNow;
         private List<CurrencyPair> _currencyPairs;
@@ -98,9 +98,13 @@ namespace CryptoCoinTrader.Core.Exchanges.Bl3p
 
                 foreach (var item in bl3pBook.Bids)
                 {
-
+                    book.Bids.Add(new OrderBookItem() { Price = item.Price / 100000m, Volume = item.Amount / 100000000m });
                 }
-                
+                foreach (var item in bl3pBook.Asks)
+                {
+                    book.Asks.Add(new OrderBookItem() { Price = item.Price / 100000m, Volume = item.Amount / 100000000m });
+                }
+                _orderBookDict[currencyPair] = book;
             }
             catch (Exception ex)
             {

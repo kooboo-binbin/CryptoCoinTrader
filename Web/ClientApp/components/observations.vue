@@ -220,7 +220,7 @@
         },
         async created() {
             try {
-                this.exchangeNames = ["gdax", "bitstamp"];
+                this.exchangeNames = ["gdax", "bitstamp", "bl3p"];
                 this.currencyPairs = ["BtcEur", "LtcEur"];
                 this.runningStatus = ["Stoped", "Running", "Error", "Done"];
                 await getData.call(this);
