@@ -10,6 +10,7 @@ using CryptoCoinTrader.Manifest.Enums;
 using CryptoCoinTrader.Manifest.Helpers;
 using CryptoCoinTrader.Manifest.Trades;
 using RestSharp;
+using System.Net;
 
 namespace CryptoCoinTrader.Core.Exchanges.Bl3p
 {
@@ -42,12 +43,15 @@ namespace CryptoCoinTrader.Core.Exchanges.Bl3p
             var call = $"{market}/money/order/result";
             var url = $"{_baseUrl}{call}";
             var client = new RestClient(url);
-            var request = new RestRequest(Method.GET);
-            request.AddQueryParameter("order_id", temp[1]);
+            //client.Proxy = new WebProxy("127.0.0.1", 8888); //for fiddler trace
+            var request = new RestRequest(Method.POST);
+            request.AddParameter("order_id", temp[1]);
+            request.AddParameter("nonce", GetNonce());
+            Authenticate(call, request);
             var result = client.Execute<Bl3pOrderResponse>(request);
+          
             if (result.IsSuccessful)
             {
-
                 return new MethodResult<OrderStatus>()
                 {
                     IsSuccessful = false,
@@ -72,18 +76,20 @@ namespace CryptoCoinTrader.Core.Exchanges.Bl3p
             var call = $"{market}/money/order/add";
             var url = $"{_baseUrl}{call}";
             var client = new RestClient(url);
-            var request = new RestRequest(Method.GET);
+
+            var request = new RestRequest(Method.POST);
             var type = order.TradeType == TradeType.Buy ? "bid" : "ask";
             var amount_int = order.Volume * 100000000; //1e8
-            request.AddQueryParameter("nonce", GetNonce());
-            request.AddQueryParameter("type", type);
-            request.AddQueryParameter("amount_int", amount_int.ToString("f0"));
+
+            request.AddParameter("type", type);
+            request.AddParameter("amount_int", amount_int.ToString("f0"));
             if (order.OrderType == OrderType.Limit)
             {
                 var price_int = order.Price * 100000;
-                request.AddQueryParameter("price_int", price_int.ToString("f0"));
+                request.AddParameter("price_int", price_int.ToString("f0"));
             }
-            request.AddQueryParameter("fee_currency", "EUR");
+            request.AddParameter("fee_currency", "EUR");
+            request.AddParameter("nonce", GetNonce());
 
             Authenticate(call, request);
             var result = client.Execute<Bl3pOrderCreatedResponse>(request);
@@ -109,7 +115,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Bl3p
 
         private string GetNonce()
         {
-            var d = TimeHelper.GetTimeStamp() * 100000;
+            var d = TimeHelper.GetTimeTicks();
             return d.ToString();
         }
 
@@ -118,11 +124,13 @@ namespace CryptoCoinTrader.Core.Exchanges.Bl3p
         /// </summary>
         private void Authenticate(string call, RestRequest request)
         {
-            var querys = request.Parameters.Where(it => it.Type == ParameterType.QueryString).Select(it => $"{it.Name}={it.Value}");
+            var querys = request.Parameters.Where(it => it.Type == ParameterType.GetOrPost).Select(it => $"{it.Name}={it.Value}");
             var queryString = string.Join("&", querys);
-            var sign = CryptoHelper.HmacSha256Base64(_bl3PConfigInfo.PrivateKey, $"{call}\0{queryString}");
+            var message = $"{call}\0{queryString}";
+            var sign = CryptoHelper.HmacSha512Base64(_bl3PConfigInfo.PrivateKey, message);
             request.AddHeader("Rest-Key", _bl3PConfigInfo.PublicKey);
             request.AddHeader("Rest-Sign", sign);
+            request.AddHeader("Content-Type", "application/json");
         }
     }
 

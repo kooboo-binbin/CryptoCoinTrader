@@ -18,7 +18,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 
-namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
+namespace CryptoCoinTrader.Core.Exchanges.Bl3p
 {
 
     /// <summary>

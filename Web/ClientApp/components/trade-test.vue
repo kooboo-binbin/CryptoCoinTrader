@@ -91,7 +91,7 @@ volume:${this.volume}`;
             },
         },
         async created() {
-            this.exchangeNames = ["gdax", "bitstamp"];
+            this.exchangeNames = ["gdax", "bitstamp", "bl3p"];
             this.currencyPairs = ["BtcEur", "LtcEur"];
             this.currencyPair = this.currencyPairs[0];
         }

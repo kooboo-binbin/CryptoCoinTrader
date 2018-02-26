@@ -27,7 +27,14 @@ namespace CryptoCoinTrader.Manifest.Helpers
             return (DateTime.UtcNow - baseDateTime).TotalSeconds;
         }
 
-        
+        /// <summary>
+        /// Get Time ticks
+        /// </summary>
+        /// <returns></returns>
+        public static long GetTimeTicks()
+        {
+            return (DateTime.UtcNow - baseDateTime).Ticks;
+        }
 
     }
 }
