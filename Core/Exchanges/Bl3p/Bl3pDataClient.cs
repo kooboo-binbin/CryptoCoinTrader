@@ -102,7 +102,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Bl3p
                 }
                 foreach (var item in bl3pBook.Asks)
                 {
-                    book.Asks.Add(new OrderBookItem() { Price = item.Price / 100000m, Volume = item.Amount / 100000000m });
+                    book.Asks.Add(new OrderBookItem() { Price = item.Price / 100000m, Volume = item.Amount / 100000000m }); //Amount / 1e8
                 }
                 _orderBookDict[currencyPair] = book;
             }

@@ -8,6 +8,7 @@ using CryptoCoinTrader.Core.Exchanges;
 using CryptoCoinTrader.Core.Exchanges.Bitstamp;
 using CryptoCoinTrader.Core.Exchanges.Bitstamp.Configs;
 using CryptoCoinTrader.Core.Exchanges.Bl3p;
+using CryptoCoinTrader.Core.Exchanges.Bl3p.Configs;
 using CryptoCoinTrader.Core.Exchanges.Gdax;
 using CryptoCoinTrader.Core.Exchanges.Gdax.Configs;
 using CryptoCoinTrader.Core.Services;
@@ -68,6 +69,7 @@ namespace CryptoCoinTrader
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IBitstampConfig, BitstampConfig>();
             services.AddScoped<IGdaxConfig, GdaxConfig>();
+            services.AddScoped<IBl3pConfig, Bl3pConfig>();
             services.AddScoped<IBitstampCurrencyMapper, BitstampCurrencyMapper>();
             services.AddScoped<IGdaxCurrencyMapper, GdaxCurrencyMapper>();
             services.AddScoped<IBl3pCurrencyMapper, Bl3pCurrencyMapper>();
@@ -81,11 +83,13 @@ namespace CryptoCoinTrader
             {
                 services.AddSingleton<IBitstampTradeClient, BitstampTradeClient>();
                 services.AddSingleton<IGdaxTradeClient, GdaxTradeClient>();
+                services.AddSingleton<IBl3pTradeClient, Bl3pTradeClient>();
             }
             else
             {
                 services.AddSingleton<IBitstampTradeClient, BitstampFakeTradeClient>();
                 services.AddSingleton<IGdaxTradeClient, GdaxFakeTradeClient>();
+                services.AddSingleton<IBl3pTradeClient, Bl3pFakeTradeClient>();
             }
             services.AddScoped<IObservationService, ObservationService>();
             services.AddScoped<IExchangeDataService, ExchangeDataService>();

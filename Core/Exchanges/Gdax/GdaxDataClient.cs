@@ -217,7 +217,6 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax
 
             foreach (var bid in data.bids)
             {
-
                 var bookItem = new OrderBookItem()
                 {
 

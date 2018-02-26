@@ -60,10 +60,10 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
         {
             switch (order.OrderType)
             {
-                case OrderType.Stop:
-                    var errorMesage = "Bitstamp does not support 'stop' order";
-                    _logger.LogCritical(errorMesage);
-                    return MethodResult<OrderResult>.Failed(errorMesage);
+                //case OrderType.Stop:
+                //    var errorMesage = "Bitstamp does not support 'stop' order";
+                //    _logger.LogCritical(errorMesage);
+                //    return MethodResult<OrderResult>.Failed(errorMesage);
                 case OrderType.Limit:
                     return LimitOrder(order);
                 case OrderType.Market:

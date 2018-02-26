@@ -37,7 +37,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax.Remotes
 
         public static GdaxOrderRequest ConvertFrom(OrderRequest order, IGdaxCurrencyMapper currencyMapper)
         {
-            var maps = new Dictionary<OrderType, string>() { { OrderType.Limit, "limit" }, { OrderType.Market, "market" }, { OrderType.Stop, "stop" } };
+            var maps = new Dictionary<OrderType, string>() { { OrderType.Limit, "limit" }, { OrderType.Market, "market" }, /*{ OrderType.Stop, "stop" } */};
             var gdaxOrder = new GdaxOrderRequest();
             gdaxOrder.client_oid = order.ClientOrderId;
             gdaxOrder.type = maps[order.OrderType];

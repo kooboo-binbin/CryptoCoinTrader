@@ -12,6 +12,6 @@ namespace CryptoCoinTrader.Manifest.Trades
     {
         Limit = 0,
         Market = 1,
-        Stop = 2,
+        //Stop = 2,
     }
 }
