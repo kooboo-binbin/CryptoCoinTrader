@@ -81,7 +81,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Bl3p
 
         private void Socket_Opened(object sender, EventArgs e)
         {
-            Console.WriteLine("Bl3p Opened");
+            Console.WriteLine("Bl3p socket opened");
         }
 
         private void Socket_MessageReceived(object sender, WebSocket4Net.MessageReceivedEventArgs e)

@@ -84,7 +84,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax
 
         private void Socket_Opened(object sender, EventArgs e)
         {
-            Console.WriteLine("Opend");
+            Console.WriteLine("Gdax opend");
             var subscribeInfo = new GdaxSubscribe()
             {
                 Type = "subscribe",
@@ -254,6 +254,7 @@ namespace CryptoCoinTrader.Core.Exchanges.Gdax
 
         private void Socket_Closed(object sender, EventArgs e)
         {
+            Console.WriteLine("Gdax closed");
             Start();
         }
 

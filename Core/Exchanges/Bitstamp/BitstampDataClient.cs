@@ -144,12 +144,12 @@ namespace CryptoCoinTrader.Core.Exchanges.Bitstamp
 
         void _pusher_Error(object sender, PusherException error)
         {
-            _messageService.Write("Pusher Error: " + error.ToString());
+            _messageService.Write("Bitstamp pusher Error: " + error.ToString());
         }
 
         void _pusher_ConnectionStateChanged(object sender, ConnectionState state)
         {
-            _messageService.Write("Connection state: " + state.ToString());
+            _messageService.Write("Bitstamp Connection state: " + state.ToString());
             if (state == ConnectionState.Disconnected)
             {
                 Start();

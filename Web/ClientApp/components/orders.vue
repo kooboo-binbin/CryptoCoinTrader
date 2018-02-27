@@ -33,6 +33,7 @@
                     <thead>
                         <tr>
                             <th>Id</th>
+                            <th>Remote Id</th>
                             <th>Observation name</th>
                             <th>Arbitrage id</th>
                             <th>Exchange name</th>
@@ -48,6 +49,7 @@
                     <tbody v-if="items">
                         <tr v-for="item in items">
                             <td> <span v-bind:title="'remoeId:'+item.remoteId">{{ item.id }}</span></td>
+                            <td>{{ item.remoteId }}</td>
                             <td>{{ item.observationName }}</td>
                             <td>{{ item.arbitrageId }}</td>
                             <td>{{ item.exchangeName }}</td>
