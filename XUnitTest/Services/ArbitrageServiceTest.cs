@@ -1,4 +1,5 @@
 ﻿using CryptoCoinTrader.Core.Data.Entities;
+using CryptoCoinTrader.Core.Services;
 using CryptoCoinTrader.Core.Services.Arbitrages;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,8 @@ namespace XUnitTest.Services
                 var arbitrage = new Arbitrage();
                 arbitrage.Id = Guid.NewGuid();
                 arbitrage.ObservationId = Guid.NewGuid();
-                var service = new ArbitrageService(context);
+                var coinContextService = new CoinContextService();
+                var service = new ArbitrageService(coinContextService, context);
                 service.Add(arbitrage);
                 var lastOne = service.GetLastOne(arbitrage.ObservationId);
                 Assert.Equal(arbitrage, lastOne);

@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherClient", "ThirdPartie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{4A2330D1-5837-4D95-8AB1-99DD03DCB0AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsocketSharp", "ThirdParties\WebsocketSharp\WebsocketSharp.csproj", "{44B67872-CE7B-4E76-BDC4-4024B8C3F0F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,12 +55,17 @@ Global
 		{4A2330D1-5837-4D95-8AB1-99DD03DCB0AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A2330D1-5837-4D95-8AB1-99DD03DCB0AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A2330D1-5837-4D95-8AB1-99DD03DCB0AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44B67872-CE7B-4E76-BDC4-4024B8C3F0F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44B67872-CE7B-4E76-BDC4-4024B8C3F0F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44B67872-CE7B-4E76-BDC4-4024B8C3F0F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44B67872-CE7B-4E76-BDC4-4024B8C3F0F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C54F8148-418F-49A7-8590-5285336BD9C5} = {14EB8A67-F3BF-4E55-B06E-DA64B919F60C}
+		{44B67872-CE7B-4E76-BDC4-4024B8C3F0F0} = {14EB8A67-F3BF-4E55-B06E-DA64B919F60C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0A3612EA-D02C-4A3E-9055-9FF7520F2F47}
