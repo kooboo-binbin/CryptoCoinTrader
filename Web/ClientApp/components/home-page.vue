@@ -5,7 +5,7 @@
         </div>
         <div class="row">
             <div class="col-lg-12 box">
-                <span>Current status: <strong> {{running?'Running':'Stopped'}} </strong>  </span>
+                <span>Environment: <strong>{{production?'Production':'Test'}}</strong></span> <span>Current status: <strong> {{running?'Running':'Stopped'}} </strong>  </span>
                 <button class="btn btn-primary" v-on:click="stop" v-if="running">{{stopLabel}}</button>
                 <button class="btn btn-primary" v-on:click="start" v-if="!running">{{startLabel}}</button>
             </div>
@@ -15,13 +15,19 @@
 </template>
 <script>
     var getData = async function () {
-        let response = await this.$http.get('api/trade');
-        this.running = response.data.running;
+        try {
+            let response = await this.$http.get('api/trade');
+            this.running = response.data.running;
+            this.production = response.data.production;
+        } catch (ex) {
+            this.running = false;
+        }
     };
     export default {
         data() {
             return {
                 running: false,
+                production: false,
                 startLabel: 'Start',
                 stopLabel: 'Stop'
             }

@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Manifest\Manifest.csproj" />
     <ProjectReference Include="..\ThirdParties\PusherClient\PusherClient.csproj" />
+    <ProjectReference Include="..\ThirdParties\WebsocketSharp\WebsocketSharp.csproj" />
   </ItemGroup>
 
   <ItemGroup>

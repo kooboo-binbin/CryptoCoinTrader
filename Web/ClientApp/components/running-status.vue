@@ -94,7 +94,7 @@
             // console.log(vue.items);
 
         } catch (ex) {
-            console.log(ex);
+            //console.log(ex);
         }
     };
 

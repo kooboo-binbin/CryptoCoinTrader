@@ -1,3 +1,4 @@
+using CryptoCoinTrader.Core;
 using CryptoCoinTrader.Core.Services;
 using CryptoCoinTrader.Core.Services.Exchanges;
 using CryptoCoinTrader.Core.Workers;
@@ -18,10 +19,13 @@ namespace CryptoCoinTrader.Web.Controllers
         private readonly IWorker _worker;
         private readonly ISelfInspectionService _insepectionService;
         private readonly IExchangeTradeService _exchangeTradeService;
-        public TradeController(IWorker worker,
+        private readonly AppSettings _appSettings;
+        public TradeController(AppSettings appSettings,
+            IWorker worker,
             ISelfInspectionService inspectionService,
             IExchangeTradeService exchangeTradeService)
         {
+            _appSettings = appSettings;
             _worker = worker;
             _insepectionService = inspectionService;
             _exchangeTradeService = exchangeTradeService;
@@ -32,6 +36,7 @@ namespace CryptoCoinTrader.Web.Controllers
         {
             var model = new StatusModel();
             model.Running = _worker.GetStatus();
+            model.Production = _appSettings.Production;
             return Ok(model);
         }
 
