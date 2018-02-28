@@ -22,7 +22,7 @@ namespace CryptoCoinTrader.Web.Controllers
         [HttpGet]
         public IActionResult Get(Guid? arbitrageId, string observationName, DateTime? startDate, DateTime? endDate, int page = 1, int pageSize = 20)
         {
-            var query = _coinContext.Orders.AsQueryable();
+            var query = _coinContext.Orders.OrderByDescending(it=>it.DateCreated).AsQueryable();
             if (arbitrageId.HasValue)
             {
                 query = query.Where(it => it.ArbitrageId == arbitrageId);

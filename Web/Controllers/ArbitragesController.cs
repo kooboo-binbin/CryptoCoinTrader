@@ -22,7 +22,7 @@ namespace CryptoCoinTrader.Web.Controllers
         [HttpGet]
         public IActionResult Get(string observationName, DateTime? startDate, DateTime? endDate, int page = 0, int pageSize = 20)
         {
-            var query = _arbitrageService.GetQuery();
+            var query = _arbitrageService.GetQuery().OrderByDescending(it=>it.DateCreated).AsQueryable();
             if (!string.IsNullOrWhiteSpace(observationName))
             {
                 query = query.Where(it => it.ObservationName.Contains(observationName));

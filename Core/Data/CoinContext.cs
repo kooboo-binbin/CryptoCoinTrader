@@ -27,7 +27,10 @@ namespace CryptoCoinTrader.Core.Data
         {
             modelBuilder.Entity<Order>().HasIndex(nameof(Order.ArbitrageId));
             modelBuilder.Entity<Order>().HasIndex(nameof(Order.ObservationId));
+            modelBuilder.Entity<Order>().HasIndex(nameof(Order.DateCreated));
+            modelBuilder.Entity<Log>().HasIndex(nameof(Log.DateCreated));
             modelBuilder.Entity<Arbitrage>().HasIndex(nameof(Order.ObservationId));
+            modelBuilder.Entity<Arbitrage>().HasIndex(nameof(Order.DateCreated));
             // modelBuilder.Entity<Observation>().Property(it=>it.SpreadPercentage).
         }
     }

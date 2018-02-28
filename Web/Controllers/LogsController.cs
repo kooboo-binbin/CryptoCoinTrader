@@ -21,7 +21,7 @@ namespace CryptoCoinTrader.Web.Controllers
         [HttpGet]
         public IActionResult Get(string observationName, string keyword, DateTime? startDate, DateTime? endDate, int page = 1, int pageSize = 20)
         {
-            var query = _coinContext.Logs.AsQueryable();
+            var query = _coinContext.Logs.OrderByDescending(it=>it.DateCreated).AsQueryable();
             if (!string.IsNullOrWhiteSpace(observationName))
             {
                 query = query.Where(it => it.ObservationName.Contains(observationName));
