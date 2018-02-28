@@ -217,6 +217,7 @@ namespace CryptoCoinTrader.Core.Workers
                     Price = 0,//it is market,
                     RemoteId = buyResult.Data.Id,
                     CurrencyPair = observation.CurrencyPair,
+                    TradeType = TradeType.Buy,
                     Volume = volume
                 };
                 var sellOrder = new Order
@@ -231,6 +232,7 @@ namespace CryptoCoinTrader.Core.Workers
                     Price = 0,//it is market,
                     RemoteId = buyResult.Data.Id,
                     CurrencyPair = observation.CurrencyPair,
+                    TradeType = TradeType.Sell,
                     Volume = volume
                 };
                 _orderService.Add(buyOrder, sellOrder);
