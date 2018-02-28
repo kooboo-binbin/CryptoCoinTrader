@@ -16,7 +16,7 @@ namespace CryptoCoinTrader.Core.Services.Observations
 
         private readonly ICoinContextService _coinContextService;
         private static List<Observation> _observations;
-       
+
 
 
         public ObservationService(ICoinContextService coinContextService)
@@ -80,6 +80,10 @@ namespace CryptoCoinTrader.Core.Services.Observations
         {
             var item = GetObservations().FirstOrDefault(it => it.Id == id);
             item.AvailabeVolume -= volume;
+            if (item.AvailabeVolume <= 0)
+            {
+                item.RunningStatus = RunningStatus.Done;
+            }
 
             SubtractAvailabeVolumeDatabase(id, volume);
         }
