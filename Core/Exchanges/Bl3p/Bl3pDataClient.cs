@@ -59,13 +59,13 @@ namespace CryptoCoinTrader.Core.Exchanges.Bl3p
             {
                 var pairName = _bl3pCurrencyMapper.GetPairName(item);
                 var url = $"wss://api.bl3p.eu/1/{pairName}/orderbook";
-                Start(url);
+                Start(pairName, url);
             }
         }
 
-        private void Start(string url)
+        private void Start(string pairName, string url)
         {
-            var socket = new Bl3pWebSocket(url);
+            var socket = new Bl3pWebSocket(pairName, url);
             socket.Opened += Socket_Opened;
             socket.MessageReceived += Socket_MessageReceived;
             socket.Closed += Socket_Closed;
@@ -76,12 +76,13 @@ namespace CryptoCoinTrader.Core.Exchanges.Bl3p
         {
             var socket = sender as Bl3pWebSocket;
 
-            Start(socket.Url);
+            Start(socket.Name, socket.Url);
         }
 
         private void Socket_Opened(object sender, EventArgs e)
         {
-            Console.WriteLine("Bl3p socket opened");
+            var socket = sender as Bl3pWebSocket;
+            Console.WriteLine($"Bl3p {socket.Name} socket opened");
         }
 
         private void Socket_MessageReceived(object sender, WebSocket4Net.MessageReceivedEventArgs e)
