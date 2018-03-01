@@ -66,13 +66,16 @@ namespace CryptoCoinTrader.Core.Services
         /// <returns></returns>
         private string CheckIP()
         {
-            var client = new RestClient("https://api.ipify.org");
-            var request = new RestRequest("/", Method.GET);
-            request.AddQueryParameter("format", "json");
-            var response = client.Execute<IPInfo>(request);
-            if (!_appSettings.WorkingIps.Contains(response.Data.ip))
+            if (_appSettings.Production) //Only check IP when we run it in Production
             {
-                return "IP is incorrect. please use vpn or change the working ips in appsetings.json";
+                var client = new RestClient("https://api.ipify.org");
+                var request = new RestRequest("/", Method.GET);
+                request.AddQueryParameter("format", "json");
+                var response = client.Execute<IPInfo>(request);
+                if (!_appSettings.WorkingIps.Contains(response.Data.ip))
+                {
+                    return "IP is incorrect. please use vpn or change the working ips in appsetings.json";
+                }
             }
             return string.Empty;
         }

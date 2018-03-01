@@ -121,14 +121,23 @@ namespace CryptoCoinTrader.Core.Workers
 
                         var buy_ask_0 = bookBuy.Asks[0]; //the sell price of the exchange which we want to buy.
                         var sell_bid_0 = bookSell.Bids[0]; //the buy price of the exchange which we wat to sell.
-                        var spread = sell_bid_0.Price - buy_ask_0.Price; //some one buy price is greater than the price some one want to sell. then we have a chance to make a arbitrage
+                        var spreadValue = sell_bid_0.Price - buy_ask_0.Price; //some one buy price is greater than the price some one want to sell. then we have a chance to make a arbitrage
                         var spreadVolume = Math.Min(sell_bid_0.Volume, buy_ask_0.Volume);
 
-                        var canArbitrage = _opportunityService.CheckCurrentPrice(observation, buy_ask_0.Price, spread, spreadVolume);
+                        var info = new ArbitrageInfo
+                        {
+                            SpreadValue = spreadValue,
+                            SpreadVolume = spreadVolume,
+                            FromPrice = buy_ask_0.Price,
+                            ToPrice = sell_bid_0.Price,
+                        };
+
+                        var canArbitrage = _opportunityService.CheckCurrentPrice(observation, info);
                         var lastArbitrage = _opportunityService.CheckLastArbitrage(observation.Id);
                         if (canArbitrage & lastArbitrage)
                         {
-                            DoArbitrage(observation, spreadVolume);
+
+                            DoArbitrage(observation, info);
                         }
                     }
                     Thread.Sleep(200);
@@ -144,10 +153,10 @@ namespace CryptoCoinTrader.Core.Workers
         }
 
 
-        private void DoArbitrage(Observation observation, decimal spreadVolume)
+        private void DoArbitrage(Observation observation, ArbitrageInfo info)
         {
             var volume = Math.Min(observation.PerVolume, observation.AvailabeVolume);
-            volume = Math.Min(volume, spreadVolume);
+            volume = Math.Min(volume, info.SpreadVolume);
 
             var orderBuyId = Guid.NewGuid();
             var orderSellId = Guid.NewGuid();
@@ -201,7 +210,8 @@ namespace CryptoCoinTrader.Core.Workers
                     Id = Guid.NewGuid(),
                     ObservationId = observation.Id,
                     ObservationName = observation.Name,
-                    Volume = volume
+                    Volume = volume,
+                    Spread = info.SpreadValue
                 };
                 _arbitrageService.Add(arbitrage);
 
@@ -214,11 +224,11 @@ namespace CryptoCoinTrader.Core.Workers
                     ExchangeName = observation.FromExchangeName,
                     Id = Guid.NewGuid(),
                     OrderStatus = buyResult.Data.Status,
-                    Price = 0,//it is market,
+                    Price = info.FromPrice,
                     RemoteId = buyResult.Data.Id,
                     CurrencyPair = observation.CurrencyPair,
                     TradeType = TradeType.Buy,
-                    Volume = volume
+                    Volume = volume,
                 };
                 var sellOrder = new Order
                 {
@@ -229,7 +239,7 @@ namespace CryptoCoinTrader.Core.Workers
                     ExchangeName = observation.ToExchangeName,
                     Id = Guid.NewGuid(),
                     OrderStatus = buyResult.Data.Status,
-                    Price = 0,//it is market,
+                    Price = info.ToPrice,
                     RemoteId = buyResult.Data.Id,
                     CurrencyPair = observation.CurrencyPair,
                     TradeType = TradeType.Sell,
@@ -240,5 +250,7 @@ namespace CryptoCoinTrader.Core.Workers
             }
 
         }
+
+
     }
 }

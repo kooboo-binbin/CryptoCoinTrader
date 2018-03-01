@@ -5,6 +5,7 @@ using CryptoCoinTrader.Core.Data.Entities;
 using CryptoCoinTrader.Core.Services.Arbitrages;
 using CryptoCoinTrader.Core.Services.Exchanges;
 using CryptoCoinTrader.Core.Services.Orders;
+using CryptoCoinTrader.Core.Workers;
 using CryptoCoinTrader.Manifest.Enums;
 using Microsoft.Extensions.Logging;
 
@@ -28,23 +29,23 @@ namespace CryptoCoinTrader.Core.Services
             _logger = logger;
         }
 
-        public bool CheckCurrentPrice(Observation observation, decimal askPrice, decimal spreadValue, decimal spreadVolume)
+        public bool CheckCurrentPrice(Observation observation, ArbitrageInfo info)
         {
-            if (spreadVolume < observation.MinimumVolume)
+            if (info.SpreadVolume < observation.MinimumVolume)
             {
                 return false;
             }
             var canArbitrage = false;
             if (observation.SpreadType == SpreadType.Percentage)
             {
-                if ((spreadValue / askPrice) > observation.SpreadPercentage)
+                if ((info.SpreadValue / info.FromPrice) > observation.SpreadPercentage)
                 {
                     canArbitrage = true;
                 }
             }
             else
             {
-                if (spreadValue > observation.SpreadValue)
+                if (info.SpreadValue > observation.SpreadValue)
                 {
                     canArbitrage = true;
                 }

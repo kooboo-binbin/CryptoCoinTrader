@@ -33,6 +33,7 @@
                         <tr>
                             <th>Id</th>
                             <th>Observation name</th>
+                            <th>Spread</th>
                             <th>Volume</th>
                             <th>Date created</th>
                             <th></th>
@@ -45,6 +46,7 @@
                         <tr v-for="item in items">
                             <td>{{ item.id }}</td>
                             <td>{{ item.observationName }}</td>
+                            <td>{{ item.spread }}</td>
                             <td>{{ item.volume }}</td>
                             <td>{{ item.dateCreated }}</td>
                             <td>  <router-link :to="{path:'/orders', query:{arbitrageId:item.id}}"><em title="find all orders" class="glyphicon glyphicon-tint"></em></router-link> </td>

@@ -13,6 +13,8 @@ namespace CryptoCoinTrader.Core.Data.Entities
 
         public Guid ObservationId { get; set; }
 
+        public decimal Spread { get; set; }
+
         public decimal Volume { get; set; }
 
         public DateTime DateCreated { get; set; }
