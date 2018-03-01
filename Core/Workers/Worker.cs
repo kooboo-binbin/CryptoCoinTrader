@@ -246,7 +246,7 @@ namespace CryptoCoinTrader.Core.Workers
                     Volume = volume
                 };
                 _orderService.Add(buyOrder, sellOrder);
-                _messageService.Write(observation.Id, observation.Name, $"{observation.Name} do a arbitrage {DateTime.UtcNow}");
+                _messageService.Write(observation.Id, observation.Name, $"{observation.Name} do a arbitrage spreadValue:{info.SpreadValue:f2} volume:{volume:f5} {DateTime.UtcNow}");
             }
 
         }
