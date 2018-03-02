@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  cryptocointrader:
+  web:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "80"
+      - "5000"

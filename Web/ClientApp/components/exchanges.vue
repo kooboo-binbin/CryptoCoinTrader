@@ -31,7 +31,6 @@
 </template>
 
 <script>
-    import Vue from 'Vue'
     import TradeTest from './trade-test.vue'
 
 

@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  cryptocointrader:
-    image: cryptocointrader
+  web:
+    image: rb2binbin/cryptocointrader
     build:
       context: .
       dockerfile: Web/Dockerfile

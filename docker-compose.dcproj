@@ -3,10 +3,10 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.0</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>f88facff-5fee-44fe-8021-4f50c9e57245</ProjectGuid>
+    <ProjectGuid>b7da5b32-b0a6-4a10-af74-8b49b5a3a337</ProjectGuid>
     <DockerLaunchBrowser>True</DockerLaunchBrowser>
     <DockerServiceUrl>http://localhost:{ServicePort}</DockerServiceUrl>
-    <DockerServiceName>cryptocointrader</DockerServiceName>
+    <DockerServiceName>web</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
