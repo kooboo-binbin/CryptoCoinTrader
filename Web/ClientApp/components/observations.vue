@@ -45,7 +45,7 @@
                             <td>{{ item.spreadType=='Value'? item.spreadValue:item.spreadPercentage }}</td>
                             <td>{{ item.minimumVolume }}</td>
                             <td>{{ item.perVolume }}</td>
-                            <td>{{ item.maxVolume }}</td>
+                            <td>{{ item.maximumVolume }}</td>
                             <td>{{ item.availabeVolume }}</td>
                             <td><a href="#"><em class="glyphicon glyphicon-edit" v-on:click="edit(item)"></em></a> <a href="#"><em v-on:click="remove(item)" class="glyphicon glyphicon-remove"></em></a> </td>
                         </tr>
